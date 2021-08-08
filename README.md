@@ -1,6 +1,6 @@
 
-<!--![Zerobot](https://olejka.ru/ss/ZeroBotSimple.png)-->
-<img src="https://olejka.ru/ss/ZeroBotSimple.png" alt="ZeroBot logo" height="300">
+<!--![Zerobot](https://olejka.ru/s/22136.png)-->
+<img src="https://olejka.ru/s/22136.png" alt="ZeroBot logo" height="300">
 
 # ZeroBot
 
