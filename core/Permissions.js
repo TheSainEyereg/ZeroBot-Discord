@@ -1,4 +1,5 @@
 const {superusers} = require("../config.json");
+const Servers = require("./Servers.js");
 
 module.exports = {
     check(message) {

@@ -1,12 +1,11 @@
-const exp = require("constants");
 const {Client, Collection, Intents} = require("discord.js");
 const fs = require("fs");
 const {token, prefix, defaults} = require("./config.json");
 
-global.Messages = require("./core/Messages.js");
-global.Logs = require("./core/Logs.js");
-global.Servers = require("./core/Servers.js");
-global.Permission = require("./core/Permissions.js");
+const Messages = global.Messages = require("./core/Messages.js");
+const Logs = global.Logs = require("./core/Logs.js");
+const Servers = global.Servers = require("./core/Servers.js");
+const Permission = global.Permission = require("./core/Permissions.js");
 
 const bot = new Client({
     intents: [
@@ -32,19 +31,17 @@ Logs.security(__filename, `🟠 ${string} 🟠`, {pre:"\n"});
 
 for (const folder of fs.readdirSync(`./commands`)) {
     if (fs.lstatSync(`./commands/${folder}`).isFile()) continue;
-    process.stdout.write(`Loading ${folder} category...`);
     const {ignore} = require("./commands/config.json");
-    if (ignore.includes(folder)) {process.stdout.write("Ignored\n"); continue};
+    if (ignore.includes(folder)) continue;
 	const files = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith(".js"));
 	for (const file of files) {
 		const command = require(`./commands/${folder}/${file}`);
 		bot.commands.set(command.name, command);
 	}
-    process.stdout.write("OK\n");
 }
 
 process.on("unhandledRejection", e => {
-    console.error(`Unhandled promise rejection error: ${e}`);
+    console.error(e);
     Logs.critical(__filename, `Unhandled promise rejection error: ${e}`);
 })
 
@@ -126,7 +123,7 @@ bot.on("messageCreate", message => {
         Logs.regular(__filename, `User ${message.author.id} tried to execute command "${command.name}" ("${commandString}" without arguments.)`);
         return Messages.warning(message, "This command requires arguments!");
     }
-    if (!command.access.includes(Permission.check(message))) {
+    if (command.access && !command.access.includes(Permission.check(message))) {
         Logs.security(__filename, `User ${message.author.id} (Rank "${Permission.check(message)}") tried to execute command "${command.name}" ("${commandString}") when it requires higher rank.`);
         return Messages.warning(message, `You should have one of this ranks to execute this!\n\`${command.access.join(", ")}\``);
     }

@@ -14,6 +14,12 @@ module.exports = {
         else embed.setFooter(`ZeroBot`, message.client.user.avatarURL({ format: "png", size: 256 }));
         message.channel.send({embeds: [embed]});
     },
+	async url(message, url, text, opt) {
+        const embed = new MessageEmbed().setColor("#1194f0");
+        embed.setURL(url).setTitle(text);
+        opt && opt.footer ? embed.setFooter(opt.footer) : null;
+        message.channel.send({embeds: [embed]});
+	},
     async complete (message, text, opt) {
         const embed = new MessageEmbed().setColor("#44e838");
         !(opt && opt.color) ? text = `${text} :white_check_mark:` : text = `${text} :green_circle:`;
