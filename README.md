@@ -35,7 +35,7 @@ npm i
     }
 }
 ```
-_p.s. I recommend to set deffaults to that values._
+_p.s. I recommend set defaults to that values._
 
 4. Run bot by typing `npm start` or `node index.js`
 
