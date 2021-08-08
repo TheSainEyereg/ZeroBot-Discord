@@ -1,0 +1,30 @@
+{
+  "name": "zerobot",
+  "version": "1.0.0",
+  "description": "Multifunctional discord bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheSainEyereg/ZeroBot-Discord.git",
+    "raw": "https://github.com/TheSainEyereg/ZeroBot-Discord"
+  },
+  "keywords": [
+    "Bot",
+    "Discord",
+    "ZeroBot",
+    "Zero"
+  ],
+  "author": "Olejka",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TheSainEyereg/ZeroBot-Discord/issues"
+  },
+  "homepage": "https://github.com/TheSainEyereg/ZeroBot-Discord#readme",
+  "dependencies": {
+    "canvas": "^2.8.0",
+    "discord.js": "^13.0.1"
+  }
+}
