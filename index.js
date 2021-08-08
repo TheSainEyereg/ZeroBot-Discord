@@ -59,7 +59,7 @@ bot.on("shardError", e => console.error(`Websocket connection error: ${e}`));
 
 bot.once("ready", _ => {
     bot.guilds.cache.forEach(guild => Servers.checkCfg(guild.id));
-    Logs.regular(__filename, "Bot is ready! (${bot.user.tag})")
+    Logs.regular(__filename, `Bot is ready! (${bot.user.tag})`)
     bot.user.setActivity(`${bot.guilds.cache.size} servers`, { type: "WATCHING" });
 	console.log(`Logged in as "${bot.user.tag}"\n${bot.guilds.cache.size} servers total.`);
 })
