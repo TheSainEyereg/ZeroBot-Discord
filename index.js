@@ -2,8 +2,6 @@ const exp = require("constants");
 const {Client, Collection, Intents} = require("discord.js");
 const fs = require("fs");
 const {token, prefix, defaults} = require("./config.json");
-const Logs = require("./core/Logs.js");
-const Servers = require("./core/Servers.js");
 
 global.Messages = require("./core/Messages.js");
 global.Logs = require("./core/Logs.js");
