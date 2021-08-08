@@ -1,13 +1,15 @@
 
 <!--![Zerobot](https://olejka.ru/ss/ZeroBotSimple.png)-->
 <img src="https://olejka.ru/ss/ZeroBotSimple.png" alt="ZeroBot logo" height="300">
-#ZeroBot
+
+# ZeroBot
+
 A multifunctional opensource discord bot for your server with a big functionality and cool UX.
 
 ---
-##How to invite
-**You can invite bot to your server by this link:**
-###[Soon ;)](https://github.com/TheSainEyereg/ZeroBot-Discord/commits/master)
+## How to invite
+**You can invite bot to your server by this link:**  
+### [Soon ;)](https://github.com/TheSainEyereg/ZeroBot-Discord/commits/master)
 <!--###[\*Click*](https://discord.com/api/oauth2/authorize?client_id=870241298932723722&permissions=8&scope=bot)-->
 
 ---
