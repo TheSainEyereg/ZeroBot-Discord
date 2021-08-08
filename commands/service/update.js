@@ -11,6 +11,7 @@ module.exports = {
         exec("git pull", (e, so, se) => {
             if (e||se) return Messages.critical(message, `Error in execution: \n\`\`\`${e||se}\`\`\``);
             if (so == `Already up to date.\n`) return Messages.warning(message, `You already up to date!`);
+            Logs.security(__filename, `${message.author.id} (${message.author.tag}) has started updating!...`, {nonl: true});
             Messages.warning(message, `Update found. Reloading commands...`);
             for (const folder of fs.readdirSync(`./commands`)) {
                 if (fs.lstatSync(`./commands/${folder}`).isFile()) continue;
@@ -24,12 +25,14 @@ module.exports = {
                         message.client.commands.set(command.name, command);
                     } catch (e) {
                         console.error(e);
+                        Logs.security(__filename, `Failed! Check critical log!`);
                         Logs.critical(__filename, `Error in \`${file}\` reload:\n\`\`\`${e}\`\`\``);
                         return Messages.critical(message, `Error in \`${file}\` reload:\n\`\`\`${e}\`\`\``);
                     }
                 }
             }
-            Messages.complete(message, "Complete!", {big:true});
+            Logs.security(__filename, `Completed!`);
+            Messages.complete(message, "Completed!", {big:true});
         });
 	}
 };
