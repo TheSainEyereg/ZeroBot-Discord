@@ -96,7 +96,7 @@ bot.on("messageCreate", message => {
             const default_amount = defaults["user-cooldown"] * 1000;
             amount ? amount*1000 : null
             cooldowns.set(message.author.id, {timestamp: now, amount: amount ? amount : default_amount, warned: false});
-            setTimeout(_ => {cooldowns.delete(message.author.id)}, amount ? amount : default_amount);
+            setTimeout(_ => cooldowns.delete(message.author.id), amount ? amount : default_amount);
         }
     }
 

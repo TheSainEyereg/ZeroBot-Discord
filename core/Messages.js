@@ -11,6 +11,8 @@ module.exports = {
         title ? embed.setTitle(title) : null;
         if (opt && opt.author && opt.noicon) embed.setFooter(`For ${message.author.tag} :)`);
         else if (opt && opt.author) embed.setFooter(`For ${message.author.tag} :)`, message.author.avatarURL({ format: "png", size: 256 }));
+        else if (opt && opt.custom && opt.noicon) embed.setFooter(opt.custom);
+        else if (opt && opt.custom) embed.setFooter(opt.custom, message.client.user.avatarURL({ format: "png", size: 256 }));
         else embed.setFooter(`ZeroBot`, message.client.user.avatarURL({ format: "png", size: 256 }));
         message.channel.send({embeds: [embed]});
     },
