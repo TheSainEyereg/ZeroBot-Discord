@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/TheSainEyereg/ZeroBot-Discord#readme",
   "dependencies": {
+    "axios": "^0.21.1",
     "canvas": "^2.8.0",
     "discord.js": "^13.0.1"
   }
