@@ -4,7 +4,7 @@ module.exports = {
 	name: "avatar",
     aliases: ["ava", "profile"],
 	description: "Sends user avatar (1024x1024)",
-	arguments: ["[user]"],
+	arguments: ["(user)"],
     optional: true,
 	async execute(message, args) {
         const user = message.mentions.users.first() || message.author;
