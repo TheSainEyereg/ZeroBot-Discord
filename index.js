@@ -75,6 +75,7 @@ bot.on("guildDelete", guild => {
 
 bot.on("messageCreate", message => {
 	if (message.author.bot) return;
+    if (!message.content.startsWith(prefix) && message.channel.type != "DM") return;
 
     const { cooldowns } = bot;
     const now = Date.now();
@@ -106,16 +107,17 @@ bot.on("messageCreate", message => {
         return Messages.critical(message, "Sorry, I'm not accepting commands in DM");
     }
 
-    if (!message.content.startsWith(prefix)) return;
-    make_cooldown();
 
     if (message.content.length > 1800) {
-        Logs.security(__filename, `User ${message.author.id} tried to enter 1800+ string.`); 
-        return Messages.warning(message, "Max command length is 1800");
+        make_cooldown();
+        Logs.security(__filename, `User ${message.author.id} tried to enter 1800+ string.`);
+        return Messages.warning(message, "Max message length is 1800");
     }
 
     const args = message.content.slice(prefix.length).split(/ +/);
     const commandString = args.shift().toLowerCase().replace(/\ /g,"");
+    if (commandString.length == 0) return;
+    make_cooldown();
     const command = bot.commands.get(commandString) || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandString));
     if (!command) return Messages.critical(message, "Command not found!");
 
