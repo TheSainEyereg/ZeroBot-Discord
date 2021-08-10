@@ -4,6 +4,7 @@ const Permissions = require("../../core/Permissions");
 
 module.exports = {
 	name: "help",
+	aliases: ["cmds", "commands", "list"],
 	description: "Displays list of commands",
 	arguments: ["(category)"],
     optional: true,
