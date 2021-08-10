@@ -1,0 +1,7 @@
+{
+    "suOnly": ["suOnly", "service"],
+    "adminsOnly": ["adminOnly", "settings"],
+    "modsOnly": ["modsOnly", "moderation"],
+    "hide": ["test"],
+    "ignore": ["ignore", "old"]
+}
