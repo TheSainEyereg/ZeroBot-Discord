@@ -130,6 +130,7 @@ bot.on("messageCreate", message => {
         return Messages.warning(message, `You should have one of this ranks to execute this!\n\`${command.access.join(", ")}\``);
     }
 
+    message.channel.sendTyping();
     try {
         command.execute(message, args);
         Logs.regular(__filename, `Cmd executed! Info:\n${"-".repeat(50)}\nCommand: "${command.name}" ("${commandString}")\nArgs: ${args.join(" ")}\nServer: ${message.guild.id}\nAuthor: ${message.author.id}\n${"-".repeat(50)}`);

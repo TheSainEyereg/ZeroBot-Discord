@@ -12,6 +12,7 @@ module.exports = {
 		if (args[0] == "all") {
             Logs.security(__filename, `${message.author.id} (${message.author.tag}) has started reloading all bot commands!...`, {nonl: true});
 			Messages.warning(message, "Reloading all commands...");
+            message.channel.sendTyping();
             for (const folder of fs.readdirSync(`./commands`)) {
                 if (fs.lstatSync(`./commands/${folder}`).isFile()) continue;
                 const {ignore} = require("../../commands/config.json");
