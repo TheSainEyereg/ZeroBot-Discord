@@ -1,6 +1,6 @@
 const {Client, Collection, Intents} = require("discord.js");
 const fs = require("fs");
-const {token, prefix, defaults} = require("./config.json");
+const {token, defaults} = require("./config.json");
 
 const Messages = global.Messages = require("./core/Messages.js");
 const Logs = global.Logs = require("./core/Logs.js");
@@ -75,7 +75,9 @@ bot.on("guildDelete", guild => {
 
 bot.on("messageCreate", message => {
 	if (message.author.bot) return;
-    if (!message.content.startsWith(prefix) && message.channel.type != "DM") return;
+
+    const prefix = message.guild ? Servers.get(message.guild.id, "prefix") : false;
+    if ((!prefix || !message.content.startsWith(prefix)) && message.channel.type != "DM") return;
 
     const { cooldowns } = bot;
     const now = Date.now();
@@ -130,7 +132,6 @@ bot.on("messageCreate", message => {
         return Messages.warning(message, `You should have one of this ranks to execute this!\n\`${command.access.join(", ")}\``);
     }
 
-    message.channel.sendTyping();
     try {
         command.execute(message, args);
         Logs.regular(__filename, `Cmd executed! Info:\n${"-".repeat(50)}\nCommand: "${command.name}" ("${commandString}")\nArgs: ${args.join(" ")}\nServer: ${message.guild.id}\nAuthor: ${message.author.id}\n${"-".repeat(50)}`);

@@ -26,7 +26,7 @@ module.exports = {
 
                 out.push(`**${folder}**\n`);
             }
-			return Messages.advanced(message, "Categories:", out.join(""), {custom: `Type ${require("../../config.json").prefix}help (category) for category commands.`});
+			return Messages.advanced(message, "Categories:", out.join(""), {custom: `Type ${Servers.get(message.guild.id, "prefix")}help (category) for category commands.`});
 		}
 
         if (
@@ -41,7 +41,7 @@ module.exports = {
 		try {
 			for (const file of fs.readdirSync(`./commands/${category}`)) {
 				const cmd = require(`../${category}/${file}`);
-				out.push(`**${require("../../config.json").prefix}${cmd.name}** ${cmd.arguments ? `\`${cmd.arguments.join("\` \`")}\``: ""} — ${cmd.description}\n`);
+				out.push(`**${Servers.get(message.guild.id, "prefix")}${cmd.name}** ${cmd.arguments ? `\`${cmd.arguments.join("\` \`")}\``: ""} — ${cmd.description}\n`);
 			}
 			Messages.advanced(message, `Commands of \`${category}\`:`, out.join(""));
 		} catch (e) {

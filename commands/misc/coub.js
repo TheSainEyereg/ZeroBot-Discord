@@ -9,6 +9,8 @@ module.exports = {
 	arguments: ["[community]", "(order: daily, rising, fresh, top, views)"],
     optional: true,
 	execute(message, args) {
+        message.channel.sendTyping();
+        
 		const communities = ["anime", "animals-pets", "blogging", "standup-jokes", "mashup", "movies", "gaming", "cartoons", "art", "live-pictures", "music", "news", "sports", "science-technology", "food-kitchen", "celebrity", "nature-travel", "fashion", "dance", "cars", "memes", /*"nsfw"*/];
         const order = {
             "daily": "daily?",
@@ -21,7 +23,7 @@ module.exports = {
         if (!communities.includes(args[0]) || !args[0]) return Messages.advanced(message, 
             "Available communities", 
             `**${communities.join("**\n**")}**`, 
-            {custom:`Type ${require("../../config.json").prefix}coub (community) for random video from specified community.`}
+            {custom:`Type ${Servers.get(message.guild.id, "prefix")}coub (community) for random video from specified community.`}
         );
 
         const correct = Object.keys(order).includes(args[1]) && args[1];

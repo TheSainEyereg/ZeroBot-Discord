@@ -7,6 +7,8 @@ module.exports = {
 	arguments: ["(user)"],
     optional: true,
 	async execute(message, args) {
+        message.channel.sendTyping();
+        
         const user = message.mentions.users.first() || message.author;
         const embed = new MessageEmbed({
             color: "#1194f0",

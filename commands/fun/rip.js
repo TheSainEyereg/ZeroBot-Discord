@@ -6,6 +6,8 @@ module.exports = {
 	arguments: ["(user)", "(\"quick\")"],
     optional: true,
 	async execute(message, args) {
+        message.channel.sendTyping();
+        
         const user = message.mentions.users.first() || message.author;
 
         const canvas = Canvas.createCanvas(653, 425);
