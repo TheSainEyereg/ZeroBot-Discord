@@ -7,7 +7,7 @@ module.exports = {
 	aliases: ["pref"],
 	description: "Changes prefix",
     arguments: ["[prefix]"],
-    access: "administartor",
+    access: "administrator",
 	execute(message, args) {
 		if (args[0].length > 3) return Messages.warning(message,"Max prefix length is 3!");
         Servers.set(message.guild.id, "prefix", args[0]);
