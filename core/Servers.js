@@ -40,11 +40,11 @@ module.exports = {
         if (!parseInt(id)) throw Error("Id is not int!");
         const data = JSON.parse(fs.readFileSync(`./storage/${id}.json`).toString());
         if (typeof thing === "object") for (const [k,v] of Object.entries(thing)) {
-            if (!v) throw Error("No value given!");
+            if (typeof v === "undefined") throw Error("No value given!");
             data[k] = v;
         }
         else {
-            if (!value) throw Error("No value given!");
+            if (typeof value === "undefined") throw Error("No value given!");
             data[thing] = value;
         }
         fs.writeFileSync(`./storage/${id}.json`, JSON.stringify(data, null, "\t"), "utf8", null);
