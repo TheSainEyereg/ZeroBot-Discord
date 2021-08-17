@@ -7,7 +7,7 @@ module.exports = {
 	aliases: ["dj", "DJ"],
 	description: "Enable/disable/add/remove DJs",
     arguments: ["enable/disable or add/remove", "(user mention)"],
-    access: "administartor",
+    access: "administrator",
 	async execute(message, args) {
 		const djs = Servers.get(message.guild.id, "djs");
         const user = message.mentions.users.first();
