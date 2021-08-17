@@ -7,7 +7,7 @@ module.exports = {
 	aliases: ["moderator", "mods"],
 	description: "Add/remove moderator",
     arguments: ["add/remove", "[user mention]"],
-    access: "administartor",
+    access: "administrator",
 	async execute(message, args) {
 		const moderators = Servers.get(message.guild.id, "moderators");
         const user = message.mentions.users.first();
