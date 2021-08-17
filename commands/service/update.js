@@ -9,7 +9,7 @@ module.exports = {
 	access: "superuser",
 	async execute(message, args) {
         exec("git pull", (e, so, se) => {
-            if (e||se) return Messages.critical(message, `Error in execution: \n\`\`\`${e||se}\`\`\``);
+            if (e) return Messages.critical(message, `Error in execution: \n\`\`\`${e}\`\`\``);
             if (so == `Already up to date.\n`) return Messages.warning(message, `You already up to date!`);
             Logs.security(__filename, `${message.author.id} (${message.author.tag}) has started updating!...`, {nonl: true});
             Messages.warning(message, `Update found. Reloading commands...`);
