@@ -26,7 +26,7 @@ npm i
 ```json
 {
     "token": "YourToken",
-    "prefix": "z!",
+    "prefix": "z.",
     "superusers": ["YourDiscordId"],
     "invite": "YourBotInviteLinlk",
     "defaults": {
