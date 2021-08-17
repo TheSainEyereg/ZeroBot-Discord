@@ -10,7 +10,6 @@ module.exports = {
     optional: true,
 	async execute(message, args) {
         const {ignore, hide, suOnly, adminsOnly, modsOnly} = require("../config.json");
-        const perms = Permissions.check(message);
 		const out = [];
 		category = args[0];
 		if (category) category = category.replace(/\\|\//g,"");
@@ -20,9 +19,9 @@ module.exports = {
                 if (ignore.includes(folder)) continue;
                 if (hide.includes(folder)) continue;
 
-                if (suOnly.includes(folder) && !["superuser"].includes(perms)) continue;
-                if (adminsOnly.includes(folder) && !["superuser", "administrator"].includes(perms)) continue;
-                if (modsOnly.includes(folder) && !["superuser", "administrator", "moderator"].includes(perms)) continue;
+                if (suOnly.includes(folder) && !Permissions.has(message, "superuser")) continue;
+                if (adminsOnly.includes(folder) && !Permissions.has(message, "administrator")) continue;
+                if (modsOnly.includes(folder) && !Permissions.has(message, "moderator")) continue;
 
                 out.push(`**${folder}**\n`);
             }
@@ -30,11 +29,11 @@ module.exports = {
 		}
 
         if (
-            (suOnly.includes(category) && !["superuser"].includes(perms)) ||
-            (adminsOnly.includes(category) && !["superuser", "administrator"].includes(perms)) ||
-            (modsOnly.includes(category) && !["superuser", "administrator", "moderator"].includes(perms))
+            (suOnly.includes(category) && !Permissions.has(message, "superuser")) ||
+            (adminsOnly.includes(category) && !Permissions.has(message, "administrator")) ||
+            (modsOnly.includes(category) && !Permissions.has(message, "moderator"))
         ) {
-            Logs.security(__filename, `User ${message.author.id} (Rank "${perms}") tried to view category "${category}" when it requires higher rank.`);
+            Logs.security(__filename, `User ${message.author.id} (Ranks [${Permissions.get(message).join(", ")}]) tried to view category "${category}" when it requires higher rank.`);
             return Messages.warning(message, `You do not have access to category \`${category}\``);
         }
 

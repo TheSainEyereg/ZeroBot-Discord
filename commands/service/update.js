@@ -6,7 +6,7 @@ const Logs = require("../../core/Logs.js");
 module.exports = {
 	name: "update",
 	description: "Checking for commands update",
-	access: ["superuser"],
+	access: "superuser",
 	async execute(message, args) {
         exec("git pull", (e, so, se) => {
             if (e||se) return Messages.critical(message, `Error in execution: \n\`\`\`${e||se}\`\`\``);

@@ -5,7 +5,7 @@ const {token, defaults} = require("./config.json");
 const Messages = global.Messages = require("./core/Messages.js");
 const Logs = global.Logs = require("./core/Logs.js");
 const Servers = global.Servers = require("./core/Servers.js");
-const Permission = global.Permission = require("./core/Permissions.js");
+const Permissions = global.Permissions = require("./core/Permissions.js");
 
 const bot = new Client({
     intents: [
@@ -76,7 +76,7 @@ bot.on("guildDelete", guild => {
 bot.on("messageCreate", message => {
 	if (message.author.bot) return;
 
-    const prefix = message.guild ? Servers.get(message.guild.id, "prefix") : false;
+    const prefix = message.guild ? Servers.get(message.guild.id, "prefix") : null;
     if ((!prefix || !message.content.startsWith(prefix)) && message.channel.type != "DM") return;
 
     const { cooldowns } = bot;
@@ -123,13 +123,13 @@ bot.on("messageCreate", message => {
     const command = bot.commands.get(commandString) || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandString));
     if (!command) return Messages.critical(message, "Command not found!");
 
+    if (command.access && !Permissions.has(message, command.access)) {
+        Logs.security(__filename, `User ${message.author.id} (Ranks [${Permissions.get(message).join(", ")}]) tried to execute command "${command.name}" ("${commandString}") when it requires higher rank.`);
+        return Messages.warning(message, `You should have one of this ranks to execute this!\n\`${command.access.join(", ")}\``);
+    }
     if (command.arguments && !command.optional && (!args || args.length === 0)) {
         Logs.regular(__filename, `User ${message.author.id} tried to execute command "${command.name}" ("${commandString}" without arguments.)`);
         return Messages.warning(message, "This command requires arguments!");
-    }
-    if (command.access && !command.access.includes(Permission.check(message))) {
-        Logs.security(__filename, `User ${message.author.id} (Rank "${Permission.check(message)}") tried to execute command "${command.name}" ("${commandString}") when it requires higher rank.`);
-        return Messages.warning(message, `You should have one of this ranks to execute this!\n\`${command.access.join(", ")}\``);
     }
 
     try {

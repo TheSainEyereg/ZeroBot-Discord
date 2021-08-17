@@ -6,7 +6,7 @@ module.exports = {
     aliases: ["exec", "execute"],
     description: "Command that executes JS.",
     arguments: ["[Code]"],
-    access: ["superuser"],
+    access: "superuser",
 	async execute(message, args) {
         try {
             eval(args.join(" "));
