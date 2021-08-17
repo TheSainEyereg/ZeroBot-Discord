@@ -3,7 +3,7 @@ const Canvas = require("canvas");
 module.exports = {
 	name: "rip",
 	description: "Makes tombstone with user (or with you)",
-	arguments: ["(user)", "(\"quick\")"],
+	arguments: ["(user mention)", "(\"quick\")"],
     optional: true,
 	async execute(message, args) {
         message.channel.sendTyping();

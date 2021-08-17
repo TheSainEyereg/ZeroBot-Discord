@@ -4,7 +4,7 @@ module.exports = {
 	name: "user-info",
     aliases: ["user"],
 	description: "Shows info about user",
-    arguments: ["(User)"],
+    arguments: ["(User mention)"],
     optional: true,
 	async execute(message, args) {
         const user = message.mentions.users.first() || message.author

@@ -3,7 +3,7 @@ const Canvas = require("canvas");
 module.exports = {
 	name: "gay",
 	description: "Makes someone gay",
-	arguments: ["(user)"],
+	arguments: ["(user mention)"],
     optional: true,
 	async execute(message, args) {
         message.channel.sendTyping();

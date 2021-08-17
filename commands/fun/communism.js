@@ -3,7 +3,7 @@ const Canvas = require("canvas");
 module.exports = {
 	name: "communism",
 	description: "Stolen idea from BoobBot",
-	arguments: ["(user)"],
+	arguments: ["(user mention)"],
     optional: true,
 	async execute(message, args) {
         message.channel.sendTyping();
