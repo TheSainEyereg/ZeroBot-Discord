@@ -35,9 +35,9 @@ module.exports = {
             Messages.complete(message, "Complete!", {big:true});
 		} else {
 			const command = message.client.commands.get(args[0]) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
-			if (!command) return Messages.critical(message, `There is no command with name or \`${args[0]}\`!`);
-            Logs.security(__filename, `${message.author.id} (${message.author.tag}) has started reloading "${args[0]}" command!...`, {nonl: true});
-			const folder = fs.readdirSync(`./commands/`).find(folder => !fs.lstatSync(`./commands/${folder}`).isFile() ? fs.readdirSync(`./commands/${folder}`).includes(`${args[0]}.js`) : null);
+			if (!command) return Messages.critical(message, `There is no command with name or alias \`${args[0]}\`!`);
+            Logs.security(__filename, `${message.author.id} (${message.author.tag}) has started reloading "${command.name}" command!...`, {nonl: true});
+			const folder = fs.readdirSync(`./commands/`).find(folder => !fs.lstatSync(`./commands/${folder}`).isFile() ? fs.readdirSync(`./commands/${folder}`).includes(`${command.name}.js`) : null);
 			delete require.cache[require.resolve(`../../commands/${folder}/${command.name}.js`)];
 			try {
 				const newCommand = require(`../../commands/${folder}/${command.name}.js`);
