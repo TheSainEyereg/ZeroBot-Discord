@@ -28,14 +28,14 @@ module.exports = {
         })
     },
     has(message, permission) {
-        if (!typeof permission == "object" && !this.list.includes(permission)) throw Error("This permission does not exist!");
+        if (typeof permission != "object" && !this.list.includes(permission)) throw Error("This permission does not exist!");
         const perms = this.get(message);
         const list = typeof permission == "object" ? permission : this.list.slice(this.list.indexOf(permission));
         for (p of perms) if (list.includes(p)) {return true};
         return false;
     },
     hasId(message, id, permission, callback) {
-        if (!typeof permission == "object" && !this.list.includes(permission)) throw Error("This permission does not exist!");
+        if (typeof permission != "object" && !this.list.includes(permission)) throw Error("This permission does not exist!");
         this.getId(message, id, perms => {
             const list = typeof permission == "object" ? permission : this.list.slice(this.list.indexOf(permission));
             for (p of perms) if (list.includes(p)) {return callback(true)};
