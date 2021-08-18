@@ -1,4 +1,3 @@
-const Discord = require("discord.js");
 const axios = require('axios');
 const Logs = require("../../core/Logs");
 const Messages = require("../../core/Messages");
@@ -8,7 +7,7 @@ module.exports = {
 	description: "Shows random 10s coub from  given community",
 	arguments: ["[community]", "(order: daily, rising, fresh, top, views)"],
     optional: true,
-	execute(message, args) {
+	async execute(message, args) {
         message.channel.sendTyping();
         
 		const communities = ["anime", "animals-pets", "blogging", "standup-jokes", "mashup", "movies", "gaming", "cartoons", "art", "live-pictures", "music", "news", "sports", "science-technology", "food-kitchen", "celebrity", "nature-travel", "fashion", "dance", "cars", "memes", /*"nsfw"*/];
@@ -27,7 +26,7 @@ module.exports = {
         );
 
         const correct = Object.keys(order).includes(args[1]) && args[1];
-        if (!correct) Messages.waring(message, "Order is not correct, using default order.");
+        if (!correct) Messages.warning(message, "Order is not correct, using default order.");
 
         const per_page = 25;
         axios.get(`https://coub.com/api/v2/timeline/community/${args[0]}/${correct ? order[args[1]] : "daily?"}per_page=${per_page}`)
