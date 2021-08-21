@@ -26,7 +26,7 @@ module.exports = {
         );
 
         const correct = Object.keys(order).includes(args[1]) && args[1];
-        if (!correct) Messages.warning(message, "Order is not correct, using default order.");
+        if (args[1] && !correct) Messages.warning(message, "Order is not correct, using default order.");
 
         const per_page = 25;
         axios.get(`https://coub.com/api/v2/timeline/community/${args[0]}/${correct ? order[args[1]] : "daily?"}per_page=${per_page}`)
