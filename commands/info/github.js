@@ -5,7 +5,7 @@ module.exports = {
 	name: "github",
     aliases: ["git", "repo"],
 	description: "Sending github repo of ZeroBot",
-	async execute(message) {
+	execute(message) {
 		Messages.url(message, require('../../package.json').repository.raw, "ZeroBot GitHub", {footer: "Thank you all for contributing ;)"});
 	},
 };

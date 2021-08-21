@@ -9,7 +9,7 @@ module.exports = {
     arguments: ["[channel]"],
 	optional: true,
     access: "administrator",
-	async execute(message, args) {
+	execute(message, args) {
 		if (!args[0]) return Messages.regular(message, `Current log channel is <#${Servers.get(message.guild.id, "logs")}>`);
 		const channel = message.mentions.channels.first() || message.guild.channels.cache.find(c => c.name === args[0]);
         if (!channel) return Messages.warning(message, "No channel was found!");

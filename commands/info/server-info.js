@@ -4,7 +4,7 @@ module.exports = {
 	name: "server-info",
     aliases: ["server"],
 	description: "Shows info about server.",
-	async execute(message, args) {
+	execute(message, args) {
         const guild = message.guild;
         message.guild.members.fetch(message.guild.ownerId).then(owner => {
             const embed = new MessageEmbed({

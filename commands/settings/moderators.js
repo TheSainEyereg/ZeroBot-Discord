@@ -8,7 +8,7 @@ module.exports = {
 	description: "Add/remove moderator",
     arguments: ["add/remove", "[user mention]"],
     access: "administrator",
-	async execute(message, args) {
+	execute(message, args) {
 		const moderators = Servers.get(message.guild.id, "moderators");
         const user = message.mentions.users.first();
 		if (!user) return Messages.critical(message, "User was not found!");

@@ -5,7 +5,7 @@ module.exports = {
 	name: "aliases",
 	description: "Shows aliases for command",
     arguments: ["command"],
-	async execute(message, args) {
+	execute(message, args) {
         const command = message.client.commands.get(args[0]) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
         if (!command) return Messages.critical(message, "No command for aliases was found!");
         if (command.access && !Permissions.has(message, command.access)) {

@@ -61,19 +61,19 @@ bot.once("ready", _ => {
 	console.log(`Logged in as "${bot.user.tag}"\n${bot.guilds.cache.size} servers total.`);
 })
 
-bot.on("guildCreate", guild => {
+bot.on("guildCreate", async guild => {
     console.log(`Joined new guild ${guild.name}`);
     Logs.regular(__filename, `Joined new guild ${guild.id}`);
     Servers.checkCfg(guild.id)
     bot.user.setActivity(`${bot.guilds.cache.size} servers`, { type: "WATCHING" });
 })
-bot.on("guildDelete", guild => {
+bot.on("guildDelete", async guild => {
     console.log(`Kicked from guild ${guild.name}`);
     Logs.regular(__filename, `Kicked from guild ${guild.id}`);
     bot.user.setActivity(`${bot.guilds.cache.size} servers`, { type: "WATCHING" });
 })
 
-bot.on("messageCreate", message => {
+bot.on("messageCreate", async message => {
 	if (message.author.bot) return;
 
     const prefix = message.guild ? Servers.get(message.guild.id, "prefix") : null;
@@ -133,7 +133,7 @@ bot.on("messageCreate", message => {
     }
 
     try {
-        command.execute(message, args);
+        await command.execute(message, args);
         Logs.regular(__filename, `Cmd executed! Info:\n${"-".repeat(50)}\nCommand: "${command.name}" ("${commandString}")\nArgs: ${args.join(" ")}\nServer: ${message.guild.id}\nAuthor: ${message.author.id}\n${"-".repeat(50)}`);
         make_cooldown(command.cooldown);
     } catch(e) {

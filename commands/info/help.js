@@ -8,7 +8,7 @@ module.exports = {
 	description: "Displays list of commands",
 	arguments: ["(category)"],
     optional: true,
-	async execute(message, args) {
+	execute(message, args) {
         const {ignore, hide, suOnly, adminsOnly, modsOnly} = require("../config.json");
 		const out = [];
 		category = args[0];

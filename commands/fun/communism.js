@@ -12,13 +12,19 @@ module.exports = {
 
         const canvas = Canvas.createCanvas(512, 512);
         const ctx = canvas.getContext("2d");
-
-        const avatar = await Canvas.loadImage(user.displayAvatarURL({ format: "jpg", size: 512 }));
-        const background = await Canvas.loadImage("https://olejka.ru/s/6ad3593b.png");
-
-        ctx.drawImage(avatar, 0, 0, canvas.width, canvas.height);
-        ctx.globalAlpha = 0.6
-        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+        
+        try {
+            const avatar = await Canvas.loadImage(user.displayAvatarURL({ format: "jpg", size: 512 }));
+            const background = await Canvas.loadImage("https://olejka.ru/s/6ad3593b.png");
+    
+            ctx.drawImage(avatar, 0, 0, canvas.width, canvas.height);
+            ctx.globalAlpha = 0.6
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+        } catch (e) {
+            Messages.critical(message, `Error in getting/drawing image: ${e}`);
+            Logs.critical(__filename, `Error in getting/drawing image: ${e}`);
+            console.error(e);
+        }
 
         message.channel.send({files: [{
             attachment: canvas.toBuffer(),

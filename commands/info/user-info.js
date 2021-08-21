@@ -6,7 +6,7 @@ module.exports = {
 	description: "Shows info about user",
     arguments: ["(User mention)"],
     optional: true,
-	async execute(message, args) {
+	execute(message, args) {
         const user = message.mentions.users.first() || message.author
         message.guild.members.fetch(user.id).then(member => {
             const embed = new MessageEmbed({

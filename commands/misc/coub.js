@@ -7,7 +7,7 @@ module.exports = {
 	description: "Shows random 10s coub from  given community",
 	arguments: ["[community]", "(order: daily, rising, fresh, top, views)"],
     optional: true,
-	async execute(message, args) {
+	execute(message, args) {
         message.channel.sendTyping();
         
 		const communities = ["anime", "animals-pets", "blogging", "standup-jokes", "mashup", "movies", "gaming", "cartoons", "art", "live-pictures", "music", "news", "sports", "science-technology", "food-kitchen", "celebrity", "nature-travel", "fashion", "dance", "cars", "memes", /*"nsfw"*/];

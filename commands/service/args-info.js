@@ -5,7 +5,7 @@ module.exports = {
 	description: "Gives args info.",
 	arguments: ["Arguments"],
 	access: "superuser",
-	async execute(message, args) {
+	execute(message, args) {
         Messages.regular(message, `Arguments: \`${args.join(", ")}\`\nArguments length: ${args.length}`);
 	},
 };

@@ -7,7 +7,7 @@ module.exports = {
 	name: "update",
 	description: "Checking for commands update",
 	access: "superuser",
-	async execute(message, args) {
+	execute(message, args) {
         exec("git pull", (e, so, se) => {
             if (e) return Messages.critical(message, `Error in execution: \n\`\`\`${e}\`\`\``);
             if (so == `Already up to date.\n`) return Messages.warning(message, `You already up to date!`);

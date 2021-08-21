@@ -8,7 +8,7 @@ module.exports = {
 	description: "Reloads a command(s)",
 	arguments: ["[cmdname (or \"all\")]"],
 	access: "superuser",
-	async execute(message, args) {
+	execute(message, args) {
 		if (args[0] == "all") {
             Logs.security(__filename, `${message.author.id} (${message.author.tag}) has started reloading all bot commands!...`, {nonl: true});
 			Messages.warning(message, "Reloading all commands...");
