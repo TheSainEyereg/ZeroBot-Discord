@@ -5,7 +5,7 @@ const Logs = require("./Logs");
 module.exports = {
     default_config: {
         prefix: prefix,
-        logs: "bot-logs",
+        logs: false,
         volume: defaults["default-volume"],
         moderators: [],
         dj: false,
@@ -26,12 +26,12 @@ module.exports = {
         if (typeof thing === "object") {
             const out = {};
             for (const i in thing) {
-                if (!data[thing[i]]) throw Error(`No "${thing[i]}" element found!`);
+                if (typeof data[thing[i]] === "undefined") throw Error(`No "${thing[i]}" element found!`);
                 out[thing[i]] = data[thing[i]];
             }
             return out;
         } else if (typeof thing !== "undefined"){
-            if (!data[thing]) throw Error(`No "${thing}" element found!`);
+            if (typeof data[thing] === "undefined") throw Error(`No "${thing}" element found!`);
             return data[thing];
         } else return data;
     },

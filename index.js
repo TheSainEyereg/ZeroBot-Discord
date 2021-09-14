@@ -22,7 +22,6 @@ const bot = new Client({
 })
 bot.commands = new Collection();
 bot.cooldowns = new Collection();
-bot.queue = new Collection();
 
 const string = `Bot started at ${new Date().toLocaleString("en-US")}`;
 Logs.regular(__filename, `🔵 ${string} 🔵`, {pre:"\n"});
