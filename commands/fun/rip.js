@@ -33,7 +33,7 @@ module.exports = {
         const date = new Date();
         const time = `${("0"+date.getFullYear().toString().slice(2)).slice(-2)}.${("0"+(date.getMonth()+1)).slice(-2)}.${("0"+date.getDate()).slice(-2)}`;
         
-        if (!args[1] && args[1] != "quick") {
+        if (!args[1] || args[1] != "quick") {
             const imgData = ctx.getImageData(canvas.width/2-125/2-20, 80, 125, 125);
             for (i = 0; i < imgData.data.length; i += 4) {
                 const colour = imgData.data[i] * .3 + imgData.data[i+1] * .59 + imgData.data[i+2] * .11;
