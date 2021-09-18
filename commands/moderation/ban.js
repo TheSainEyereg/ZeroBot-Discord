@@ -37,8 +37,9 @@ module.exports = {
                 ],
                 timestamp: new Date()
             })
+            if (!member.bannable) return Messages.critical(message, `I can't ban ${member}`);
             member.ban({reason: reason}).then(_=>{
-                Messages.complete(message, `Banned ${member.user.tag}`);
+                Messages.complete(message, `Banned ${member}`);
                 if (channel) channel.send({embeds:[embed]});
             }).catch(e=>{
                 console.log(e);

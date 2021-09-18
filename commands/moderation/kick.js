@@ -38,8 +38,9 @@ module.exports = {
                 ],
                 timestamp: new Date()
             })
+            if (!member.kickable) return Messages.critical(message, `I can't kick ${member}`);
             member.kick(reason).then(_=>{
-                Messages.complete(message, `Kicked ${member.user.tag}`);
+                Messages.complete(message, `Kicked ${member}`);
                 if (channel) channel.send({embeds:[embed]});
             }).catch(e=>{
                 console.log(e);
