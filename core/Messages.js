@@ -5,7 +5,7 @@ module.exports = {
         regular: "#ce38e8",
         url: "#1194f0",
         complete: "#44e838",
-        warning: "#44e838",
+        warning: "#e5e838",
         critical: "#e83838"
     },
 	async regular(message, text, opt) {
