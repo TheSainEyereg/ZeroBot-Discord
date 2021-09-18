@@ -1,4 +1,5 @@
 const {MessageEmbed } = require("discord.js");
+const Messages = require("../../core/Messages");
 
 module.exports = {
 	name: "avatar",
@@ -13,7 +14,7 @@ module.exports = {
         
         try {
             const embed = new MessageEmbed({
-                color: "#1194f0",
+                color: Messages.colors.url,
                 description: `Avatar of **\`${user.tag}\`**`,
                 image: {
                     url: await user.displayAvatarURL({ format: "png", size: 1024 })
