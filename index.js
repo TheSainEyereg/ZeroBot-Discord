@@ -76,7 +76,15 @@ bot.on("messageCreate", async message => {
 	if (message.author.bot) return;
 
     const prefix = message.guild ? Servers.get(message.guild.id, "prefix") : null;
-    if ((!prefix || !message.content.startsWith(prefix)) && message.channel.type != "DM") return;
+    if
+        (
+            (
+                (!prefix|| !message.content.startsWith(prefix))
+                && message.content.replace(/\ /g, "") != `<@!${bot.user.id}>` //Not mention cuz it pases with another text in message
+            )
+            && message.channel.type != "DM"
+        )
+    return;
 
     const { cooldowns } = bot;
     const now = Date.now();
@@ -108,11 +116,15 @@ bot.on("messageCreate", async message => {
         return Messages.critical(message, "Sorry, I'm not accepting commands in DM");
     }
 
-
     if (message.content.length > 1800) {
         make_cooldown();
         Logs.security(__filename, `User ${message.author.id} tried to enter 1800+ string.`);
         return Messages.warning(message, "Max message length is 1800");
+    }
+
+    if (message.content.replace(/\ /g, "") == `<@!${bot.user.id}>`) { //Look at line 83
+        make_cooldown();
+        return Messages.advanced(message, false, `My prefix for this guild is \`${prefix}\``, {custom: `For help type ${prefix}help or ${prefix}?`});
     }
 
     const args = message.content.slice(prefix.length).split(/ +/);
