@@ -1,10 +1,10 @@
 const fs = require("fs");
-const {prefix, defaults} = require("../config.json");
+const {defaults} = require("../config.json");
 const Logs = require("./Logs");
 
 module.exports = {
     default_config: {
-        prefix: prefix,
+        prefix: defaults.prefix,
         logs: false,
         volume: defaults["default-volume"],
         moderators: [],

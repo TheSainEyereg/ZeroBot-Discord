@@ -26,10 +26,10 @@ npm i
 ```json
 {
     "token": "YourToken",
-    "prefix": "z.",
     "superusers": ["YourDiscordId"],
     "invite": "YourBotInviteLinlk",
     "defaults": {
+        "prefix": "z",
         "user-cooldown": 3,
         "default-volume": 80
     }
