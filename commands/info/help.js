@@ -29,9 +29,9 @@ module.exports = {
 		}
 
         if (
-            (suOnly.includes(category) && !Permissions.has(message, "superuser")) ||
-            (adminsOnly.includes(category) && !Permissions.has(message, "administrator")) ||
-            (modsOnly.includes(category) && !Permissions.has(message, "moderator"))
+            (suOnly.includes(category) && !Permissions.has(message, "superuser"))
+            || (adminsOnly.includes(category) && !Permissions.has(message, "administrator"))
+            || (modsOnly.includes(category) && !Permissions.has(message, "moderator"))
         ) {
             Logs.security(__filename, `User ${message.author.id} (Ranks [${Permissions.get(message).join(", ")}]) tried to view category "${category}" when it requires higher rank.`);
             return Messages.warning(message, `You do not have access to category \`${category}\``);
