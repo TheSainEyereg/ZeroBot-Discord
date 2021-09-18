@@ -132,7 +132,7 @@ bot.on("messageCreate", async message => {
     if (commandString.length == 0) return;
     make_cooldown();
     const command = bot.commands.get(commandString) || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandString));
-    if (!command) return Messages.critical(message, "Command not found!");
+    if (!command) return Messages.advanced(message, false, "Command was not found! :no_entry_sign:", {custom: `For help type ${prefix}help or ${prefix}?`, color: Messages.colors.critical});
 
     if (command.access && !Permissions.has(message, command.access)) {
         Logs.security(__filename, `User ${message.author.id} (Ranks [${Permissions.get(message).join(", ")}]) tried to execute command "${command.name}" ("${commandString}") when it requires higher rank.`);
