@@ -80,7 +80,7 @@ bot.on("messageCreate", async message => {
         (
             (
                 (!prefix|| !message.content.startsWith(prefix))
-                && message.content.replace(/\ /g, "") != `<@!${bot.user.id}>` //Not mention cuz it pases with another text in message
+                && !message.content.replace(/\ /g, "").match(new RegExp(`<@!?${bot.user.id}>`, "gi")) //Not mention cuz it pases with another text in message
             )
             && message.channel.type != "DM"
         )
@@ -122,7 +122,7 @@ bot.on("messageCreate", async message => {
         return Messages.warning(message, "Max message length is 1800");
     }
 
-    if (message.content.replace(/\ /g, "") == `<@!${bot.user.id}>`) { //Look at line 83
+    if (message.content.replace(/\ /g, "").match(new RegExp(`<@!?${bot.user.id}>`, "gi"))) { //Look at line 83
         make_cooldown();
         return Messages.advanced(message, false, `My prefix for this guild is \`${prefix}\``, {custom: `For help type ${prefix}help or ${prefix}?`});
     }
