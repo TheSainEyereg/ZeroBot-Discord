@@ -29,7 +29,7 @@ npm i
     "superusers": ["YourDiscordId"],
     "invite": "YourBotInviteLinlk",
     "defaults": {
-        "prefix": "z",
+        "prefix": "z.",
         "user-cooldown": 3,
         "default-volume": 80
     }
