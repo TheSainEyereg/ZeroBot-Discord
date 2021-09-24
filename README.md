@@ -9,8 +9,7 @@ A multifunctional opensource discord bot for your server with a big functionalit
 ---
 ## How to invite
 **You can invite bot to your server by this link:**  
-### [Soon ;)](https://github.com/TheSainEyereg/ZeroBot-Discord/commits/master)
-<!--###[\*Click*](https://discord.com/api/oauth2/authorize?client_id=870241298932723722&permissions=8&scope=bot)-->
+### [\*Click*](https://zero.olejka.ru/bot)
 
 ---
 ## How to host
