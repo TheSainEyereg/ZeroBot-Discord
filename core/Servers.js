@@ -5,6 +5,7 @@ const Logs = require("./Logs");
 module.exports = {
     default_config: {
         prefix: defaults.prefix,
+        language: defaults.language,
         logs: false,
         volume: defaults["default-volume"],
         moderators: [],

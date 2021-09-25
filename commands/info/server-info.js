@@ -1,15 +1,17 @@
 const { MessageEmbed } = require("discord.js");
+const Localization = require("../../core/Localization");
 
 module.exports = {
 	name: "server-info",
     aliases: ["server"],
 	description: "Shows info about server.",
 	execute(message, args) {
+		const l = Localization.server(message.client, message.guild, this.name);
         const guild = message.guild;
         message.guild.members.fetch(message.guild.ownerId).then(owner => {
             const embed = new MessageEmbed({
                 color: "#ce38e8",
-                description: `Info about \`${guild.name}\``,
+                description: `${l.about} \`${guild.name}\``,
                 thumbnail: {
                     url: guild.iconURL()
                 },
@@ -20,27 +22,27 @@ module.exports = {
                         inline: true
                     },
                     {
-                        name: "Members count",
+                        name: l.count,
                         value: guild.memberCount.toString(),
                         inline: true
                     },
                     {
-                        name: "Verified",
-                        value: guild.verified ? "Yes" : "No",
+                        name: l.verified,
+                        value: guild.verified ? l.yes : l.no,
                         inline: true
                     },
                     {
-                        name: "Owner",
+                        name: l.owner,
                         value: owner.user.tag,
                         inline: true
                     },
                     {
-                        name: "Description",
-                        value: guild.description ? guild.description : "No description.",
+                        name: l.desc,
+                        value: guild.description ? guild.description : l.no_desc,
                         inline: false
                     },
                     {
-                        name: "Created at",
+                        name: l.created,
                         value: guild.createdAt.toUTCString().replace("GMT", "UTC"),
                         inline: false
                     }

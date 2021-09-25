@@ -6,6 +6,7 @@ const Messages = global.Messages = require("./core/Messages.js");
 const Logs = global.Logs = require("./core/Logs.js");
 const Servers = global.Servers = require("./core/Servers.js");
 const Permissions = global.Permissions = require("./core/Permissions.js");
+const Localization = global.Localization = require("./core/Localization.js")
 
 const bot = new Client({
     intents: [
@@ -22,6 +23,7 @@ const bot = new Client({
 })
 bot.commands = new Collection();
 bot.cooldowns = new Collection();
+bot.localization = new Collection();
 
 const string = `Bot started at ${new Date().toLocaleString("en-US")}`;
 Logs.regular(__filename, `🔵 ${string} 🔵`, {pre:"\n"});
@@ -37,6 +39,11 @@ for (const folder of fs.readdirSync(`./commands`)) {
 		const command = require(`./commands/${folder}/${file}`);
 		bot.commands.set(command.name, command);
 	}
+}
+
+for (const file of fs.readdirSync("./localization")) {
+    const localization = require(`./localization/${file}`);
+    bot.localization.set(localization.name, localization);
 }
 
 process.on("unhandledRejection", e => {
@@ -76,6 +83,7 @@ bot.on("messageCreate", async message => {
 	if (message.author.bot) return;
 
     const prefix = message.guild ? Servers.get(message.guild.id, "prefix") : null;
+    const localization = message.guild ? Localization.server(bot, message.guild, "main") : null;
     if
         (
             (
@@ -95,7 +103,11 @@ bot.on("messageCreate", async message => {
         if (now < timestamp + amount) {
 			const left = (timestamp + amount - now) / 1000;
             if (!user.warned) {
-                Messages.warning(message, `Please wait ${left.toFixed(1)} seconds`);
+                if (location) {
+                    Messages.warning(message, `${localization.cooldown[0]} ${left.toFixed(1)} ${localization.cooldown[1]}`);
+                } else {
+                    Messages.warning(message, `Please wait ${left.toFixed(1)} seconds`);
+                }
                 cooldowns.set(message.author.id, {timestamp: timestamp, amount: amount, warned: true});
             }
             return
@@ -124,7 +136,7 @@ bot.on("messageCreate", async message => {
 
     if ([`<@!${bot.user.id}>`, `<@${bot.user.id}>`].includes(message.content.replace(/\ /g, ""))) { //Look at line 83
         make_cooldown();
-        return Messages.advanced(message, false, `My prefix for this guild is \`${prefix}\``, {custom: `For help type ${prefix}help or ${prefix}?`});
+        return Messages.advanced(message, false, `${localization.prefix} \`${prefix}\``, {custom: `${localization.help[0]} ${prefix}help ${localization.help[1]} ${prefix}?`});
     }
 
     const args = message.content.slice(prefix.length).split(/ +/);
@@ -132,15 +144,15 @@ bot.on("messageCreate", async message => {
     if (commandString.length == 0) return;
     make_cooldown();
     const command = bot.commands.get(commandString) || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandString));
-    if (!command) return Messages.advanced(message, false, "Command was not found! :no_entry_sign:", {custom: `For help type ${prefix}help or ${prefix}?`, color: Messages.colors.critical});
+    if (!command) return Messages.advanced(message, false, `${localization.not_found} :no_entry_sign:`, {custom: `${localization.help[0]} ${prefix}help ${localization.help[1]} ${prefix}?`, color: Messages.colors.critical});
 
     if (command.access && !Permissions.has(message, command.access)) {
         Logs.security(__filename, `User ${message.author.id} (Ranks [${Permissions.get(message).join(", ")}]) tried to execute command "${command.name}" ("${commandString}") when it requires higher rank.`);
-        return Messages.warning(message, `You should have one of this ranks to execute this!\n\`${command.access.join(", ")}\``);
+        return Messages.warning(message, `${localization.rank_warn}\n\`${command.access.join(", ")}\``);
     }
     if (command.arguments && !command.optional && (!args || args.length === 0)) {
         Logs.regular(__filename, `User ${message.author.id} tried to execute command "${command.name}" ("${commandString}" without arguments.)`);
-        return Messages.warning(message, "This command requires arguments!");
+        return Messages.warning(message, `${localization.args_warn}`);
     }
 
     try {
@@ -149,7 +161,7 @@ bot.on("messageCreate", async message => {
         make_cooldown(command.cooldown);
     } catch(e) {
         Logs.critical(__filename, `Error in cmd Execution! Info:\n${"-".repeat(50)}\nError: "${e}"\nServer: ${message.guild.id}\nAuthor: ${message.author.id}\n${"-".repeat(50)}`);
-        Messages.critical(message, "Error in command execution! SORRY!");
+        Messages.critical(message, `${localization.error}`);
         console.error(e);
     };
 })

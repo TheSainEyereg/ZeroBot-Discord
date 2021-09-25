@@ -1,4 +1,5 @@
 const Canvas = require("canvas");
+const Localization = require("../../core/Localization");
 
 module.exports = {
 	name: "gay",
@@ -6,6 +7,7 @@ module.exports = {
 	arguments: ["(user mention)"],
     optional: true,
 	async execute(message, args) {
+		const l = Localization.server(message.client, message.guild, this.name);
         message.channel.sendTyping();
         
         const user = message.mentions.users.first() || message.author;
@@ -21,7 +23,7 @@ module.exports = {
             ctx.globalAlpha = 0.6
             ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
         } catch (e) {
-            Messages.critical(message, `Error in getting/drawing image: ${e}`);
+            Messages.critical(message, `${l.error}: ${e}`);
             Logs.critical(__filename, `Error in getting/drawing image: ${e}`);
             console.error(e);
         }

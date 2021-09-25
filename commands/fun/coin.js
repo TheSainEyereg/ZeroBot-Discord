@@ -1,3 +1,4 @@
+const Localization = require("../../core/Localization");
 const Messages = require("../../core/Messages");
 
 module.exports = {
@@ -5,6 +6,7 @@ module.exports = {
 	aliases: ["flip", "headtail"],
 	description: "Flips a coin",
 	execute(message, args) {
-		Messages.regular(message, `:coin: You got a ${Math.random() < 0.5 ? "head" : "tail"}!`, {big:true});
+		const l = Localization.server(message.client, message.guild, this.name);
+		Messages.regular(message, `:coin: ${l.got} ${Math.random() < 0.5 ? l.heads : l.tails}!`, {big:true});
 	}
 };

@@ -1,4 +1,4 @@
-const {MessageEmbed} = require("discord.js");
+const Localization = require("../../core/Localization");
 const Messages = require("../../core/Messages");
 
 module.exports = {
@@ -6,6 +6,7 @@ module.exports = {
     aliases: ["git", "repo"],
 	description: "Sending github repo of ZeroBot",
 	execute(message) {
-		Messages.url(message, require('../../package.json').repository.raw, "ZeroBot GitHub", {footer: "Thank you all for contributing ;)"});
+		const l = Localization.server(message.client, message.guild, this.name);
+		Messages.url(message, require('../../package.json').repository.raw, l.repo, {footer: l.thanks});
 	},
 };

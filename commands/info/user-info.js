@@ -1,4 +1,5 @@
 const { MessageEmbed } = require("discord.js");
+const Localization = require("../../core/Localization");
 
 module.exports = {
 	name: "user-info",
@@ -7,11 +8,12 @@ module.exports = {
     arguments: ["(User mention)"],
     optional: true,
 	execute(message, args) {
+		const l = Localization.server(message.client, message.guild, this.name);
         const user = message.mentions.users.first() || message.author
         message.guild.members.fetch(user.id).then(member => {
             const embed = new MessageEmbed({
                 color: "#ce38e8",
-                description: `Info about \`${user.tag}\``,
+                description: `${l.about} \`${user.tag}\``,
                 thumbnail: {
                     url: user.displayAvatarURL()
                 },
@@ -22,27 +24,27 @@ module.exports = {
                         inline: true
                     },
                     {
-                        name: "Nickname",
+                        name: l.nick,
                         value: member.nickname ? member.nickname : user.username,
                         inline: true
                     },
                     {
-                        name: "Bot",
-                        value: user.bot ? "Yes" : "No",
+                        name: l.bot,
+                        value: user.bot ? l.yes : l.no,
                         inline: true
                     },
                     {
-                        name: "Roles",
+                        name: l.roles,
                         value: `\`${member.roles.cache.map(role => role.name).join(", ")}\``,
                         inline: false
                     },
                     {
-                        name: "Created at",
+                        name: l.created,
                         value: user.createdAt.toUTCString().replace("GMT", "UTC"),
                         inline: false
                     },
                     {
-                        name: "Joined at",
+                        name: l.joined,
                         value: member.joinedAt.toUTCString().replace("GMT", "UTC"),
                         inline: false
                     }

@@ -1,6 +1,7 @@
 const fs = require("fs")
 const Messages = require("../../core/Messages");
 const Permissions = require("../../core/Permissions");
+const Localization = require("../../core/Localization");
 
 module.exports = {
 	name: "help",
@@ -9,6 +10,7 @@ module.exports = {
 	arguments: ["(category)"],
     optional: true,
 	execute(message, args) {
+		const l = Localization.server(message.client, message.guild, this.name);
         const {ignore, hide, suOnly, adminsOnly, modsOnly} = require("../config.json");
 		const out = [];
 		category = args[0];
@@ -25,7 +27,7 @@ module.exports = {
 
                 out.push(`**${folder}**\n`);
             }
-			return Messages.advanced(message, "Categories:", out.join(""), {custom: `Type ${Servers.get(message.guild.id, "prefix")}help (category) for category commands.`});
+			return Messages.advanced(message, `${l.cat_list}:`, out.join(""), {custom: `${l.type[0]} ${Servers.get(message.guild.id, "prefix")}help ${l.type[1]}`});
 		}
 
         if (
@@ -34,7 +36,7 @@ module.exports = {
             || (modsOnly.includes(category) && !Permissions.has(message, "moderator"))
         ) {
             Logs.security(__filename, `User ${message.author.id} (Ranks [${Permissions.get(message).join(", ")}]) tried to view category "${category}" when it requires higher rank.`);
-            return Messages.warning(message, `You do not have access to category \`${category}\``);
+            return Messages.warning(message, `${l.perms_warn} \`${category}\``);
         }
 
 		try {
@@ -42,9 +44,9 @@ module.exports = {
 				const cmd = require(`../${category}/${file}`);
 				out.push(`**${Servers.get(message.guild.id, "prefix")}${cmd.name}** ${cmd.arguments ? `\`${cmd.arguments.join("\` \`")}\``: ""} — ${cmd.description}\n`);
 			}
-			Messages.advanced(message, `Commands of \`${category}\`:`, out.join(""));
+			Messages.advanced(message, `${l.cmd_list} \`${category}\`:`, out.join(""));
 		} catch (e) {
-			Messages.warning(message, `Category \`${category}\` not found!`);
+			Messages.warning(message, `${l.not_found[0]} \`${category}\` ${l.not_found[1]}`);
 		}
 	}
 };

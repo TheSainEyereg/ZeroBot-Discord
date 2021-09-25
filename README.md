@@ -29,6 +29,7 @@ npm i
     "invite": "YourBotInviteLinlk",
     "defaults": {
         "prefix": "z.",
+        "language": "en-US",
         "user-cooldown": 3,
         "default-volume": 80
     }

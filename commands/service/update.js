@@ -12,7 +12,7 @@ module.exports = {
             if (e) return Messages.critical(message, `Error in execution: \n\`\`\`${e}\`\`\``);
             if (so == `Already up to date.\n`) return Messages.warning(message, `You already up to date!`);
             Logs.security(__filename, `${message.author.id} (${message.author.tag}) has started updating!...`, {nonl: true});
-            Messages.warning(message, `Update found. Reloading commands...`);
+            Messages.warning(message, `Update found. Reloading commands and localization...`);
             message.channel.sendTyping();
             for (const folder of fs.readdirSync(`./commands`)) {
                 if (fs.lstatSync(`./commands/${folder}`).isFile()) continue;
@@ -31,6 +31,11 @@ module.exports = {
                         return Messages.critical(message, `Error in \`${file}\` reload:\n\`\`\`${e}\`\`\``);
                     }
                 }
+            }
+            for (const file of fs.readdirSync("./localization")) {
+                delete require.cache[require.resolve(`../../localization/${file}`)]
+                const localization = require(`../../localization/${file}`);
+                message.client.localization.set(file.split(".")[0], localization);
             }
             Logs.security(__filename, `Completed!`);
             Messages.complete(message, "Completed!", {big:true});
