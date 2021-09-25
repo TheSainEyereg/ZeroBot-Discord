@@ -8,6 +8,7 @@
         "not_found": "Command was not found!",
         "help": ["For help type", "or"],
         "rank_warn": "You should have one of this ranks to execute this!",
+        "rank_higher": "or higher",
         "args_warn": "This command requires arguments!",
         "error": "Error in command execution! SORRY!"
     },

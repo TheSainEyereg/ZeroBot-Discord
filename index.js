@@ -148,7 +148,7 @@ bot.on("messageCreate", async message => {
 
     if (command.access && !Permissions.has(message, command.access)) {
         Logs.security(__filename, `User ${message.author.id} (Ranks [${Permissions.get(message).join(", ")}]) tried to execute command "${command.name}" ("${commandString}") when it requires higher rank.`);
-        return Messages.warning(message, `${localization.rank_warn}\n\`${command.access.join(", ")}\``);
+        return Messages.warning(message, `${localization.rank_warn}\n\`${Array.isArray(command.access) ? command.access.join(", ") : `${command.access} ${localization.rank_higher}`}\``);
     }
     if (command.arguments && !command.optional && (!args || args.length === 0)) {
         Logs.regular(__filename, `User ${message.author.id} tried to execute command "${command.name}" ("${commandString}" without arguments.)`);
