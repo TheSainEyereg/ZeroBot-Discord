@@ -11,7 +11,6 @@ module.exports = {
 	execute(message, args) {
 		if (args[0] == "all") {
             Logs.security(__filename, `${message.author.id} (${message.author.tag}) has started reloading all bot commands!...`);
-			Messages.warning(message, "Reloading all commands...");
             message.channel.sendTyping();
             for (const folder of fs.readdirSync(`./commands`)) {
                 if (fs.lstatSync(`./commands/${folder}`).isFile()) continue;
@@ -31,8 +30,8 @@ module.exports = {
                     }
                 }
             }
-            Logs.security(__filename, `Completed!`);
-            Messages.complete(message, "Complete!", {big:true});
+            Logs.security(__filename, `Reloading ompleted!`);
+            Messages.complete(message, "Completed reloading!");
 		} else if (args[0] == "localization"){
             for (const file of fs.readdirSync("./localization")) {
                 delete require.cache[require.resolve(`../../localization/${file}`)]
