@@ -57,7 +57,7 @@ module.exports = {
             .then(res => {
                 const coubs = res.data.coubs;
                 if (!coubs) return Messages.critical(message, l.get_list_error);
-                const coub = coubs[Math.floor(Math.random()*per_page)].id;
+                const coub = coubs[Math.floor(Math.random()*per_page-1)].id;
                 if (!coub) return Messages.critical(message, l.get_coub_error);
                 getCoub(coub);
             })
