@@ -17,23 +17,26 @@ module.exports = {
 		if (category) category = category.replace(/\\|\//g,"");
 		if (!category) {
 			for (const folder of fs.readdirSync(`./commands`)) {
-                if (fs.lstatSync(`./commands/${folder}`).isFile()) continue;
-                if (ignore.includes(folder)) continue;
-                if (hide.includes(folder)) continue;
+                if (
+					fs.lstatSync(`./commands/${folder}`).isFile() ||
+					ignore.includes(folder) ||
+					hide.includes(folder) ||
+					suOnly.includes(folder) && !Permissions.has(message, "superuser")
+				) continue;
 
-                if (suOnly.includes(folder) && !Permissions.has(message, "superuser")) continue;
-                if (adminsOnly.includes(folder) && !Permissions.has(message, "administrator")) continue;
-                if (modsOnly.includes(folder) && !Permissions.has(message, "moderator")) continue;
-
-                out.push(`**${folder}**\n`);
+                if (
+					adminsOnly.includes(folder) && !Permissions.has(message, "administrator") ||
+					modsOnly.includes(folder) && !Permissions.has(message, "moderator")
+				) out.push(`~~${folder}~~\n`);
+				else out.push(`**${folder}**\n`);
             }
-			return Messages.advanced(message, `${l.cat_list}:`, out.join(""), {custom: `${l.type[0]} ${Servers.get(message.guild.id, "prefix")}help ${l.type[1]}`});
+			return Messages.advanced(message, `${l.cat_list}:`, out.join(""), {custom: `${l.help[0]} ${Servers.get(message.guild.id, "prefix")}help ${l.help[1]}${Permissions.has(message, "superuser") ? "" : `\n${l.perms_alert}`}`});
 		}
 
         if (
-            (suOnly.includes(category) && !Permissions.has(message, "superuser"))
-            || (adminsOnly.includes(category) && !Permissions.has(message, "administrator"))
-            || (modsOnly.includes(category) && !Permissions.has(message, "moderator"))
+            (suOnly.includes(category) && !Permissions.has(message, "superuser")) ||
+            (adminsOnly.includes(category) && !Permissions.has(message, "administrator")) ||
+            (modsOnly.includes(category) && !Permissions.has(message, "moderator"))
         ) {
             Logs.security(__filename, `User ${message.author.id} (Ranks [${Permissions.get(message).join(", ")}]) tried to view category "${category}" when it requires higher rank.`);
             return Messages.warning(message, `${l.perms_warn} \`${category}\``);

@@ -54,7 +54,8 @@
     "help": {
         "cat_list": "Categories",
         "cmd_list": "Commands of",
-        "type": ["Type", "(category) for category commands."],
+        "help": ["Type", "(category) for category commands."],
+        "perms_alert": "If one or more items is crossed out, you don't have permission to these categories!",
         "perms_warn": "You do not have access to category",
         "not_found": ["Category", "not found!"]
     },
@@ -150,7 +151,7 @@
         "get_video_error": "Error in getting video!",
         "order_warn": "Order is not correct, using default order.",
         "communities": "Available communities",
-        "type": ["Type", "(community) for random video from specified community."]
+        "help": ["Type", "(community) for random video from specified community."]
     },
 
     "coin": {

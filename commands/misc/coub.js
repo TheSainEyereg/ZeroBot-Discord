@@ -45,7 +45,7 @@ module.exports = {
             if (!communities.includes(args[0]) || !args[0]) return Messages.advanced(message, 
                 l.communities, 
                 `**${communities.join("**\n**")}**`, 
-                {custom:`${l.type[0]} ${Servers.get(message.guild.id, "prefix")}coub ${l.type[1]}`}
+                {custom:`${l.help[0]} ${Servers.get(message.guild.id, "prefix")}coub ${l.help[1]}`}
             );
     
             const correct = Object.keys(order).includes(args[1]) && args[1];
