@@ -30,7 +30,7 @@ module.exports = {
 				) out.push(`~~${folder}~~\n`);
 				else out.push(`**${folder}**\n`);
             }
-			return Messages.advanced(message, `${l.cat_list}:`, out.join(""), {custom: `${l.help[0]} ${Servers.get(message.guild.id, "prefix")}help ${l.help[1]}${Permissions.has(message, "superuser") ? "" : `\n${l.perms_alert}`}`});
+			return Messages.advanced(message, `${l.cat_list}:`, out.join(""), {custom: `${l.help[0]} ${Servers.get(message.guild.id, "prefix")}help ${l.help[1]}${Permissions.has(message, "administrator") ? "" : `\n${l.perms_alert}`}`});
 		}
 
         if (
