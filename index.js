@@ -103,7 +103,7 @@ bot.on("messageCreate", async message => {
         if (now < timestamp + amount) {
 			const left = (timestamp + amount - now) / 1000;
             if (!user.warned) {
-                if (location) {
+                if (localization) {
                     Messages.warning(message, `${localization.cooldown[0]} ${left.toFixed(1)} ${localization.cooldown[1]}`);
                 } else {
                     Messages.warning(message, `Please wait ${left.toFixed(1)} seconds`);
