@@ -150,7 +150,12 @@ bot.on("messageCreate", async message => {
         Logs.security(__filename, `User ${message.author.id} (Ranks [${Permissions.get(message).join(", ")}]) tried to execute command "${command.name}" ("${commandString}") when it requires higher rank.`);
         return Messages.warning(message, `${localization.rank_warn}\n\`${Array.isArray(command.access) ? command.access.join(", ") : `${command.access} ${localization.rank_higher}`}\``);
     }
-    if (command.arguments && !command.optional && (!args || args.length === 0)) {
+    if (
+        (
+            (localization[command.name] && localization[command.name].arguments) || command.arguments
+        ) &&
+        !command.optional && (!args || args.length === 0)
+    ) {
         Logs.regular(__filename, `User ${message.author.id} tried to execute command "${command.name}" ("${commandString}" without arguments.)`);
         return Messages.warning(message, `${localization.args_warn}`);
     }

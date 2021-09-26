@@ -6,7 +6,6 @@ const Localization = require("../../core/Localization");
 module.exports = {
 	name: "help",
 	aliases: ["?", "commands", "cmds", "list", "ls"],
-	description: "Displays list of commands",
 	arguments: ["(category)"],
     optional: true,
 	execute(message, args) {
@@ -42,14 +41,22 @@ module.exports = {
             return Messages.warning(message, `${l.perms_warn} \`${category}\``);
         }
 
-		try {
-			for (const file of fs.readdirSync(`./commands/${category}`)) {
-				const cmd = require(`../${category}/${file}`);
-				out.push(`**${Servers.get(message.guild.id, "prefix")}${cmd.name}** ${cmd.arguments ? `\`${cmd.arguments.join("\` \`")}\``: ""} — ${cmd.description}\n`);
-			}
-			Messages.advanced(message, `${l.cmd_list} \`${category}\`:`, out.join(""));
-		} catch (e) {
-			Messages.warning(message, `${l.not_found[0]} \`${category}\` ${l.not_found[1]}`);
+		const cmdl = Localization.server(message.client, message.guild);
+		if (!fs.existsSync(`./commands/${category}`)) return Messages.warning(message, `${l.not_found[0]} \`${category}\` ${l.not_found[1]}`);
+		for (const file of fs.readdirSync(`./commands/${category}`)) {
+			const cmd = require(`../${category}/${file}`);
+			const l = cmdl[cmd.name];
+
+			const description = l && l.description ? l.description : cmd.description;
+			const arguments = l && l.arguments ? `\`${l.arguments.join("\` \`")}\`` : cmd.arguments ? `\`${cmd.arguments.join("\` \`")}\`` : "";
+			const _arguments = (_=>{
+				if (l && l.arguments) return `\`${l.arguments.join("\` \`")}\``;
+				if (cmd.arguments) return `\`${cmd.arguments.join("\` \`")}\``;
+				return "";
+			})()
+
+			out.push(`**${Servers.get(message.guild.id, "prefix")}${cmd.name}** ${arguments} — ${description}`);
 		}
+		Messages.advanced(message, `${l.cmd_list} \`${category}\`:`, out.join("\n"));
 	}
 };
