@@ -5,6 +5,7 @@ const Localization = require("../../core/Localization");
 
 module.exports = {
 	name: "help",
+	description: "Displays list of commands",
 	aliases: ["?", "commands", "cmds", "list", "ls"],
 	arguments: ["(category)"],
     optional: true,
@@ -49,11 +50,6 @@ module.exports = {
 
 			const description = l && l.description ? l.description : cmd.description;
 			const arguments = l && l.arguments ? `\`${l.arguments.join("\` \`")}\`` : cmd.arguments ? `\`${cmd.arguments.join("\` \`")}\`` : "";
-			const _arguments = (_=>{
-				if (l && l.arguments) return `\`${l.arguments.join("\` \`")}\``;
-				if (cmd.arguments) return `\`${cmd.arguments.join("\` \`")}\``;
-				return "";
-			})()
 
 			out.push(`**${Servers.get(message.guild.id, "prefix")}${cmd.name}** ${arguments} — ${description}`);
 		}
