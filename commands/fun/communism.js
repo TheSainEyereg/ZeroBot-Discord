@@ -3,8 +3,6 @@ const Localization = require("../../core/Localization");
 
 module.exports = {
 	name: "communism",
-	description: "Stolen idea from BoobBot",
-	arguments: ["(user mention)"],
     optional: true,
 	async execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);

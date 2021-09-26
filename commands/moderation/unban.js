@@ -6,7 +6,6 @@ const Localization = require("../../core/Localization");
 module.exports = {
 	name: "unban",
     aliases: ["pardon"], // Wow minecraft reference
-	description: "Unbans user by ID",
     arguments: ["[ID]"],
     access: "moderator",
 	execute(message, args) {

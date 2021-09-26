@@ -4,7 +4,6 @@ const Localization = require("../../core/Localization");
 module.exports = {
 	name: "server-info",
     aliases: ["server"],
-	description: "Shows info about server.",
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);
         const guild = message.guild;

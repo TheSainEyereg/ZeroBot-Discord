@@ -6,8 +6,6 @@ const Localization = require("../../core/Localization")
 module.exports = {
 	name: "moderators",
 	aliases: ["moderator", "mods"],
-	description: "Add/remove moderator",
-    arguments: ["add/remove", "[user mention]"],
     access: "administrator",
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);

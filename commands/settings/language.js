@@ -6,8 +6,6 @@ const Servers = require("../../core/Servers");
 module.exports = {
 	name: "language",
 	aliases: ["localization", "lang"],
-	description: "Changes bot language",
-    arguments: ["(language)"],
 	optional: true,
     access: "administrator",
 	execute(message, args) {

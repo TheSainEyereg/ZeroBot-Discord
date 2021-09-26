@@ -4,8 +4,6 @@ const Localization = require("../../core/Localization");
 
 module.exports = {
 	name: "aliases",
-	description: "Shows aliases for command",
-    arguments: ["command"],
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);
         const command = message.client.commands.get(args[0]) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));

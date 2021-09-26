@@ -4,8 +4,6 @@ const Messages = require('../../core/Messages');
 
 module.exports = {
 	name: "ascii",
-	description: "Makes ascii art",
-	arguments: ["[text]"],
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);
         axios.get(`https://artii.herokuapp.com/make?text=${args.join(" ")}`)

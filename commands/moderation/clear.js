@@ -4,8 +4,6 @@ const Localization = require("../../core/Localization");
 module.exports = {
     name: "clear",
     aliases: ["clean", "remove"],
-    description: "Removes messages that are not older than 2 weeks",
-	arguments: ["[count]"],
     access: "moderator",
     execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);

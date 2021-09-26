@@ -5,9 +5,7 @@ const Localization = require("../../core/Localization");
 
 module.exports = {
 	name: "help",
-	description: "Displays list of commands",
 	aliases: ["?", "commands", "cmds", "list", "ls"],
-	arguments: ["(category)"],
     optional: true,
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);

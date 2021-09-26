@@ -5,8 +5,6 @@ const Servers = require("../../core/Servers");
 module.exports = {
 	name: "djs",
 	aliases: ["dj", "DJ"],
-	description: "Enable/disable/add/remove DJs",
-    arguments: ["enable/disable or add/remove", "(user mention)"],
     access: "administrator",
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);

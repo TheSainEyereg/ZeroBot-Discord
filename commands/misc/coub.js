@@ -5,8 +5,6 @@ const Localization = require("../../core/Localization");
 
 module.exports = {
 	name: "coub",
-	description: "Shows random 10s coub from  given community",
-	arguments: ["[community/url]", "(order: daily, rising, fresh, top, views)"], //https://coub.com/view/2vdj82
     optional: true,
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);

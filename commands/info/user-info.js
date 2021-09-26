@@ -4,8 +4,6 @@ const Localization = require("../../core/Localization");
 module.exports = {
 	name: "user-info",
     aliases: ["user"],
-	description: "Shows info about user",
-    arguments: ["(User mention)"],
     optional: true,
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);

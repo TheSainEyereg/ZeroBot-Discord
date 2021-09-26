@@ -6,8 +6,6 @@ const Servers = require("../../core/Servers");
 module.exports = {
 	name: "prefix",
 	aliases: ["pref"],
-	description: "Changes prefix",
-    arguments: ["[prefix]"],
     access: "administrator",
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);

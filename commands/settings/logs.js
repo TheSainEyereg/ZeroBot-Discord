@@ -6,8 +6,6 @@ const Servers = require("../../core/Servers");
 module.exports = {
 	name: "logs",
 	aliases: ["log", "log-channel"],
-	description: "Changes log channel",
-    arguments: ["[channel]"],
 	optional: true,
     access: "administrator",
 	execute(message, args) {

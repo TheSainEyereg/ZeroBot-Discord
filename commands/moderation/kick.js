@@ -6,8 +6,6 @@ const Localization = require("../../core/Localization");
 
 module.exports = {
 	name: "kick",
-	description: "Kicks user for given reason",
-    arguments: ["[user]", "(reason)"],
     access: "moderator",
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);

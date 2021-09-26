@@ -4,8 +4,6 @@ const Localization = require("../../core/Localization");
 
 module.exports = {
 	name: "rip",
-	description: "Makes tombstone with user (or with you)",
-	arguments: ["(user mention)", "(\"quick\")"],
     optional: true,
 	async execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);
