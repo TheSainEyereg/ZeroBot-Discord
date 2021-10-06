@@ -54,11 +54,14 @@ process.on("unhandledRejection", e => {
 bot.on("error", e => console.error(`Another error: ${e}`));
 bot.on("warn", e => console.warn(`Warning: ${e}`));
 
+bot.on("shardError", e => console.error(`Websocket connection error: ${e}`));
 bot.on("shardReady", _ => console.log("Connected to WebSocket!"));
 bot.on("shardDisconnect", _ => console.log("Looks like connection to WebSocket was lost, I will reconnect immediately when coonection appears."));
 bot.on("shardReconnecting", _ => console.log("Im reconnecting to WebSocket now..."));
-bot.on("shardResume", _ => console.log("Reconnected to WebSocket!"));
-bot.on("shardError", e => console.error(`Websocket connection error: ${e}`));
+bot.on("shardResume", _ => {
+    console.log("Reconnected to WebSocket!");
+    bot.user.setActivity(`${bot.guilds.cache.size} servers`, { type: "WATCHING" });
+});
 
 bot.once("ready", _ => {
     bot.guilds.cache.forEach(guild => Servers.checkCfg(guild.id));
