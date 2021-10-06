@@ -10,7 +10,7 @@ module.exports = {
     access: "moderator",
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);
-        const channel = message.guild.channels.cache.find(c => c.id === Servers.get(message.guild.id, "logs"))
+        const channel = message.guild.channels.cache.find(c => c.id === Servers.get(message.guild.id, "logsChannel"))
         message.guild.bans.fetch(args[0]).then(ban=>{
             const embed = new MessageEmbed({
                 color: "#44e838",

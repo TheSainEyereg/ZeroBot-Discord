@@ -6,11 +6,11 @@ module.exports = {
     default_config: {
         prefix: defaults.prefix,
         language: defaults.language,
-        logs: false,
-        volume: defaults["default-volume"],
+        logsChannel: false,
+        musicMode: 1,
+        musicChannel: false,
+        musicVolume: defaults["default-volume"],
         moderators: [],
-        dj: false,
-        djs: []
     },
     checkDir() {!fs.existsSync("./storage") ? fs.mkdirSync("./storage") : null},
     checkCfg(id) {
@@ -41,7 +41,7 @@ module.exports = {
         if (!parseInt(id)) throw Error("Id is not int!");
         const data = JSON.parse(fs.readFileSync(`./storage/${id}.json`).toString());
         if (typeof thing === "object") for (const [k,v] of Object.entries(thing)) {
-            if (typeof v === "undefined") throw Error("No value given!");
+            //if (typeof v === "undefined") throw Error("No value given!");
             data[k] = v;
         }
         else {

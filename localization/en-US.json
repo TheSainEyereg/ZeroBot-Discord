@@ -45,18 +45,6 @@
         "removed": ["Removed", "from list"],
         "warn": "Please provide \"add\" or \"remove\" operators!"
     },
-    "djs": {
-        "description": "Enable/disable/add/remove DJs",
-        "arguments": ["enable/disable or add/remove", "(@user)"],
-        "not_found": "User was not found!",
-        "enabled": "Enabled DJs list!",
-        "disabled": "Disabled DJs list!",
-        "already_in": "User already is a DJ!",
-        "not_in": "User is not a DJ!",
-        "added": ["Added", "to list"],
-        "removed": ["Removed", "from list"],
-        "warn": "Please provide \"enable\" or \"disable\" or \"add\" or \"remove\" operators!"
-    },
 
     "github": {
         "description": "Sending github repo of ZeroBot",

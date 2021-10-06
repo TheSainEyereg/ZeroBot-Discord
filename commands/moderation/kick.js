@@ -12,7 +12,7 @@ module.exports = {
         const user = message.mentions.users.first();
         if (!user) return Messages.critical(message, l.not_found);
         const reason = args[1] ? args.slice(1).join(" ") : l.no_reason;
-        const channel = message.guild.channels.cache.find(c => c.id === Servers.get(message.guild.id, "logs"))
+        const channel = message.guild.channels.cache.find(c => c.id === Servers.get(message.guild.id, "logsChannel"))
         message.guild.members.fetch(user.id).then(member => {
             const embed = new MessageEmbed({
                 color: "#f0fa32",
