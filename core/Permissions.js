@@ -2,14 +2,13 @@ const {superusers} = require("../config.json");
 const Servers = require("./Servers.js");
 
 module.exports = {
-    list: ["user", "dj", "moderator", "administrator", "owner", "superuser"],
+    list: ["user", "moderator", "administrator", "owner", "superuser"],
     get(message) {
         const perms = [];
         if (superusers.includes(message.author.id)) perms.push("superuser");
         if (message.author.id == message.guild.ownerID) perms.push("owner");
         if (message.member.permissions.has("ADMINISTRATOR")) perms.push("administrator");
         if (Servers.get(message.guild.id, "moderators").includes(message.author.id)) perms.push("moderator");
-        if (Servers.get(message.guild.id, "djs").includes(message.author.id)) perms.push("dj");
         perms.push("user");
         return perms;
     },
@@ -22,7 +21,6 @@ module.exports = {
             if (member.id == message.guild.ownerId) perms.push("owner");
             if (member.permissions.has("ADMINISTRATOR")) perms.push("administrator");
             if (Servers.get(message.guild.id, "moderators").includes(id)) perms.push("moderator");
-            if (Servers.get(message.guild.id, "djs").includes(id)) perms.push("dj");
             perms.push("user");
             callback(perms)
         })
