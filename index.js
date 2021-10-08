@@ -8,7 +8,7 @@ const Servers = global.Servers = require("./core/Servers.js");
 const Permissions = global.Permissions = require("./core/Permissions.js");
 const Localization = global.Localization = require("./core/Localization.js")
 
-const bot = new Client({
+const client = new Client({
     intents: [
         Intents.FLAGS.GUILDS, 
         Intents.FLAGS.GUILD_MESSAGES,
@@ -21,9 +21,10 @@ const bot = new Client({
     partials: ["CHANNEL", "MESSAGE"], 
     allowedMentions: {parse:["users", "roles"], repliedUser:true}
 })
-bot.commands = new Collection();
-bot.cooldowns = new Collection();
-bot.localization = new Collection();
+client.commands = new Collection();
+client.cooldowns = new Collection();
+client.queue = new Collection();
+client.localization = new Collection();
 
 const string = `Bot started at ${new Date().toLocaleString("en-US")}`;
 Logs.regular(__filename, `🔵 ${string} 🔵`, {pre:"\n"});
@@ -37,13 +38,13 @@ for (const folder of fs.readdirSync(`./commands`)) {
 	const files = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith(".js"));
 	for (const file of files) {
 		const command = require(`./commands/${folder}/${file}`);
-		bot.commands.set(command.name, command);
+		client.commands.set(command.name, command);
 	}
 }
 
 for (const file of fs.readdirSync("./localization")) {
     const localization = require(`./localization/${file}`);
-    bot.localization.set(localization.name, localization);
+    client.localization.set(localization.name, localization);
 }
 
 process.on("unhandledRejection", e => {
@@ -51,53 +52,53 @@ process.on("unhandledRejection", e => {
     Logs.critical(__filename, `Unhandled promise rejection error: ${e}`);
 })
 
-bot.on("error", e => console.error(`Another error: ${e}`));
-bot.on("warn", e => console.warn(`Warning: ${e}`));
+client.on("error", e => console.error(`Another error: ${e}`));
+client.on("warn", e => console.warn(`Warning: ${e}`));
 
-bot.on("shardError", e => console.error(`Websocket connection error: ${e}`));
-bot.on("shardReady", _ => console.log("Connected to WebSocket!"));
-bot.on("shardDisconnect", _ => console.log("Looks like connection to WebSocket was lost, I will reconnect immediately when coonection appears."));
-bot.on("shardReconnecting", _ => console.log("Im reconnecting to WebSocket now..."));
-bot.on("shardResume", _ => {
+client.on("shardError", e => console.error(`Websocket connection error: ${e}`));
+client.on("shardReady", _ => console.log("Connected to WebSocket!"));
+client.on("shardDisconnect", _ => console.log("Looks like connection to WebSocket was lost, I will reconnect immediately when coonection appears."));
+client.on("shardReconnecting", _ => console.log("Im reconnecting to WebSocket now..."));
+client.on("shardResume", _ => {
     console.log("Reconnected to WebSocket!");
-    bot.user.setActivity(`${bot.guilds.cache.size} servers`, { type: "WATCHING" });
+    client.user.setActivity(`${client.guilds.cache.size} servers`, { type: "WATCHING" });
 });
 
-bot.once("ready", _ => {
-    bot.guilds.cache.forEach(guild => Servers.checkCfg(guild.id));
-    Logs.regular(__filename, `Bot is ready! (${bot.user.tag})`)
-    bot.user.setActivity(`${bot.guilds.cache.size} servers`, { type: "WATCHING" });
-	console.log(`Logged in as "${bot.user.tag}"\n${bot.guilds.cache.size} servers total.`);
+client.once("ready", _ => {
+    client.guilds.cache.forEach(guild => Servers.checkCfg(guild.id));
+    Logs.regular(__filename, `Bot is ready! (${client.user.tag})`)
+    client.user.setActivity(`${client.guilds.cache.size} servers`, { type: "WATCHING" });
+	console.log(`Logged in as "${client.user.tag}"\n${client.guilds.cache.size} servers total.`);
 })
 
-bot.on("guildCreate", async guild => {
+client.on("guildCreate", async guild => {
     console.log(`Joined new guild ${guild.name}`);
     Logs.regular(__filename, `Joined new guild ${guild.id}`);
     Servers.checkCfg(guild.id)
-    bot.user.setActivity(`${bot.guilds.cache.size} servers`, { type: "WATCHING" });
+    client.user.setActivity(`${client.guilds.cache.size} servers`, { type: "WATCHING" });
 })
-bot.on("guildDelete", async guild => {
+client.on("guildDelete", async guild => {
     console.log(`Kicked from guild ${guild.name}`);
     Logs.regular(__filename, `Kicked from guild ${guild.id}`);
-    bot.user.setActivity(`${bot.guilds.cache.size} servers`, { type: "WATCHING" });
+    client.user.setActivity(`${client.guilds.cache.size} servers`, { type: "WATCHING" });
 })
 
-bot.on("messageCreate", async message => {
+client.on("messageCreate", async message => {
 	if (message.author.bot) return;
 
     const prefix = message.guild ? Servers.get(message.guild.id, "prefix") : null;
-    const localization = message.guild ? Localization.server(bot, message.guild, "main") : null;
+    const localization = message.guild ? Localization.server(client, message.guild, "main") : null;
     if
         (
             (
                 (!prefix|| !message.content.startsWith(prefix))
-                && ![`<@!${bot.user.id}>`, `<@${bot.user.id}>`].includes(message.content.replace(/\ /g, "")) //Not mention cuz it pases with another text in message
+                && ![`<@!${client.user.id}>`, `<@${client.user.id}>`].includes(message.content.replace(/\ /g, "")) //Not mention cuz it pases with another text in message
             )
             && message.channel.type != "DM"
         )
     return;
 
-    const { cooldowns } = bot;
+    const { cooldowns } = client;
     const now = Date.now();
     if (cooldowns.has(message.author.id)) {
         const user = cooldowns.get(message.author.id);
@@ -137,7 +138,7 @@ bot.on("messageCreate", async message => {
         return Messages.warning(message, "Max message length is 1800");
     }
 
-    if ([`<@!${bot.user.id}>`, `<@${bot.user.id}>`].includes(message.content.replace(/\ /g, ""))) { //Look at line 83
+    if ([`<@!${client.user.id}>`, `<@${client.user.id}>`].includes(message.content.replace(/\ /g, ""))) { //Look at line 83
         make_cooldown();
         return Messages.advanced(message, false, `${localization.prefix} \`${prefix}\``, {custom: `${localization.help[0]} ${prefix}help ${localization.help[1]} ${prefix}?`});
     }
@@ -146,7 +147,7 @@ bot.on("messageCreate", async message => {
     const commandString = args.shift().toLowerCase().replace(/\ /g,"");
     if (commandString.length == 0) return;
     make_cooldown();
-    const command = bot.commands.get(commandString) || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandString));
+    const command = client.commands.get(commandString) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandString));
     if (!command) return Messages.advanced(message, false, `${localization.not_found} :no_entry_sign:`, {custom: `${localization.help[0]} ${prefix}help ${localization.help[1]} ${prefix}?`, color: Messages.colors.critical});
 
     if (command.access && !Permissions.has(message, command.access)) {
@@ -174,4 +175,4 @@ bot.on("messageCreate", async message => {
     };
 })
 
-bot.login(token);
+client.login(token);
