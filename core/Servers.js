@@ -27,12 +27,12 @@ module.exports = {
         if (typeof thing === "object") {
             const out = {};
             for (const i in thing) {
-                if (typeof data[thing[i]] === "undefined") throw Error(`No "${thing[i]}" element found!`);
+                //if (typeof data[thing[i]] === "undefined") throw Error(`No "${thing[i]}" element found!`);
                 out[thing[i]] = data[thing[i]];
             }
             return out;
         } else if (typeof thing !== "undefined"){
-            if (typeof data[thing] === "undefined") throw Error(`No "${thing}" element found!`);
+            //if (typeof data[thing] === "undefined") throw Error(`No "${thing}" element found!`);
             return data[thing];
         } else return data;
     },
@@ -45,7 +45,7 @@ module.exports = {
             data[k] = v;
         }
         else {
-            if (typeof value === "undefined") throw Error("No value given!");
+            //if (typeof value === "undefined") throw Error("No value given!");
             data[thing] = value;
         }
         fs.writeFileSync(`./storage/${id}.json`, JSON.stringify(data, null, "\t"), "utf8", null);
