@@ -15,7 +15,7 @@ module.exports = {
         
         try {
             const avatar = await Canvas.loadImage(user.displayAvatarURL({ format: "jpg", size: 512 }));
-            const background = await Canvas.loadImage("https://olejka.ru/s/6ad3593b.png");
+            const background = await Canvas.loadImage("https://olejka.ru/r/6ad3593b.png");
     
             ctx.drawImage(avatar, 0, 0, canvas.width, canvas.height);
             ctx.globalAlpha = 0.6

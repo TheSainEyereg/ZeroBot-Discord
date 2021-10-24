@@ -19,7 +19,7 @@ module.exports = {
         ctx.fillStyle = "#010101";
 
         try {
-            const background = await Canvas.loadImage("https://olejka.ru/s/24b70f0c.jpg");
+            const background = await Canvas.loadImage("https://olejka.ru/r/24b70f0c.jpg");
             const avatar = await Canvas.loadImage(user.displayAvatarURL({ format: "jpg", size: 512 }));
             
             ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
