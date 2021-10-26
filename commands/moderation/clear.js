@@ -9,10 +9,10 @@ module.exports = {
 		const l = Localization.server(message.client, message.guild, this.name);
         const amount = parseInt(args[0]);
         if (isNaN(amount)) return Messages.warning(message, l.no_amount);
-        if (amount > 200) return Messages.warning(message, l.max_amount);
+        if (amount > 100) return Messages.warning(message, l.max_amount);
         async function delete_messages() {
             await message.channel.messages
-                .fetch({limit: amount+1})
+                .fetch({limit: amount})
                 .then(messages => {
                     message.channel.bulkDelete(messages)
                         .then(_ => {

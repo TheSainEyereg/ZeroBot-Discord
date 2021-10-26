@@ -104,7 +104,7 @@
         "description": "Removes messages that are not older than 2 weeks",
         "arguments": ["[amount]"],
         "no_amount": "You must give amount",
-        "max_amount": "Max amount is 200",
+        "max_amount": "Max amount is 100",
         "deleted": ["Deleted", "messages!"],
         "error": "Oh no"
     },
