@@ -46,8 +46,6 @@ module.exports = {
         const queue = message.client.queue.get(message.guild.id);
 
         async function joinChannel(channel) {
-            if (getVoiceConnection(message.guild.id)?.state.status == "ready") return getVoiceConnection(message.guild.id);
-
             const connection = joinVoiceChannel({
                 channelId: channel.id,
                 guildId: channel.guild.id,
@@ -200,7 +198,9 @@ module.exports = {
                 console.error(e)
                 return Messages.critical(message, `YTDL Error!\n\`${e}\``)
             }
-        } else if (url.match(/^(https?:\/\/)?(soundcloud\.com)\/.*\/(sets|likes)(.*)$/gi)) {
+        } else if (url.match(/^(https?:\/\/)?(soundcloud\.com)\/(.*)$/gi)) {
+            Messages.warning(message, "Sorry, SoundCloud is  temporarily disabled, use YouTube instead.");
+        } else/*if (url.match(/^(https?:\/\/)?(soundcloud\.com)\/.*\/(sets|likes)(.*)$/gi)) {
             if (url.match(/^(https?:\/\/)?(soundcloud\.com)\/.*\/likes(.*)$/gi)) {
                 const list = await scdl.getLikes({profileUrl: url}, config.SCClient);
                 if (!list) return Messages.warning(message, "Can't get this SoundCloud playlist!");
@@ -255,7 +255,7 @@ module.exports = {
                 console.error(e)
                 return Messages.critical(message, `SCDL Error!\n\`${e}\``)
             }
-        } else if (url.match(/^https?:\/\/.+$/gi)) {
+        } else*/ if (url.match(/^https?:\/\/.+$/gi)) {
             return Messages.warning(message, "Sorry, raw links curently is not supported!")
         } else {
             const search = await yts.search(args.join(" "));
