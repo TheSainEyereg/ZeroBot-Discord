@@ -1,0 +1,23 @@
+const Messages = require("../../core/Messages");
+
+module.exports = {
+    name: "skip",
+    description: "Skips music",
+    aliases: ["s"],
+    execute(message, args) {
+        const queue = message.client.queue.get(message.guild.id);
+        const {channel} = message.member.voice;
+        if (!queue?.playing) return Messages.warning(message, "There is nothing playing now!");
+        if (!channel) return Messages.warning(message, "You are not in the voice channel!");
+        if (channel != queue.voiceChannel) return Messages.warning(message, "You are in the wrong voice channel!");
+        try {
+            const old = queue.list[0].title;
+            queue.player.stop();
+            Messages.complete(message, `Skipped \`${old}\`!`);
+        } catch (e) {
+            Messages.critical(message, `Skip error!\n\`${e}\``);
+            message.client.queue.delete(message.guild.id);
+            console.error(e);
+        }
+    }
+}
