@@ -118,6 +118,7 @@ client.on("messageCreate", async message => {
         }
     }
     function make_cooldown(amount) {
+        if (Permissions.has(message, "superuser")) return;
         if (!cooldowns.has(message.author.id)) {
             const default_amount = defaults["user-cooldown"] * 1000;
             amount ? amount*1000 : null
