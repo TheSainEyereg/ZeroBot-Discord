@@ -89,20 +89,24 @@ module.exports = {
                     case "YouTube":
                         stream = await ytdl(song.id, {filter: "audioonly", quality: "highestaudio", highWaterMark: 1 << 25});
 						stream.on("error", e => {
+							Messages.critical(queue.textChannel, `YTDL stream error: \n\`${e}\``);
+							console.error(e);
                             if (queue) {
                                 queue.list.shift();
                                 getMusicPlayer(queue.list[0]);
-                                return console.error(e);
+								return;
                             }
 						});
                         break;
                     case "SoundCloud":
                         stream = await scdl.download(song.url, config.SCClient);
 						stream.on("error", e => {
+							Messages.critical(queue.textChannel, `SCDL stream error: \n\`${e}\``);
+							console.error(e);
                             if (queue) {
                                 queue.list.shift();
                                 getMusicPlayer(queue.list[0]);
-                                return console.error(e);
+								return;
                             }
 						});
                         break;

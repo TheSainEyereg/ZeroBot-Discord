@@ -7,7 +7,8 @@ module.exports = {
 	aliases: ["q"],
 	execute(message, args) {
 		const queue = message.client.queue.get(message.guild.id);
-		if (!queue?.playing) return Messages.warning(message, "There is nothing playing now!");
+		if (!queue) return Messages.warning(message, "There is nothing playing now!");
+		if (queue.list.length === 0) return Messages.warning(message, "Queue is empty!");
 
 		const max = 15
 		const queueList = Array.from(queue.list)//.reverse();
@@ -21,7 +22,7 @@ module.exports = {
 				minutes: Math.floor((song.duration/60) % 60),
 				seconds: Math.floor(song.duration % 60)
 			}
-			list.push(`${i == 0 ? ":arrow_forward:" : `**${i}.**`} **${song.title}** \`${("0"+du.hours).slice(-2)}:${("0"+du.minutes).slice(-2)}:${("0"+du.seconds).slice(-2)}\``)
+			list.push(`${i == 0 ? ":arrow_forward:" : `**${i}.**`} **${song.title}** \`${("0"+du.hours).slice(-2)}:${("0"+du.minutes).slice(-2)}:${("0"+du.seconds).slice(-2)}\``);
 		}
 		const du = {
 			hours: Math.floor(totalDuration/(60*60)),
