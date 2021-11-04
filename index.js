@@ -138,14 +138,14 @@ client.on("messageCreate", async message => {
         return Messages.warning(message, "Max message length is 1800");
     }
 
-    if ([`<@!${client.user.id}>`, `<@${client.user.id}>`].includes(message.content.replace(/\ /g, ""))) { //Look at line 83
+    if ([`<@!${client.user.id}>`, `<@${client.user.id}>`].includes(message.content.replace(/\ /g, ""))) { //Look at line 95
         make_cooldown();
         return Messages.advanced(message, false, `${localization.prefix} \`${prefix}\``, {custom: `${localization.help[0]} ${prefix}help ${localization.help[1]} ${prefix}?`});
     }
 
     const args = message.content.slice(prefix.length).split(/ +/);
     const commandString = args.shift().toLowerCase().replace(/\ /g,"");
-    if (commandString.length == 0) return;
+    if (commandString.length === 0) return;
     make_cooldown();
     const command = client.commands.get(commandString) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandString));
     if (!command) return Messages.advanced(message, false, `${localization.not_found} :no_entry_sign:`, {custom: `${localization.help[0]} ${prefix}help ${localization.help[1]} ${prefix}?`, color: Messages.colors.critical});

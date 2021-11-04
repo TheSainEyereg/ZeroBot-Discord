@@ -19,8 +19,9 @@ module.exports = {
         const channel = source.channel || source;
         const embed = new MessageEmbed()
         title ? embed.setTitle(title) : null;
-        text ? embed.setDescription(text) :null;
+        text ? embed.setDescription(text) : null;
         opt && opt.color ? embed.setColor(opt.color) : embed.setColor(this.colors.regular);
+        opt && opt.url ? embed.setURL(opt.url) : null;
         if (source.channel && opt && opt.author && !opt.icon) embed.setFooter(`For ${source.author.tag} :)`);
         else if (source.channel && opt && opt.author) embed.setFooter(`For ${source.author.tag} :)`, source.author.displayAvatarURL({ format: "png", size: 256 }));
         else if (opt && opt.custom && !opt.icon) embed.setFooter(opt.custom);
