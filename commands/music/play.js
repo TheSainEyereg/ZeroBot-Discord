@@ -141,7 +141,7 @@ module.exports = {
                 setTimeout(_ => {
                     if (queue?.list?.length === 0) {
                         message.client.queue.delete(message.guild.id);
-                        if (connection.state.status == "ready") connection.destroy();
+                        if (connection?.state.status == "ready") connection.destroy();
                     }
                 }, 120000);
                 return;
