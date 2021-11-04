@@ -7,7 +7,7 @@ module.exports = {
     execute(message, args) {
         const queue = message.client.queue.get(message.guild.id);
         const {channel} = message.member.voice;
-        if (!queue?.playing) return Messages.warning(message, "There is nothing playing now!");
+        if (!queue) return Messages.warning(message, "There is nothing playing now!");
         if (!channel) return Messages.warning(message, "You are not in the voice channel!");
         if (channel != queue.voiceChannel) return Messages.warning(message, "You are in the wrong voice channel!");
         queue.list = [];

@@ -46,6 +46,8 @@ module.exports = {
         const queue = message.client.queue.get(message.guild.id);
 
         async function joinChannel(channel) {
+			if (getVoiceConnection(message.guild.id)?.state.status === VoiceConnectionStatus.Ready) return getVoiceConnection(message.guild.id);
+
             const connection = joinVoiceChannel({
                 channelId: channel.id,
                 guildId: channel.guild.id,
@@ -59,8 +61,8 @@ module.exports = {
                             try {
                                 await entersState(connection, VoiceConnectionStatus.Connecting, 5_000);
                             } catch {
-                                message.client.queue.delete(message.guild.id);
                                 connection.destroy();
+                                message.client.queue.delete(message.guild.id);
                             }
                         } else if (connection.rejoinAttempts < 5) {
                             await wait((connection.rejoinAttempts + 1) * 5_000);
