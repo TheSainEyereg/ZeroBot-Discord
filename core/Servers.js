@@ -13,41 +13,57 @@ module.exports = {
         moderators: [],
     },
     checkDir() {!fs.existsSync("./storage") ? fs.mkdirSync("./storage") : null},
-    checkCfg(id) {
-        if (!parseInt(id)) throw Error("Id is not int!");
+	/**
+	 * Checks if the server has a config file
+	 * @param {String} serverID The ID of the server
+	*/
+    checkCfg(serverID) {
+        if (!parseInt(serverID)) throw Error("serverID is not int!");
         this.checkDir();
-        if (fs.existsSync(`./storage/${id}.json`) && JSON.parse(fs.readFileSync(`./storage/${id}.json`).toString())) return;
-        fs.writeFileSync(`./storage/${id}.json`, JSON.stringify(this.default_config, null, "\t"), "utf8", null);
-        console.log(`Created server config file for server ${id}`);
-        Logs.regular(__filename, `Created server config file for server ${id}`);
+        if (fs.existsSync(`./storage/${serverID}.json`) && JSON.parse(fs.readFileSync(`./storage/${serverID}.json`).toString())) return;
+        fs.writeFileSync(`./storage/${serverID}.json`, JSON.stringify(this.default_config, null, "\t"), "utf8", null);
+        console.log(`Created server config file for server ${serverID}`);
+        Logs.regular(__filename, `Created server config file for server ${serverID}`);
     },
-    get(id, thing) {
-        this.checkCfg(id);
-        const data = JSON.parse(fs.readFileSync(`./storage/${id}.json`).toString());
-        if (typeof thing === "object") {
+	/**
+	 * Gets the config of the server
+	 * @param {String} serverID The ID of the server
+	 * @param {String} key The key of the config [optional]
+	 * @returns {Object | Any} The config of the server or the value of the key
+	*/
+    get(serverID, key) {
+        this.checkCfg(serverID);
+        const data = JSON.parse(fs.readFileSync(`./storage/${serverID}.json`).toString());
+        if (typeof key === "object") {
             const out = {};
-            for (const i in thing) {
-                //if (typeof data[thing[i]] === "undefined") throw Error(`No "${thing[i]}" element found!`);
-                out[thing[i]] = data[thing[i]];
+            for (const i in key) {
+                //if (typeof data[key[i]] === "undefined") throw Error(`No "${key[i]}" element found!`);
+                out[key[i]] = data[key[i]];
             }
             return out;
-        } else if (typeof thing !== "undefined"){
-            //if (typeof data[thing] === "undefined") throw Error(`No "${thing}" element found!`);
-            return data[thing];
+        } else if (typeof key !== "undefined"){
+            //if (typeof data[key] === "undefined") throw Error(`No "${key}" element found!`);
+            return data[key];
         } else return data;
     },
-    set(id, thing, value) {
-        this.checkCfg(id);
-        if (!parseInt(id)) throw Error("Id is not int!");
-        const data = JSON.parse(fs.readFileSync(`./storage/${id}.json`).toString());
-        if (typeof thing === "object") for (const [k,v] of Object.entries(thing)) {
+	/**
+	 * Sets the config of the server
+	 * @param {String} serverID The ID of the server
+	 * @param {Object | string} key The config or the key of the config
+	 * @param {Any} value The value of the config [optional]
+	*/
+    set(serverID, key, value) {
+        this.checkCfg(serverID);
+        if (!parseInt(serverID)) throw Error("serverID is not int!");
+        const data = JSON.parse(fs.readFileSync(`./storage/${serverID}.json`).toString());
+        if (typeof key === "object") for (const [k,v] of Object.entries(key)) {
             //if (typeof v === "undefined") throw Error("No value given!");
             data[k] = v;
         }
         else {
             //if (typeof value === "undefined") throw Error("No value given!");
-            data[thing] = value;
+            data[key] = value;
         }
-        fs.writeFileSync(`./storage/${id}.json`, JSON.stringify(data, null, "\t"), "utf8", null);
+        fs.writeFileSync(`./storage/${serverID}.json`, JSON.stringify(data, null, "\t"), "utf8", null);
     }
 }
