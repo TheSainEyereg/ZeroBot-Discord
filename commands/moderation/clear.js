@@ -20,7 +20,7 @@ module.exports = {
 							.then(message => {setTimeout(_=>{message.delete()}, 3000)})
 							.catch();
                         })
-                        .catch(e => {return message.channel.send(`${l.error}: \`${e}\``)});
+                        .catch(e => {return Messages.critical(`${l.error}: \`${e}\``)});
                 });
         }
         delete_messages();
