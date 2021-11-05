@@ -160,8 +160,8 @@ module.exports = {
             queue.player.on(AudioPlayerStatus.Idle, _ => {
                 queue.playing = false;
                 if (queue !== null) {
-                    if (queue.loop) queue.list.push(queue.list[0]);
-                    queue.list.shift();
+                    if (queue.loop == 1) queue.list.push(queue.list[0]);
+                    if (queue.loop != 2) queue.list.shift();
                     startMusicPlayback();
                 }
             });
@@ -184,7 +184,7 @@ module.exports = {
                 }
                 queue.list.push(song);
             }
-            Messages.complete(message, `Added ${list.videos.length} songs to queue!`);
+            Messages.success(message, `Added ${list.videos.length} songs to queue!`);
         } else if (url.match(/^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/watch.+$/gi)) {
             try {
                 const info = await ytdl.getInfo(url);
@@ -199,7 +199,7 @@ module.exports = {
                     requested: message.author 
                 }
                 queue.list.push(song);
-                if (queue.list.length > 1) return Messages.complete(message, `Added \`${song.title}\` to queue!`);
+                if (queue.list.length > 1) return Messages.success(message, `Added \`${song.title}\` to queue!`);
             } catch (e) {
                 console.error(e)
                 return Messages.critical(message, `YTDL Error!\n\`${e}\``)
@@ -223,7 +223,7 @@ module.exports = {
                     }
                     queue.list.push(song);
                 }
-                Messages.complete(message, `Added ${size} songs to queue!`);
+                Messages.success(message, `Added ${size} songs to queue!`);
             } else {
                 const list = await scdl.getSetInfo(url);
                 if (!list) return Messages.warning(message, "Can't get this SoundCloud playlist!");
@@ -240,7 +240,7 @@ module.exports = {
                     }
                     queue.list.push(song);
                 }
-                Messages.complete(message, `Added ${size} songs to queue!`);
+                Messages.success(message, `Added ${size} songs to queue!`);
             }
             
         } else if (url.match(/^(https?:\/\/)?(soundcloud\.com)\/(.*)$/gi)) {
@@ -256,7 +256,7 @@ module.exports = {
                     requested: message.author 
                 }
                 queue.list.push(song);
-                if (queue.list.length > 1) return Messages.complete(message, `Added \`${song.title}\` to queue!`);
+                if (queue.list.length > 1) return Messages.success(message, `Added \`${song.title}\` to queue!`);
             } catch (e) {
                 console.error(e)
                 return Messages.critical(message, `SCDL Error!\n\`${e}\``)
@@ -276,7 +276,7 @@ module.exports = {
                 requested: message.author 
             }
             queue.list.push(song);
-            if (queue.list.length > 1) return Messages.complete(message, `Added \`${song.title}\` to queue!`);
+            if (queue.list.length > 1) return Messages.success(message, `Added \`${song.title}\` to queue!`);
         }
         if (!queue.playing) {startMusicPlayback()};
     }
