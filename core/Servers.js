@@ -28,7 +28,7 @@ module.exports = {
 	/**
 	 * Gets the config of the server
 	 * @param {String} serverID The ID of the server
-	 * @param {String} key The key of the config [optional]
+	 * @param {String} [key] The key of the config
 	 * @returns {Object | Any} The config of the server or the value of the key
 	*/
     get(serverID, key) {
@@ -50,7 +50,7 @@ module.exports = {
 	 * Sets the config of the server
 	 * @param {String} serverID The ID of the server
 	 * @param {Object | string} key The config or the key of the config
-	 * @param {Any} value The value of the config [optional]
+	 * @param {Any} [value] The value of the config
 	*/
     set(serverID, key, value) {
         this.checkCfg(serverID);

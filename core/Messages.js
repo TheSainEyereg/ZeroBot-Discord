@@ -11,16 +11,11 @@ module.exports = {
     },
 	/**
 	 * Regular message
-	 * @param {Message|TextChannel} source 
-	 * A message or text channel to send the message to
-	 * @param {String} text 
-	 * The text to send
-	 * @param {Object} opt
-	 * Optional parameters 
-	 * @param {Boolean} opt.big
-	 * The text to send in a bigger font 
-	 * @param {CallableFunction} opt.embed
-	 * A function that returns an embed object and prevents the text from being sent
+	 * @param {Message|TextChannel} source - A message or text channel to send the message to
+	 * @param {String} text - The text to send
+	 * @param {Object} [opt] - Optional parameters 
+	 * @param {Boolean} opt.big - The text to send in a bigger font 
+	 * @param {CallableFunction} opt.embed - A function that returns an embed object and prevents the text from being sent
 	 * @returns Promise<Message> | Embed
 	 */
 	async regular(source, text, opt) {
@@ -32,26 +27,16 @@ module.exports = {
 	},
 	/**
 	 * Regular message
-	 * @param {Message|TextChannel} source
-	 * A message or text channel to send the message to
-	 * @param {String} title
-	 * The title of the embed
-	 * @param {String} text
-	 * The description of the embed
-	 * @param {Object} opt
-	 * Optional parameters
-	 * @param {CallableFunction} opt.embed
-	 * A function that returns an embed object and prevents the text from being sent
-	 * @param {ColorResolvable} opt.color
-	 * The color of the embed
-	 * @param {String} opt.url
-	 * The url of the embed
-	 * @param {String} opt.author
-	 * Replace default footer with message author (Works only if source is a Message)
-	 * @param {String} opt.custom
-	 * Custom default footer text
-	 * @param {String} opt.icon 
-	 * Custom footer icon (Works only is opt.custom is set)
+	 * @param {Message|TextChannel} source - A message or text channel to send the message to
+	 * @param {String} title - The title of the embed
+	 * @param {String} text - The description of the embed
+	 * @param {Object} [opt] - Optional parameters
+	 * @param {CallableFunction} opt.embed - A function that returns an embed object and prevents the text from being sent
+	 * @param {ColorResolvable} opt.color - The color of the embed
+	 * @param {String} opt.url - The url of the embed
+	 * @param {String} opt.author - Replace default footer with message author (Works only if source is a Message)
+	 * @param {String} opt.custom - Custom default footer text
+	 * @param {String} opt.icon - Custom footer icon (Works only is opt.custom is set)
 	 * @returns Promise<Message> | Embed
 	 */
     async advanced(source, title, text, opt) {
@@ -72,18 +57,12 @@ module.exports = {
     },
 	/**
 	 * Message with a link
-	 * @param {Message|TextChannel} source 
-	 * A message or text channel to send the message to
-	 * @param {String} url
-	 * The url to send
-	 * @param {String} text 
-	 * The text for the url
-	 * @param {Object} opt
-	 * Optional parameters
-	 * @param {Boolean} opt.footer
-	 * Custom footer text
-	 * @param {CallableFunction} opt.embed
-	 * A function that returns an embed object and prevents the text from being sent
+	 * @param {Message|TextChannel} source - A message or text channel to send the message to
+	 * @param {String} url - The url to send
+	 * @param {String} text - The text for the url
+	 * @param {Object} [opt] - Optional parameters
+	 * @param {Boolean} opt.footer - Custom footer text
+	 * @param {CallableFunction} opt.embed - A function that returns an embed object and prevents the text from being sent
 	 * @returns Promise<Message> | Embed
 	 */
 	async url(source, url, text, opt) {
@@ -96,18 +75,12 @@ module.exports = {
 	},
 	/**
 	 * Success message
-	 * @param {Message|TextChannel} source 
-	 * A message or text channel to send the message to
-	 * @param {String} text 
-	 * The text to send
-	 * @param {Object} opt
-	 * Optional parameters
-	 * @param {Boolean} opt.big
-	 * The text to send in a bigger font 
-	 * @param {Boolean} opt.color
-	 * Replaces emoji with a solid color emoji
-	 * @param {CallableFunction} opt.embed
-	 * A function that returns an embed object and prevents the text from being sent
+	 * @param {Message|TextChannel} source - A message or text channel to send the message to
+	 * @param {String} text - The text to send
+	 * @param {Object} [opt] - Optional parameters
+	 * @param {Boolean} opt.big - The text to send in a bigger font 
+	 * @param {Boolean} opt.color - Replaces emoji with a solid color emoji
+	 * @param {CallableFunction} opt.embed - A function that returns an embed object and prevents the text from being sent
 	 * @returns Promise<Message> | Embed
 	 */
 	async success (source, text, opt) {
@@ -127,18 +100,12 @@ module.exports = {
 	},
 	/**
 	 * Warning message
-	 * @param {Message|TextChannel} source 
-	 * A message or text channel to send the message to
-	 * @param {String} text 
-	 * The text to send
-	 * @param {Object} opt
-	 * Optional parameters
-	 * @param {Boolean} opt.big
-	 * The text to send in a bigger font
-	 * @param {Boolean} opt.color
-	 * Replaces emoji with a solid color emoji
-	 * @param {CallableFunction} opt.embed
-	 * A function that returns an embed object and prevents the text from being sent
+	 * @param {Message|TextChannel} source - A message or text channel to send the message to
+	 * @param {String} text - The text to send
+	 * @param {Object} [opt] - Optional parameters
+	 * @param {Boolean} opt.big - The text to send in a bigger font
+	 * @param {Boolean} opt.color - Replaces emoji with a solid color emoji
+	 * @param {CallableFunction} opt.embed - A function that returns an embed object and prevents the text from being sent
 	 * @returns Promise<Message> | Embed
 	 */
     async warning (source, text, opt) {
@@ -151,18 +118,12 @@ module.exports = {
     },
 	/**
 	 * Critical message
-	 * @param {Message|TextChannel} source 
-	 * A message or text channel to send the message to
-	 * @param {String} text 
-	 * The text to send
-	 * @param {Object} opt
-	 * Optional parameters
-	 * @param {Boolean} opt.big
-	 * The text to send in a bigger font 
-	 * @param {Boolean} opt.color
-	 * Replaces emoji with a solid color emoji
-	 * @param {CallableFunction} opt.embed
-	 * A function that returns an embed object and prevents the text from being sent
+	 * @param {Message|TextChannel} source - A message or text channel to send the message to
+	 * @param {String} text - The text to send
+	 * @param {Object} [opt] - Optional parameters
+	 * @param {Boolean} opt.big - The text to send in a bigger font 
+	 * @param {Boolean} opt.color - Replaces emoji with a solid color emoji
+	 * @param {CallableFunction} opt.embed - A function that returns an embed object and prevents the text from being sent
 	 * @returns Promise<Message> | Embed
 	 */
     async critical (source, text, opt) {
