@@ -9,6 +9,6 @@ module.exports = { // Opens command module
 	access: ["user", "dj", "moderator", "administrator", "owner", "superuser"], // Who can execute this command
 	execute(message, args) { // Main function ( Dont change function args pls ;) )
 		if (!args[0]) return Messages.warning(message, "No args but anyway Hello ;)"); // Checks if first argument is present, if not, It sends warning message
-		Messages.complete(message, args[0]); // If arguments present it repeats first argument in message (Like something is completed)
+		Messages.success(message, args[0]); // If arguments present it repeats first argument in message (Like something is completed)
 	} // Closes main function
 }; // Closes command module

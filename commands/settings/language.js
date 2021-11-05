@@ -22,6 +22,6 @@ module.exports = {
 		l = Localization.get(message.client, lang.name, "language");
 		Servers.set(message.guild.id, "language", lang.name);
         Logs.regular(__filename, `User ${message.author.id} (${message.author.tag}) changed language for server ${message.guild.id} to "${lang.name}" (${args[0]})`);
-        Messages.complete(message, `${l.changed} **\`${lang.name}\`**`);
+        Messages.success(message, `${l.changed} **\`${lang.name}\`**`);
 	}
 };

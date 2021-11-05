@@ -15,6 +15,6 @@ module.exports = {
         if (!channel) return Messages.warning(message, l.not_found);
 		Servers.set(message.guild.id, "logsChannel", channel.id);
         Logs.regular(__filename, `User ${message.author.id} (${message.author.tag}) changed log channel for server ${message.guild.id} to "${channel.id}" (${channel.name})`);
-        Messages.complete(message, `${l.changed} ${channel}`);
+        Messages.success(message, `${l.changed} ${channel}`);
 	}
 };

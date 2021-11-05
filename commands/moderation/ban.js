@@ -39,7 +39,7 @@ module.exports = {
             })
             if (!member.bannable) return Messages.critical(message, `${l.cant_ban} ${member}`);
             member.ban({reason: reason}).then(_=>{
-                Messages.complete(message, `${l.has_banned} ${member}`);
+                Messages.success(message, `${l.has_banned} ${member}`);
                 if (channel) channel.send({embeds:[embed]});
             }).catch(e=>{
                 console.log(e);

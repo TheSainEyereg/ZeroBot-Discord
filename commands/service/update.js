@@ -38,7 +38,7 @@ module.exports = {
                 message.client.localization.set(file.split(".")[0], localization);
             }
             Logs.security(__filename, `Completed!`);
-            Messages.complete(message, "Completed!", {big:true});
+            Messages.success(message, "Completed!", {big:true});
         });
 	}
 };

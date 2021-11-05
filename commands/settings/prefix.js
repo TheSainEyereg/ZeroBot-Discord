@@ -12,6 +12,6 @@ module.exports = {
 		if (args[0].length > 3) return Messages.warning(message,l.max_warn);
         Servers.set(message.guild.id, "prefix", args[0]);
         Logs.regular(__filename, `User ${message.author.id} (${message.author.tag}) changed prefix for server ${message.guild.id} to "${args[0]}"`);
-        Messages.complete(message, `${l.changed} \`${args[0]}\``);
+        Messages.success(message, `${l.changed} \`${args[0]}\``);
 	}
 };

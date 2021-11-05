@@ -40,7 +40,7 @@ module.exports = {
             })
             if (!member.kickable) return Messages.critical(message, `${l.cant_kick} ${member}`);
             member.kick(reason).then(_=>{
-                Messages.complete(message, `${l.has_kicked} ${member}`);
+                Messages.success(message, `${l.has_kicked} ${member}`);
                 if (channel) channel.send({embeds:[embed]});
             }).catch(e=>{
                 console.log(e);

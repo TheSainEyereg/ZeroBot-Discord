@@ -31,14 +31,14 @@ module.exports = {
                 }
             }
             Logs.security(__filename, `Reloading ompleted!`);
-            Messages.complete(message, "Completed reloading!");
+            Messages.success(message, "Completed reloading!");
 		} else if (args[0] == "localization"){
             for (const file of fs.readdirSync("./localization")) {
                 delete require.cache[require.resolve(`../../localization/${file}`)]
                 const localization = require(`../../localization/${file}`);
                 message.client.localization.set(file.split(".")[0], localization);
             }
-			Messages.complete(message, "Reloadede all localizations!");
+			Messages.success(message, "Reloadede all localizations!");
         } else {
 			const command = message.client.commands.get(args[0]) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]));
 			if (!command) return Messages.critical(message, `There is no command with name or alias \`${args[0]}\`!`);
@@ -49,7 +49,7 @@ module.exports = {
 				const newCommand = require(`../../commands/${folder}/${command.name}.js`);
 				message.client.commands.set(newCommand.name, newCommand);
                 Logs.security(__filename, `Completed!`);
-				Messages.complete(message, `Command \`${command.name}\` was reloaded!`);
+				Messages.success(message, `Command \`${command.name}\` was reloaded!`);
 			} catch (e) {
                 console.error(e);
                 Logs.security(__filename, `Failed! Check critical log!`);

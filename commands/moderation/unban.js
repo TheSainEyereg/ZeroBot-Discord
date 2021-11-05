@@ -37,7 +37,7 @@ module.exports = {
                 timestamp: new Date()
             })
             message.guild.bans.remove(ban.user).then(_=>{
-                Messages.complete(message, `${l.has_unbanned} \`${ban.user.tag}\``)
+                Messages.success(message, `${l.has_unbanned} \`${ban.user.tag}\``)
                 if (channel) channel.send({embeds:[embed]});
             }).catch(e=>{
                 console.log(e);
