@@ -13,7 +13,7 @@ module.exports = {
         try {
             const old = queue.list[0].title;
             queue.player.stop();
-            Messages.complete(message, `Skipped \`${old}\`!`);
+            Messages.success(message, `Skipped \`${old}\`!`);
         } catch (e) {
             Messages.critical(message, `Skip error!\n\`${e}\``);
             message.client.queue.delete(message.guild.id);

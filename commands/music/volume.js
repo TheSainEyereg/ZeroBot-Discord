@@ -28,6 +28,6 @@ module.exports = {
         queue.resource.volume.setVolumeLogarithmic(volume * 0.5);
         queue.volume = volume;
         if (!overdrive) Servers.set(message.guild.id, "musicVolume", volume);
-        Messages[!overdrive ? "complete" : "warning"](message, `Set ${overdrive?"overdrive ":""} volume to **${volume*100}**`);
+        Messages[!overdrive ? "success" : "warning"](message, `Set ${overdrive?"overdrive ":""} volume to **${volume*100}**`);
     }
 }

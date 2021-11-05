@@ -13,7 +13,7 @@ module.exports = {
         queue.list = [];
         try {
             queue.player.stop();
-            Messages.complete(message, `Stopped music playback!`);
+            Messages.success(message, `Stopped music playback!`);
         } catch (e) {
             Messages.critical(message, `Stop error!\n\`${e}\``);
             message.client.queue.delete(message.guild.id);
