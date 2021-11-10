@@ -160,8 +160,8 @@ module.exports = {
             queue.player.on(AudioPlayerStatus.Idle, _ => {
                 queue.playing = false;
                 if (queue !== null) {
-                    if (queue.loop == 1) queue.list.push(queue.list[0]);
-                    if (queue.loop != 2) queue.list.shift();
+                    if (queue.loop == "queue") queue.list.push(queue.list[0]);
+                    if (queue.loop != "song") queue.list.shift();
                     startMusicPlayback();
                 }
             });

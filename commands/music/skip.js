@@ -12,6 +12,7 @@ module.exports = {
         if (channel != queue.voiceChannel) return Messages.warning(message, "You are in the wrong voice channel!");
         try {
             const old = queue.list[0].title;
+            if (queue.loop == "song") queue.list.shift();
             queue.player.stop();
             Messages.success(message, `Skipped \`${old}\`!`);
         } catch (e) {
