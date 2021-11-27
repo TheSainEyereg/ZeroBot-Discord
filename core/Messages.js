@@ -26,7 +26,7 @@ module.exports = {
         return channel.send({embeds: [embed]});
 	},
 	/**
-	 * Regular message
+	 * Advanced message
 	 * @param {Message|TextChannel} source - A message or text channel to send the message to
 	 * @param {String} title - The title of the embed
 	 * @param {String} text - The description of the embed
