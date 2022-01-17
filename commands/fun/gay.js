@@ -22,7 +22,7 @@ module.exports = {
             ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
         } catch (e) {
             Messages.critical(message, `${l.error}: ${e}`);
-            Logs.critical(__filename, `Error in getting/drawing image: ${e}`);
+            Logs.critical(`${this.name} command`, `Error in getting/drawing image: ${e}`);
             console.error(e);
         }
 

@@ -12,7 +12,7 @@ module.exports = {
             eval(args.join(" "));
         } catch (e) {
             console.error(e);
-            Logs.critical(__filename, `Error in eval: ${e}`);
+            Logs.critical(`${this.name} command`, `Error in eval: ${e}`);
             Messages.critical(message, `Error in eval:\n\`\`\`${e}\`\`\``);
         }
 	}

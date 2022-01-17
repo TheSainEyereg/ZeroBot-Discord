@@ -23,7 +23,7 @@ module.exports = {
         if (fs.existsSync(`./storage/${serverID}.json`) && JSON.parse(fs.readFileSync(`./storage/${serverID}.json`).toString())) return;
         fs.writeFileSync(`./storage/${serverID}.json`, JSON.stringify(this.default_config, null, "\t"), "utf8", null);
         console.log(`Created server config file for server ${serverID}`);
-        Logs.regular(__filename, `Created server config file for server ${serverID}`);
+        Logs.regular(`${this.name} command`, `Created server config file for server ${serverID}`);
     },
 	/**
 	 * Gets the config of the server

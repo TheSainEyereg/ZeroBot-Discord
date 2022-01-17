@@ -44,7 +44,7 @@ module.exports = {
             }).catch(e=>{
                 console.log(e);
                 Messages.critical(message, `${l.error}: \`\`\`${e}\`\`\``);
-                Logs.critical(__filename, `Cant ban member with ID ${member.user.id} from guild with ID ${message.guild.id} due to "${e}"`);
+                Logs.critical(`${this.name} command`, `Cant ban member with ID ${member.user.id} from guild with ID ${message.guild.id} due to "${e}"`);
             })
         })
     }

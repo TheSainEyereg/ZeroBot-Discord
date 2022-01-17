@@ -22,7 +22,7 @@ module.exports = {
                 }]});
             })
             .catch(e => {
-                Logs.critical(__filename, `Error in fetching coub info: ${e}`);
+                Logs.critical(`${this.name} command`, `Error in fetching coub info: ${e}`);
                 return Messages.critical(message, `${l.fetch_coub_error}: \`\`\`${e}\`\`\``);
             });
         }
@@ -60,7 +60,7 @@ module.exports = {
                 getCoub(coub);
             })
             .catch(e => {
-                Logs.critical(__filename, `Error in fetching coubs list: ${e}`);
+                Logs.critical(`${this.name} command`, `Error in fetching coubs list: ${e}`);
                 return Messages.critical(message, `${l.fetch_list_error}: \`\`\`${e}\`\`\``);
             });
         }

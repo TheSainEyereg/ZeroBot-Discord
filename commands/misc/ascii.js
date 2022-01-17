@@ -11,7 +11,7 @@ module.exports = {
             message.channel.send(`\`\`\`${res.data}\`\`\``);
         })
         .catch(e => {
-            Logs.critical(__filename, `Error in ascii converting: ${e}`);
+            Logs.critical(`${this.name} command`, `Error in ascii converting: ${e}`);
             return Messages.critical(message, `${l.error}: \`\`\`${e}\`\`\``);
         });
 	}

@@ -25,7 +25,7 @@ module.exports = {
                     } catch (e) {
                         console.error(e);
                         Logs.security(__filename, `Failed! Check critical log!`);
-                        Logs.critical(__filename, `Error in \`${file}\` reload:\n\`\`\`${e}\`\`\``);
+                        Logs.critical(`${this.name} command`, `Error in \`${file}\` reload:\n\`\`\`${e}\`\`\``);
                         return Messages.critical(message, `Error in \`${file}\` reload:\n\`\`\`${e}\`\`\``);
                     }
                 }
@@ -53,7 +53,7 @@ module.exports = {
 			} catch (e) {
                 console.error(e);
                 Logs.security(__filename, `Failed! Check critical log!`);
-                Logs.critical(__filename, `Error in \`${file}\` reload:\n\`\`\`${e}\`\`\``);
+                Logs.critical(`${this.name} command`, `Error in \`${file}\` reload:\n\`\`\`${e}\`\`\``);
                 return Messages.critical(message, `Error in \`${file}\` reload:\n\`\`\`${e}\`\`\``);
 			}
 		}

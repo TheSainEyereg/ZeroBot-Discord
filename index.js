@@ -27,9 +27,9 @@ client.queue = new Collection();
 client.localization = new Collection();
 
 const string = `Bot started at ${new Date().toLocaleString("en-US")}`;
-Logs.regular(__filename, `🔵 ${string} 🔵`, {pre:"\n"});
-Logs.critical(__filename, `🔴 ${string} 🔴`, {pre:"\n"});
-Logs.security(__filename, `🟠 ${string} 🟠`, {pre:"\n"});
+Logs.regular("Main", `🔵 ${string} 🔵`, {pre:"\n"});
+Logs.critical("Main", `🔴 ${string} 🔴`, {pre:"\n"});
+Logs.security("Main", `🟠 ${string} 🟠`, {pre:"\n"});
 
 for (const folder of fs.readdirSync(`./commands`)) {
     if (fs.lstatSync(`./commands/${folder}`).isFile()) continue;
@@ -49,7 +49,7 @@ for (const file of fs.readdirSync("./localization")) {
 
 process.on("unhandledRejection", e => {
     console.error(e);
-    Logs.critical(__filename, `Unhandled promise rejection error: ${e}`);
+    Logs.critical("Main", `Unhandled promise rejection error: ${e}`);
 })
 
 client.on("error", e => console.error(`Another error: ${e}`));
@@ -66,20 +66,20 @@ client.on("shardResume", _ => {
 
 client.once("ready", _ => {
     client.guilds.cache.forEach(guild => Servers.checkCfg(guild.id));
-    Logs.regular(__filename, `Bot is ready! (${client.user.tag})`)
+    Logs.regular("Main", `Bot is ready! (${client.user.tag})`)
     client.user.setActivity(`${client.guilds.cache.size} servers`, { type: "WATCHING" });
 	console.log(`Logged in as "${client.user.tag}"\n${client.guilds.cache.size} servers total.`);
 })
 
 client.on("guildCreate", async guild => {
     console.log(`Joined new guild ${guild.name}`);
-    Logs.regular(__filename, `Joined new guild ${guild.id}`);
+    Logs.regular("Main", `Joined new guild ${guild.id}`);
     Servers.checkCfg(guild.id)
     client.user.setActivity(`${client.guilds.cache.size} servers`, { type: "WATCHING" });
 })
 client.on("guildDelete", async guild => {
     console.log(`Kicked from guild ${guild.name}`);
-    Logs.regular(__filename, `Kicked from guild ${guild.id}`);
+    Logs.regular("Main", `Kicked from guild ${guild.id}`);
     client.user.setActivity(`${client.guilds.cache.size} servers`, { type: "WATCHING" });
 })
 
@@ -129,13 +129,13 @@ client.on("messageCreate", async message => {
 
     if (message.channel.type == "DM") {
         make_cooldown(); 
-        Logs.regular(__filename, `User ${message.author.id} wrote "${message.content}" to DM.`);
+        Logs.regular("Main", `User ${message.author.id} wrote "${message.content}" to DM.`);
         return Messages.critical(message, "Sorry, I'm not accepting commands in DM");
     }
 
     if (message.content.length > 1800) {
         make_cooldown();
-        Logs.security(__filename, `User ${message.author.id} tried to enter 1800+ string.`);
+        Logs.security("Main", `User ${message.author.id} tried to enter 1800+ string.`);
         return Messages.warning(message, "Max message length is 1800");
     }
 
@@ -152,7 +152,7 @@ client.on("messageCreate", async message => {
     if (!command) return Messages.advanced(message, false, `${localization.not_found} :no_entry_sign:`, {custom: `${localization.help[0]} ${prefix}help ${localization.help[1]} ${prefix}?`, color: Messages.colors.critical});
 
     if (command.access && !Permissions.has(message, command.access)) {
-        Logs.security(__filename, `User ${message.author.id} (Ranks [${Permissions.get(message).join(", ")}]) tried to execute command "${command.name}" ("${commandString}") when it requires higher rank.`);
+        Logs.security("Main", `User ${message.author.id} (Ranks [${Permissions.get(message).join(", ")}]) tried to execute command "${command.name}" ("${commandString}") when it requires higher rank.`);
         return Messages.warning(message, `${localization.rank_warn}\n\`${Array.isArray(command.access) ? command.access.join(", ") : `${command.access} ${localization.rank_higher}`}\``);
     }
     if (
@@ -161,16 +161,16 @@ client.on("messageCreate", async message => {
         ) &&
         !command.optional && (!args || args.length === 0)
     ) {
-        Logs.regular(__filename, `User ${message.author.id} tried to execute command "${command.name}" ("${commandString}" without arguments.)`);
+        Logs.regular("Main", `User ${message.author.id} tried to execute command "${command.name}" ("${commandString}" without arguments.)`);
         return Messages.warning(message, `${localization.args_warn}`);
     }
 
     try {
         await command.execute(message, args);
-        Logs.regular(__filename, `Cmd executed! Info:\n${"-".repeat(50)}\nCommand: "${command.name}" ("${commandString}")\nArgs: ${args.join(" ")}\nServer: ${message.guild.id}\nAuthor: ${message.author.id}\n${"-".repeat(50)}`);
+        Logs.regular("Main", `Cmd executed! Info:\n${"-".repeat(50)}\nCommand: "${command.name}" ("${commandString}")\nArgs: ${args.join(" ")}\nServer: ${message.guild.id}\nAuthor: ${message.author.id}\n${"-".repeat(50)}`);
         make_cooldown(command.cooldown);
     } catch(e) {
-        Logs.critical(__filename, `Error in cmd Execution! Info:\n${"-".repeat(50)}\nError: "${e}"\nServer: ${message.guild.id}\nAuthor: ${message.author.id}\n${"-".repeat(50)}`);
+        Logs.critical("Main", `Error in cmd Execution! Info:\n${"-".repeat(50)}\nError: "${e}"\nServer: ${message.guild.id}\nAuthor: ${message.author.id}\n${"-".repeat(50)}`);
         Messages.critical(message, `${localization.error}`);
         console.error(e);
     };

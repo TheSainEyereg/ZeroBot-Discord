@@ -26,7 +26,7 @@ module.exports = {
         let out = "";
         if (opt && opt.pre) out+=opt.pre;
         out+=`[${this.getDateString()}] `;
-        out+=`(${source.slice(__dirname.length-"/core".length)}): `;
+        out+=`(${source}): `;
         out+=`${text}${opt && opt.nonl ? "" : "\n"}`;
         fs.appendFileSync("./logs/regular.log", out);
     },
@@ -46,7 +46,7 @@ module.exports = {
         let out = "";
         if (opt && opt.pre) out+=opt.pre;
         out+=`[${this.getDateString()}] `;
-        out+=`(${source.slice(__dirname.length-"/core".length)}): `;
+        out+=`(${source}): `;
         out+=`${text}${opt && opt.nonl ? "" : "\n"}`;
         fs.appendFileSync("./logs/critical.log", out);
     },
@@ -67,7 +67,7 @@ module.exports = {
         let out = "";
         if (opt && opt.pre) out+=opt.pre;
         out+=`[${this.getDateString()}] `;
-        out+=`(${source.slice(__dirname.length-"/core".length)}): `;
+        out+=`(${source}): `;
         out+=`${text}${opt && opt.nonl ? "" : "\n"}`;
         fs.appendFileSync("./logs/security.log", out);
     }

@@ -23,7 +23,7 @@ module.exports = {
             message.channel.send({embeds: [embed]});
         } catch (e) {
             Messages.critical(message, `${l.error}: ${e}`);
-            Logs.critical(__filename, `Error in getting/sending image: ${e}`);
+            Logs.critical(`${this.name} command`, `Error in getting/sending image: ${e}`);
             console.error(e);
         }
 	}

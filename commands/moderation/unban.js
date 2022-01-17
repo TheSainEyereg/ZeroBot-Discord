@@ -42,7 +42,7 @@ module.exports = {
             }).catch(e=>{
                 console.log(e);
                 Messages.critical(message, `${l.error}`);
-                Logs.critical(__filename, `Cant unban user with ID ${ban.user.id} from guild with ID ${message.guild.id} due to "${e}"`);
+                Logs.critical(`${this.name} command`, `Cant unban user with ID ${ban.user.id} from guild with ID ${message.guild.id} due to "${e}"`);
             })
         }).catch(e=>{
             Messages.critical(message, l.cant_fetch)

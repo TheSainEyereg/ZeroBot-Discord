@@ -14,7 +14,7 @@ module.exports = {
 		const channel = message.mentions.channels.first() || message.guild.channels.cache.find(c => c.name === args[0]);
         if (!channel) return Messages.warning(message, l.not_found);
 		Servers.set(message.guild.id, "logsChannel", channel.id);
-        Logs.regular(__filename, `User ${message.author.id} (${message.author.tag}) changed log channel for server ${message.guild.id} to "${channel.id}" (${channel.name})`);
+        Logs.regular(`${this.name} command`, `User ${message.author.id} (${message.author.tag}) changed log channel for server ${message.guild.id} to "${channel.id}" (${channel.name})`);
         Messages.success(message, `${l.changed} ${channel}`);
 	}
 };

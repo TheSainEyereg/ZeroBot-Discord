@@ -17,7 +17,7 @@ module.exports = {
 			case "add":
 				if (moderators.includes(user.id)) return Messages.warning(message, l.already_in);
 				moderators.push(user.id);
-				Logs.regular(__filename, `User ${message.author.id} (${message.author.tag}) added ${user.id} (${user.tag}) to moderators list for server ${message.guild.id}`);
+				Logs.regular(`${this.name} command`, `User ${message.author.id} (${message.author.tag}) added ${user.id} (${user.tag}) to moderators list for server ${message.guild.id}`);
 				Messages.success(message, `${l.added[0]} ${user} ${l.added[1]}`);
 				break;
 		
@@ -25,7 +25,7 @@ module.exports = {
 				if (!moderators.includes(user.id)) return Messages.warning(message, l.not_in);
 				const mod = moderators.indexOf(user.id);
 				moderators.splice(mod, 1);
-				Logs.regular(__filename, `User ${message.author.id} (${message.author.tag}) removed ${user.id} (${user.tag}) from moderators list for server ${message.guild.id}`);
+				Logs.regular(`${this.name} command`, `User ${message.author.id} (${message.author.tag}) removed ${user.id} (${user.tag}) from moderators list for server ${message.guild.id}`);
 				Messages.success(message, `${l.removed[0]} ${user} ${l.removed[1]}`);
 				break;
 

@@ -36,7 +36,7 @@ module.exports = {
             (adminsOnly.includes(category) && !Permissions.has(message, "administrator")) ||
             (modsOnly.includes(category) && !Permissions.has(message, "moderator"))
         ) {
-            Logs.security(__filename, `User ${message.author.id} (Ranks [${Permissions.get(message).join(", ")}]) tried to view category "${category}" when it requires higher rank.`);
+            Logs.security(`${this.name} command`, `User ${message.author.id} (Ranks [${Permissions.get(message).join(", ")}]) tried to view category "${category}" when it requires higher rank.`);
             return Messages.warning(message, `${l.perms_warn} \`${category}\``);
         }
 
