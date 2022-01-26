@@ -155,6 +155,7 @@
 		"perm_warn": "I have no permissions to connect or speak in this channel!",
 		"ytdl_error": "YTDL stream error",
 		"scdl_error": "SCDL stream error",
+		"url_error": "Readable URL stream error",
 		"get_error": "Error at getting song!",
 		"play_error": "Error at playing song!",
 		"started": "Started playing",
@@ -164,9 +165,12 @@
 		"added_many": ["Added", "songs to queue!"],
 		"cant_ytp": "Can't get this YouTube playlist!",
 		"cant_yts": "Can't get this song from YouTube!",
+		"cant_scp": "Can't get this SoundCloud playlist!",
+		"cant_scs": "Can't get this song from SoundCloud!",
+		"cant_url": "Can't get this URL!",
 		"cant_find": "Sorry, nothing found!",
 		"sc_disabled": "Sorry, SoundCloud is temporarily disabled, use YouTube instead.",
-		"raw_disabled": "Sorry, raw links curently is not supported!"
+		"not_media": "This is not a media file!"
 	},
 	"stop": {
 		"description": "Stops music",

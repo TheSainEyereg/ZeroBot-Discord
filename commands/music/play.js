@@ -15,7 +15,8 @@ const ytdl = require("ytdl-core");
 const scdl = require("soundcloud-downloader").default;
 const yts = require("yt-search");
 const Servers = require("../../core/Servers");
-const { ready } = require("libsodium-wrappers");
+const {Readable} = require("stream");
+const { default: axios } = require("axios");
 
 module.exports = {
 	name: "play",
@@ -84,34 +85,42 @@ module.exports = {
 			const player = createAudioPlayer();
 			let stream;
 			try {
-				switch (song.service) {
-					case "YouTube":
-						stream = await ytdl(song.id, {filter: "audioonly", quality: "highestaudio", highWaterMark: 1 << 25});
-						stream.on("error", e => {
-							Messages.critical(queue.textChannel, `${l.ytdl_error}: \n\`${e}\``);
-							console.error(e);
-							if (queue) {
-								queue.list.shift();
-								getMusicPlayer(queue.list[0]);
-								return;
-							}
-						});
-						break;
-					case "SoundCloud":
-						stream = await scdl.download(song.url, config.SCClient);
-						stream.on("error", e => {
-							Messages.critical(queue.textChannel, `${l.scdl_error}: \n\`${e}\``);
-							console.error(e);
-							if (queue) {
-								queue.list.shift();
-								getMusicPlayer(queue.list[0]);
-								return;
-							}
-						});
-						break;
-				
-					default:
-						break;
+				if (song.service === "YouTube") {
+					stream = await ytdl(song.id, {filter: "audioonly", quality: "highestaudio", highWaterMark: 1 << 25});
+					stream.on("error", e => {
+						Messages.critical(queue.textChannel, `${l.ytdl_error}: \n\`${e}\``);
+						console.error(e);
+						if (queue) {
+							queue.list.shift();
+							getMusicPlayer(queue.list[0]);
+							return;
+						}
+					});
+				}
+				if (song.service === "SoundCloud") {
+					stream = await scdl.download(song.url, config.SCClient);
+					stream.on("error", e => {
+						Messages.critical(queue.textChannel, `${l.scdl_error}: \n\`${e}\``);
+						console.error(e);
+						if (queue) {
+							queue.list.shift();
+							getMusicPlayer(queue.list[0]);
+							return;
+						}
+					});
+				}
+				if (song.service === "URL" || song.service.includes("URL")) {
+					const buffer = await axios.get(song.url, {responseType: 'arraybuffer'})
+					stream = Readable.from(buffer.data);
+					stream.on("error", e => {
+						Messages.critical(queue.textChannel, `${l.url_error}: \n\`${e}\``);
+						console.error(e);
+						if (queue) {
+							queue.list.shift();
+							getMusicPlayer(queue.list[0]);
+							return;
+						}
+					});
 				}
 			} catch (e) {
 				console.error(e);
@@ -261,7 +270,19 @@ module.exports = {
 				return Messages.critical(message, `SCDL Error!\n\`${e}\``)
 			}
 		} else*/ if (url.match(/^https?:\/\/.+$/gi)) {
-			return Messages.warning(message, l.raw_disabled)
+			await axios.get(url).then(res => {
+				if (!res.headers["content-type"].match(/^(audio|video)\/.+$/gi)) return Messages.warning(message, l.not_media);
+				const song = {
+					service: "URL",
+					title: "[URL] "+ (url.length > 50 ? url.substr(0, 50)+"..." : url),
+					thumbnail: "https://olejka.ru/s/03d291545d.png",
+					duration: 0,
+					url: url,
+					requested: message.author 
+				}
+				queue.list.push(song);
+				if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
+			}).catch(e =>  Messages.critical(message, `${l.cant_url}\n\`${e}\``));
 		} else {
 			const search = await yts.search(args.join(" "));
 			if (search.videos.length === 0) return Messages.warning(message, l.cant_find);
