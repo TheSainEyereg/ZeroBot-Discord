@@ -171,6 +171,7 @@
 	"stop": {
 		"description": "Stops music",
 		"nothing": "There is nothing playing now!",
+		"empty_warn": "There are no songs in the queue to stop.",
 		"join_warn": "You should join to voice channel to use this!",
 		"channel_warn": "You are in the wrong voice channel!",
 		"stopped": "Stopped music playback!",
@@ -179,6 +180,7 @@
 	"skip": {
 		"description": "Skips current song",
 		"nothing": "There is nothing playing that I could shuffle.",
+		"empty_warn": "There are no songs in the queue to skip.",
 		"join_warn":  "You need to be in a voice channel to use that command!",
 		"channel_warn": "You need to be in the same voice channel as the bot to use that command!",
 		"skipped": "Skipped",
