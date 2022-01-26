@@ -3,11 +3,11 @@ const Messages = require("../../core/Messages");
 
 module.exports = {
     name: "np",
-    description: "Now playing",
     aliases: ["now"],
     execute(message, args) {
+		const l = Localization.server(message.client, message.guild, this.name);
         const queue = message.client.queue.get(message.guild.id);
-        if (!queue) return Messages.warning(message, "There is nothing playing now!");
+        if (!queue) return Messages.warning(message, l.nothing);
 
         const song = queue.list[0];
         const du = {
@@ -23,9 +23,9 @@ module.exports = {
                 },
                 title: song.title,
                 url: song.url,
-                description: `Duration: \`${("0"+du.hours).slice(-2)}:${("0"+du.minutes).slice(-2)}:${("0"+du.seconds).slice(-2)}\`\nPlaying from ${song.service}`,
+                description: `${l.duration} \`${("0"+du.hours).slice(-2)}:${("0"+du.minutes).slice(-2)}:${("0"+du.seconds).slice(-2)}\`\n${l.source} ${song.service}`,
                 footer: {
-                    text: `Requested by ${song.requested.tag}`,
+                    text: `${l.requested} ${song.requested.tag}`,
                     iconURL: song.requested.displayAvatarURL({ format: "png", size: 256 })
                 }
             })

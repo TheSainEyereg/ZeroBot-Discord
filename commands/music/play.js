@@ -19,16 +19,15 @@ const { ready } = require("libsodium-wrappers");
 
 module.exports = {
     name: "play",
-    description: "Play music",
-    arguments: ["(url/serach query)"],
     optional: false, //if (!args[0]) //resume
     aliases: ["p"],
     async execute(message, args) {
+		let l = Localization.server(message.client, message.guild, this.name);
         const url = args[0] ? args[0] : "";
         const member = message.member;
         const channel = member?.voice.channel;
-        if (!channel) return Messages.warning(message, "You should join to voice channel to use this!");
-        if (!channel.permissionsFor(message.client.user).has("CONNECT") || !channel.permissionsFor(message.client.user).has("SPEAK")) return Messages.warning(message, "I have no permissions to connect or speak in this channel!");
+        if (!channel) return Messages.warning(message, l.join_warn);
+        if (!channel.permissionsFor(message.client.user).has("CONNECT") || !channel.permissionsFor(message.client.user).has("SPEAK")) return Messages.warning(message, l.perm_warn);
 
         const queueCounstruct = {
             guild: message.guild,
@@ -89,7 +88,7 @@ module.exports = {
                     case "YouTube":
                         stream = await ytdl(song.id, {filter: "audioonly", quality: "highestaudio", highWaterMark: 1 << 25});
 						stream.on("error", e => {
-							Messages.critical(queue.textChannel, `YTDL stream error: \n\`${e}\``);
+							Messages.critical(queue.textChannel, `${l.ytdl_error}: \n\`${e}\``);
 							console.error(e);
                             if (queue) {
                                 queue.list.shift();
@@ -101,7 +100,7 @@ module.exports = {
                     case "SoundCloud":
                         stream = await scdl.download(song.url, config.SCClient);
 						stream.on("error", e => {
-							Messages.critical(queue.textChannel, `SCDL stream error: \n\`${e}\``);
+							Messages.critical(queue.textChannel, `${l.scdl_error}: \n\`${e}\``);
 							console.error(e);
                             if (queue) {
                                 queue.list.shift();
@@ -116,7 +115,7 @@ module.exports = {
                 }
             } catch (e) {
                 console.error(e);
-                Messages.critical(queue.textChannel, `Error at getting song!\n\`${e}\``);
+                Messages.critical(queue.textChannel, `${l.get_error}\n\`${e}\``);
                 return;
             }
             try {
@@ -128,10 +127,10 @@ module.exports = {
                 player.play(queue.resource);
             } catch (e) {
                 console.error(e);
-                Messages.critical(queue.textChannel, `Error at playing song!\n\`${e}\``);
+                Messages.critical(queue.textChannel, `${l.play_error}\n\`${e}\``);
                 return;
-            }
-            Messages.advanced(queue.textChannel, "Started playing:", song.title, {custom: `Requested by ${song.requested.tag}`, icon: song.requested.displayAvatarURL({ format: "png", size: 256 })})
+            }// HERE_BLYAT
+            Messages.advanced(queue.textChannel, l.started, song.title, {custom: `${l.requested} ${song.requested.tag}`, icon: song.requested.displayAvatarURL({ format: "png", size: 256 })})
             return entersState(player, AudioPlayerStatus.Playing, 5_000);
         }
 
@@ -140,7 +139,7 @@ module.exports = {
             if (queue.list.length === 0) {
                 const connection = getVoiceConnection(message.guild.id);
                 if (queue.voiceChannel.members.size === 0) { // Think about moving this to the line 146
-                    Messages.regular(queue.textChannel, "All members left the channel! Music will be stoped!");
+                    Messages.regular(queue.textChannel, l.all_left);
                     message.client.queue.delete(message.guild.id);
                     connection.destroy();
                 }
@@ -169,7 +168,7 @@ module.exports = {
 
         if (url.match(/^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/playlist.+$/gi)) {
             const list = await yts({ listId: url.split("?list=")[1].split("&")[0]});
-            if (!list) return Messages.warning(message, "Can't get this YouTube playlist!");
+            if (!list) return Messages.warning(message, l.cant_ytp);
             const size = list.videos.length;
             for (let i = 0; i < (size > 200 ? 200 : size); i++) {
                 const info = list.videos[i];
@@ -184,11 +183,11 @@ module.exports = {
                 }
                 queue.list.push(song);
             }
-            Messages.success(message, `Added ${list.videos.length} songs to queue!`);
-        } else if (url.match(/^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/watch.+$/gi)) {
+            Messages.success(message, `${l.added_many[0]} ${list.videos.length} ${l.added_many[1]}`);
+        } else if (url.match(/^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com\/watch|youtu\.?be\/).+$/gi)) {
             try {
                 const info = await ytdl.getInfo(url);
-                if (!info) return Messages.warning(message, "Can't get this song from YouTube!");
+                if (!info) return Messages.warning(message, l.cant_yts);
                 const song = {
                     service: "YouTube",
                     title: info.videoDetails.title,
@@ -199,13 +198,13 @@ module.exports = {
                     requested: message.author 
                 }
                 queue.list.push(song);
-                if (queue.list.length > 1) return Messages.success(message, `Added \`${song.title}\` to queue!`);
+                if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
             } catch (e) {
                 console.error(e)
                 return Messages.critical(message, `YTDL Error!\n\`${e}\``)
             }
         } else if (url.match(/^(https?:\/\/)?(soundcloud\.com)\/(.*)$/gi)) {
-            Messages.warning(message, "Sorry, SoundCloud is  temporarily disabled, use YouTube instead.");
+            Messages.warning(message, l.sc_disabled);
         } else/*if (url.match(/^(https?:\/\/)?(soundcloud\.com)\/.*\/(sets|likes)(.*)$/gi)) {
             if (url.match(/^(https?:\/\/)?(soundcloud\.com)\/.*\/likes(.*)$/gi)) {
                 const list = await scdl.getLikes({profileUrl: url}, config.SCClient);
@@ -223,7 +222,7 @@ module.exports = {
                     }
                     queue.list.push(song);
                 }
-                Messages.success(message, `Added ${size} songs to queue!`);
+                Messages.success(message, `${l.added_many[0]} ${size} ${l.added_many[1]}`);
             } else {
                 const list = await scdl.getSetInfo(url);
                 if (!list) return Messages.warning(message, "Can't get this SoundCloud playlist!");
@@ -240,7 +239,7 @@ module.exports = {
                     }
                     queue.list.push(song);
                 }
-                Messages.success(message, `Added ${size} songs to queue!`);
+                Messages.success(message, `${l.added[0]} ${size} s${l.added[1]}`);
             }
             
         } else if (url.match(/^(https?:\/\/)?(soundcloud\.com)\/(.*)$/gi)) {
@@ -262,10 +261,10 @@ module.exports = {
                 return Messages.critical(message, `SCDL Error!\n\`${e}\``)
             }
         } else*/ if (url.match(/^https?:\/\/.+$/gi)) {
-            return Messages.warning(message, "Sorry, raw links curently is not supported!")
+            return Messages.warning(message, l.raw_disabled)
         } else {
             const search = await yts.search(args.join(" "));
-            if (search.videos.length === 0) return Messages.warning(message, "Sorry, nothing found!");
+            if (search.videos.length === 0) return Messages.warning(message, l.cant_find);
             const song = {
                 service: "YouTube",
                 title: search.videos[0].title,
@@ -276,7 +275,7 @@ module.exports = {
                 requested: message.author 
             }
             queue.list.push(song);
-            if (queue.list.length > 1) return Messages.success(message, `Added \`${song.title}\` to queue!`);
+            if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
         }
         if (!queue.playing) {startMusicPlayback()};
     }

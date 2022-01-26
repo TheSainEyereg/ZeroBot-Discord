@@ -1,14 +1,16 @@
 const { MessageEmbed } = require("discord.js");
+const Localization = require("../../core/Localization");
 const Messages = require("../../core/Messages");
 
 module.exports = {
 	name: "queue",
-	description: "Music queue",
 	aliases: ["q"],
+	optionsl: true,
 	execute(message, args) {
+		const l = Localization.server(message.client, message.guild, this.name);
 		const queue = message.client.queue.get(message.guild.id);
-		if (!queue) return Messages.warning(message, "There is nothing playing now!");
-		if (queue.list.length === 0) return Messages.warning(message, "Queue is empty!");
+		if (!queue) return Messages.warning(message, l.nothing);
+		if (queue.list.length === 0) return Messages.warning(message, l.empty);
 
 		const max = 15
 		const queueList = Array.from(queue.list)//.reverse();
@@ -32,10 +34,10 @@ module.exports = {
 		message.channel.send({embeds: [
 			new MessageEmbed({
 				color: Messages.colors.regular,
-				title: "Music queue",
-				description: list.join("\n") + (queueList.length > max ? `\n\n__**And ${queueList.length-max} more...**__` : ""),
+				title: l.queue,
+				description: list.join("\n") + (queueList.length > max ? `\n\n__**${l.and_more[0]} ${queueList.length-max} ${l.and_more[1]}**__` : ""),
 				footer:	{
-					text: `Total songs: ${queueList.length} | Total duration: ${("0"+du.hours).slice(-2)}:${("0"+du.minutes).slice(-2)}:${("0"+du.seconds).slice(-2)}`
+					text: `${l.total_s} ${queueList.length} | ${l.total_d} ${("0"+du.hours).slice(-2)}:${("0"+du.minutes).slice(-2)}:${("0"+du.seconds).slice(-2)} | ${queue.loop ? l["looping_"+queue.loop] : l.looping_disabled}`
 				}
 			})
 		]})

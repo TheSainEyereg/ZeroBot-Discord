@@ -147,6 +147,107 @@
         "cant_fetch": "Can't fetch ban! Make sure you gave correct ID!",
         "error": "Cant unban! Make sure you gave correct ID!"
     },
+
+	"play" : {
+		"description": "Play music",
+		"arguments": ["(url/serach query)"],
+		"join_warn": "You should join to voice channel to use this!",
+		"perm_warn": "I have no permissions to connect or speak in this channel!",
+		"ytdl_error": "YTDL stream error",
+		"scdl_error": "SCDL stream error",
+		"get_error": "Error at getting song!",
+		"play_error": "Error at playing song!",
+		"started": "Started playing",
+		"requested": "Requested by",
+		"all_left": "All members left the channel! Music will be stoped!",
+		"added": ["Added", "to queue!"],
+		"added_many": ["Added", "songs to queue!"],
+		"cant_ytp": "Can't get this YouTube playlist!",
+		"cant_yts": "Can't get this song from YouTube!",
+		"cant_find": "Sorry, nothing found!",
+		"sc_disabled": "Sorry, SoundCloud is temporarily disabled, use YouTube instead.",
+		"raw_disabled": "Sorry, raw links curently is not supported!"
+	},
+	"stop": {
+		"description": "Stops music",
+		"nothing": "There is nothing playing now!",
+		"join_warn": "You should join to voice channel to use this!",
+		"channel_warn": "You are in the wrong voice channel!",
+		"stopped": "Stopped music playback!",
+		"error": "Error at stopping music!"
+	},
+	"skip": {
+		"description": "Skips current song",
+		"nothing": "There is nothing playing that I could shuffle.",
+		"join_warn":  "You need to be in a voice channel to use that command!",
+		"channel_warn": "You need to be in the same voice channel as the bot to use that command!",
+		"skipped": "Skipped",
+		"error": "Error at skipping song!"
+	},
+	"queue": {
+		"description": "Music queue",
+		"queue": "Music queue",
+		"nothing": "There is nothing playing now!",
+		"empty": "Queue is empty!",
+		"and_more": ["And", "more..."],
+		"total_s": "Total songs:",
+		"total_d": "Total duration:",
+		"looping_disabled": "Looping disabled",
+		"looping_song": "Looping current song",
+		"looping_queue": "Looping queue"
+	},
+	"np": {
+		"description": "Now playing",
+		"nothing": "There is nothing playing now!",
+		"duration": "Duration:",
+		"source": "Playing from",
+		"requested": "Requested by"
+	},
+	"volume": {
+		"description": "Changes music volume",
+		"arguments": ["(volume)"],
+		"nothing": "There is nothing playing now!",
+		"join_warn":  "You need to be in a voice channel to use that command!",
+		"channel_warn": "You need to be in the same voice channel as the bot to use that command!",
+		"current": "The current volume is:",
+		"number_warn": "You must give number between 1 and 100!",
+		"small_warn": "Given volume is too small (min volume is 1)",
+		"big_warn": "Given volume is too big (max volume is 100)",
+		"overdrive_warn": "You should have rank moderator or higher to use overdrive!",
+		"ovrdrive_max_warn": "Max overdrive volume is 1000",
+		"set": ["Set", "volume to"]
+	},
+	"loop": {
+		"description": "Loops queue or current song",
+		"arguments": ["(\"song\" | \"queue\" | \"off)\""],
+		"nothing": "There is nothing playing that I could loop.",
+		"join_warn":  "You need to be in a voice channel to use that command!",
+		"channel_warn": "You need to be in the same voice channel as the bot to use that command!",
+		"empty_warn": "There are no songs in the queue to loop.",
+		"queue_warn": "The queue loop is already enabled.",
+		"song_warn": "The current song loop is already enabled.",
+		"off_warn": "The loop is already disabled.",
+		"switch_queue": "Looping the queue.",
+		"queue": "The queue loop has been enabled.",
+		"switch_song": "Looping the current song.",
+		"song": "The current song loop has been enabled.",
+		"switch_off": "Looping is now disabled.",
+		"off": "The loop has been disabled."
+	},
+	"shuffle": {
+		"description": "Shuffles queue",
+		"nothing": "There is nothing playing that I could shuffle.",
+		"join_warn":  "You need to be in a voice channel to use that command!",
+		"channel_warn": "You need to be in the same voice channel as the bot to use that command!",
+		"empty_warn": "There are no songs in the queue to shuffle.",
+		"shuffled": "Shuffled the queue."
+	},
+	"leave": {
+		"description": "Leaves voice channel",
+		"not_in": "I am not in a voice channel!",
+		"join_warn":  "You need to be in a voice channel to use that command!",
+		"channel_warn": "You need to be in the same voice channel as the bot to use that command!"
+	},
     
     "ascii": {
         "description": "Makes ascii art",
