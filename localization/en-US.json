@@ -1,152 +1,152 @@
 {
-    "name": "en-US",
-    "flag": ":flag_us:",
-    "alt": ["🇺🇸", "english", "usa"],
-    "main": {
-        "prefix": "My prefix for this guild is",
-        "cooldown": ["Please wait", "seconds"],
-        "not_found": "Command was not found!",
-        "help": ["For help type", "or"],
-        "rank_warn": "You should have one of this ranks to execute this!",
-        "rank_higher": "or higher",
-        "args_warn": "This command requires arguments!",
-        "error": "Error in command execution! SORRY!"
-    },
+	"name": "en-US",
+	"flag": ":flag_us:",
+	"alt": ["🇺🇸", "english", "usa"],
+	"main": {
+		"prefix": "My prefix for this guild is",
+		"cooldown": ["Please wait", "seconds"],
+		"not_found": "Command was not found!",
+		"help": ["For help type", "or"],
+		"rank_warn": "You should have one of this ranks to execute this!",
+		"rank_higher": "or higher",
+		"args_warn": "This command requires arguments!",
+		"error": "Error in command execution! SORRY!"
+	},
 
-    "prefix": {
-        "description": "Changes prefix",
-        "arguments": ["[prefix]"],
-        "max_warn": "Max prefix length is 3!",
-        "changed": "Successfuly changed prefix to"
-    },
-    "language": {
-        "description": "Changes ZeroBot language",
-        "arguments": ["(language)"],
-        "current": "This server language is",
-        "available": "Available languages",
-        "help": ["Type", "(language) to select language"],
-        "changed": "Successfuly changed language to"
-    },
-    "logs": {
-        "description": "Changes log channel",
-        "arguments": ["[#channel]"],
-        "current": "Current log channel is",
-        "not_setup": "No logs channel setup!",
-        "not_found": "No channel was found!",
-        "changed": "Successfuly changed log channel to"
-    },
-    "moderators": {
-        "description": "Add/remove moderator",
-        "arguments": ["add/remove", "[@user]"],
-        "not_found": "User was not found!",
-        "already_in": "User already is a moderator!",
-        "not_in": "User is not a moderator!",
-        "added": ["Added", "to list"],
-        "removed": ["Removed", "from list"],
-        "warn": "Please provide \"add\" or \"remove\" operators!"
-    },
+	"prefix": {
+		"description": "Changes prefix",
+		"arguments": ["[prefix]"],
+		"max_warn": "Max prefix length is 3!",
+		"changed": "Successfuly changed prefix to"
+	},
+	"language": {
+		"description": "Changes ZeroBot language",
+		"arguments": ["(language)"],
+		"current": "This server language is",
+		"available": "Available languages",
+		"help": ["Type", "(language) to select language"],
+		"changed": "Successfuly changed language to"
+	},
+	"logs": {
+		"description": "Changes log channel",
+		"arguments": ["[#channel]"],
+		"current": "Current log channel is",
+		"not_setup": "No logs channel setup!",
+		"not_found": "No channel was found!",
+		"changed": "Successfuly changed log channel to"
+	},
+	"moderators": {
+		"description": "Add/remove moderator",
+		"arguments": ["add/remove", "[@user]"],
+		"not_found": "User was not found!",
+		"already_in": "User already is a moderator!",
+		"not_in": "User is not a moderator!",
+		"added": ["Added", "to list"],
+		"removed": ["Removed", "from list"],
+		"warn": "Please provide \"add\" or \"remove\" operators!"
+	},
 
-    "github": {
-        "description": "Sending github repo of ZeroBot",
-        "repo": "ZeroBot GitHub",
-        "thanks": "Thank you all for contributing ;)"
-    },
-    "ping": {
-        "description": "Shows delay between server and ZeroBot"
-    },
-    "help": {
-        "description": "Displays list of commands",
-        "arguments": ["(category)"],
-        "cat_list": "Categories",
-        "cmd_list": "Commands of",
-        "help": ["Type", "(category) for category commands."],
-        "perms_alert": "If one or more items is crossed out, you don't have permission to these categories!",
-        "perms_warn": "You do not have access to category",
-        "not_found": ["Category", "not found!"]
-    },
-    "aliases" : {
-        "description": "Shows aliases for command",
-        "arguments": ["command"],
-        "not_found": "No command for aliases was found!",
-        "perms_warn": "You have no permission to view aliases for this command!",
-        "for": "Aliases for",
-        "alert": "You can use any alias to execute this command!"
-    },
-    "invite": {
-        "description": "Gives you invite for your server",
-        "invite": "Invite ZeroBot to server",
-        "thanks": "Thanks for joining ZeroBot community :)"
-    },
-    "server-info": {
-        "description": "Shows info about server.",
-        "about": "Info about",
-        "count": "Members count",
-        "verified": "Verified",
-        "owner": "Owner",
-        "desc" : "Description",
-        "no_desc": "No description.",
-        "created": "Created at",
-        "yes": "Yes", "no": "No"
-    },
-    "user-info": {
-        "description": "Shows info about user",
-        "arguments": ["(@user)"],
-        "about": "Info about",
-        "nick": "Nickname",
-        "bot": "Bot",
-        "roles": "Roles",
-        "created": "Created at",
-        "joined" : "Joined at",
-        "yes": "Yes", "no": "No"
-    },
+	"github": {
+		"description": "Sending github repo of ZeroBot",
+		"repo": "ZeroBot GitHub",
+		"thanks": "Thank you all for contributing ;)"
+	},
+	"ping": {
+		"description": "Shows delay between server and ZeroBot"
+	},
+	"help": {
+		"description": "Displays list of commands",
+		"arguments": ["(category)"],
+		"cat_list": "Categories",
+		"cmd_list": "Commands of",
+		"help": ["Type", "(category) for category commands."],
+		"perms_alert": "If one or more items is crossed out, you don't have permission to these categories!",
+		"perms_warn": "You do not have access to category",
+		"not_found": ["Category", "not found!"]
+	},
+	"aliases" : {
+		"description": "Shows aliases for command",
+		"arguments": ["command"],
+		"not_found": "No command for aliases was found!",
+		"perms_warn": "You have no permission to view aliases for this command!",
+		"for": "Aliases for",
+		"alert": "You can use any alias to execute this command!"
+	},
+	"invite": {
+		"description": "Gives you invite for your server",
+		"invite": "Invite ZeroBot to server",
+		"thanks": "Thanks for joining ZeroBot community :)"
+	},
+	"server-info": {
+		"description": "Shows info about server.",
+		"about": "Info about",
+		"count": "Members count",
+		"verified": "Verified",
+		"owner": "Owner",
+		"desc" : "Description",
+		"no_desc": "No description.",
+		"created": "Created at",
+		"yes": "Yes", "no": "No"
+	},
+	"user-info": {
+		"description": "Shows info about user",
+		"arguments": ["(@user)"],
+		"about": "Info about",
+		"nick": "Nickname",
+		"bot": "Bot",
+		"roles": "Roles",
+		"created": "Created at",
+		"joined" : "Joined at",
+		"yes": "Yes", "no": "No"
+	},
 
-    "clear": {
-        "description": "Removes messages that are not older than 2 weeks",
-        "arguments": ["[amount]"],
-        "no_amount": "You must give amount",
-        "max_amount": "Max amount is 99",
-        "deleted": ["Deleted", "messages!"],
-        "error": "Oh no"
-    },
-    "kick": {
-        "description": "Kicks user for given reason",
-        "arguments": ["[@user]", "(reason)"],
-        "not_found": "User was not found!",
-        "no_reason": "No reason",
-        "kicked": "Kicked",
-        "member": "Member",
-        "by": "By",
-        "channel": "Channel",
-        "reason": "Reason",
-        "has_kicked": "Kicked",
-        "cant_kick": "Can't kick member",
-        "error": "Kick error"
-    },
-    "ban": {
-        "description": "Bans user for given reason",
-        "arguments": ["[@user]", "(reason)"],
-        "not_found": "User was not found!",
-        "no_reason": "No reason",
-        "banned": "Banned",
-        "member": "Member",
-        "by": "By",
-        "channel": "Channel",
-        "reason": "Reason",
-        "has_banned": "Banned",
-        "cant_ban": "Can't ban member",
-        "error": "Ban error"
-    },
-    "unban": {
-        "description": "Unbans user by ID",
-        "unbanned": "Unbanned",
-        "user": "User",
-        "by": "By",
-        "channel": "Channel",
-        "reason": "Was banned for",
-        "has_unbanned": "Unbanned",
-        "cant_fetch": "Can't fetch ban! Make sure you gave correct ID!",
-        "error": "Cant unban! Make sure you gave correct ID!"
-    },
+	"clear": {
+		"description": "Removes messages that are not older than 2 weeks",
+		"arguments": ["[amount]"],
+		"no_amount": "You must give amount",
+		"max_amount": "Max amount is 99",
+		"deleted": ["Deleted", "messages!"],
+		"error": "Oh no"
+	},
+	"kick": {
+		"description": "Kicks user for given reason",
+		"arguments": ["[@user]", "(reason)"],
+		"not_found": "User was not found!",
+		"no_reason": "No reason",
+		"kicked": "Kicked",
+		"member": "Member",
+		"by": "By",
+		"channel": "Channel",
+		"reason": "Reason",
+		"has_kicked": "Kicked",
+		"cant_kick": "Can't kick member",
+		"error": "Kick error"
+	},
+	"ban": {
+		"description": "Bans user for given reason",
+		"arguments": ["[@user]", "(reason)"],
+		"not_found": "User was not found!",
+		"no_reason": "No reason",
+		"banned": "Banned",
+		"member": "Member",
+		"by": "By",
+		"channel": "Channel",
+		"reason": "Reason",
+		"has_banned": "Banned",
+		"cant_ban": "Can't ban member",
+		"error": "Ban error"
+	},
+	"unban": {
+		"description": "Unbans user by ID",
+		"unbanned": "Unbanned",
+		"user": "User",
+		"by": "By",
+		"channel": "Channel",
+		"reason": "Was banned for",
+		"has_unbanned": "Unbanned",
+		"cant_fetch": "Can't fetch ban! Make sure you gave correct ID!",
+		"error": "Cant unban! Make sure you gave correct ID!"
+	},
 
 	"play" : {
 		"description": "Play music",
@@ -248,59 +248,59 @@
 		"join_warn":  "You need to be in a voice channel to use that command!",
 		"channel_warn": "You need to be in the same voice channel as the bot to use that command!"
 	},
-    
-    "ascii": {
-        "description": "Makes ascii art",
-        "arguments": ["[text]"],
-        "error": "Error in ascii converting"
-    },
-    "avatar": {
-        "description": "Sends user avatar (1024x1024)",
-        "arguments": ["(@user)"],
-        "avatar": "Avatar of",
-        "error": "Error in getting/sending image"
-    },
-    "say": {
-        "description": "Repeat given words",
-        "arguments": ["[words]"],
-        "error": "Can't send empty message!"
-    },
-    "time": {
-        "description": "Sending current date and time in UTC format",
-        "time": "Current UTC date & time"
-    },
-    "coub": {
-        "description": "Shows random coub from given community",
-        "arguments": ["[community/url]", "(order: daily, rising, fresh, top, views)"],
-        "fetch_list_error": "Error in fetching coubs list!",
-        "get_list_error": "Error in getting coubs list!",
-        "get_coub_error": "Error in getting coub info!",
-        "fetch_coub_error": "Error in fetching coub info!",
-        "get_video_error": "Error in getting video!",
-        "order_warn": "Order is not correct, using default order.",
-        "communities": "Available communities",
-        "help": ["Type", "(community) for random video from specified community."]
-    },
+	
+	"ascii": {
+		"description": "Makes ascii art",
+		"arguments": ["[text]"],
+		"error": "Error in ascii converting"
+	},
+	"avatar": {
+		"description": "Sends user avatar (1024x1024)",
+		"arguments": ["(@user)"],
+		"avatar": "Avatar of",
+		"error": "Error in getting/sending image"
+	},
+	"say": {
+		"description": "Repeat given words",
+		"arguments": ["[words]"],
+		"error": "Can't send empty message!"
+	},
+	"time": {
+		"description": "Sending current date and time in UTC format",
+		"time": "Current UTC date & time"
+	},
+	"coub": {
+		"description": "Shows random coub from given community",
+		"arguments": ["[community/url]", "(order: daily, rising, fresh, top, views)"],
+		"fetch_list_error": "Error in fetching coubs list!",
+		"get_list_error": "Error in getting coubs list!",
+		"get_coub_error": "Error in getting coub info!",
+		"fetch_coub_error": "Error in fetching coub info!",
+		"get_video_error": "Error in getting video!",
+		"order_warn": "Order is not correct, using default order.",
+		"communities": "Available communities",
+		"help": ["Type", "(community) for random video from specified community."]
+	},
 
-    "coin": {
-        "description": "Flip a coin",
-        "got": "You got",
-        "heads": "head",
-        "tails": "tail"
-    },
-    "communism": {
-        "description": "Make someone communist",
-        "arguments": ["(@user)"],
-        "error": "Error in getting/drawing image"
-    },
-    "gay": {
-        "description": "Make someone gay",
-        "arguments": ["(@user)"],
-        "error": "Error in getting/drawing image"
-    },
-    "rip": {
-        "description": "Make tombstone with user (or with you)",
-        "arguments": ["(@user)", "(\"quick\")"],
-        "error": "Error in getting/drawing image"
-    }
+	"coin": {
+		"description": "Flip a coin",
+		"got": "You got",
+		"heads": "head",
+		"tails": "tail"
+	},
+	"communism": {
+		"description": "Make someone communist",
+		"arguments": ["(@user)"],
+		"error": "Error in getting/drawing image"
+	},
+	"gay": {
+		"description": "Make someone gay",
+		"arguments": ["(@user)"],
+		"error": "Error in getting/drawing image"
+	},
+	"rip": {
+		"description": "Make tombstone with user (or with you)",
+		"arguments": ["(@user)", "(\"quick\")"],
+		"error": "Error in getting/drawing image"
+	}
 }

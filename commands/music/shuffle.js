@@ -6,7 +6,7 @@ module.exports = {
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);
 		const queue = message.client.queue.get(message.guild.id);
-        const {channel} = message.member.voice;
+		const {channel} = message.member.voice;
 		if (!queue) return Messages.warning(message, l.nothing);
 		if (queue.list.length === 0) return Messages.warning(message, l.empty_warn);
 		if (!channel) return Messages.warning(message, l.join_warn);

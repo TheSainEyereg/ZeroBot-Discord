@@ -1,14 +1,14 @@
 const {MessageEmbed, Message, TextChannel, ColorResolvable} = require("discord.js");
 
 module.exports = {
-    colors: {
-        regular: "#ce38e8",
-        url: "#1194f0",
-        success: "#44e838",
-        complete: this.success,
-        warning: "#e5e838",
-        critical: "#e83838"
-    },
+	colors: {
+		regular: "#ce38e8",
+		url: "#1194f0",
+		success: "#44e838",
+		complete: this.success,
+		warning: "#e5e838",
+		critical: "#e83838"
+	},
 	/**
 	 * Regular message
 	 * @param {Message|TextChannel} source - A message or text channel to send the message to
@@ -19,11 +19,11 @@ module.exports = {
 	 * @returns Promise<Message> | Embed
 	 */
 	async regular(source, text, opt) {
-        const channel = source.channel || source;
-        const embed = new MessageEmbed().setColor(this.colors.regular);
-        opt && opt.big ? embed.setTitle(text) : embed.setDescription(text);
-        if (opt && opt.embed) return opt.embed(embed);
-        return channel.send({embeds: [embed]});
+		const channel = source.channel || source;
+		const embed = new MessageEmbed().setColor(this.colors.regular);
+		opt && opt.big ? embed.setTitle(text) : embed.setDescription(text);
+		if (opt && opt.embed) return opt.embed(embed);
+		return channel.send({embeds: [embed]});
 	},
 	/**
 	 * Advanced message
@@ -39,22 +39,22 @@ module.exports = {
 	 * @param {String} opt.icon - Custom footer icon (Works only is opt.custom is set)
 	 * @returns Promise<Message> | Embed
 	 */
-    async advanced(source, title, text, opt) {
-        const channel = source.channel || source;
-        const embed = new MessageEmbed()
-        title ? embed.setTitle(title) : null;
-        text ? embed.setDescription(text) : null;
-        opt && opt.color ? embed.setColor(opt.color) : embed.setColor(this.colors.regular);
-        opt && opt.url ? embed.setURL(opt.url) : null;
-        if (source.channel && opt && opt.author && !opt.icon) embed.setFooter(`For ${source.author.tag} :)`);
-        else if (source.channel && opt && opt.author) embed.setFooter(`For ${source.author.tag} :)`, source.author.displayAvatarURL({ format: "png", size: 256 }));
-        else if (opt && opt.custom && !opt.icon) embed.setFooter(opt.custom);
-        else if (opt && opt.custom && opt.icon) embed.setFooter(opt.custom, opt.icon);
-        else if (opt && opt.custom) embed.setFooter(opt.custom, source.client.user.displayAvatarURL({ format: "png", size: 256 }));
-        else embed.setFooter(`ZeroBot`, source.client.user.displayAvatarURL({ format: "png", size: 256 }));
-        if (opt && opt.embed) return opt.embed(embed);
-        return channel.send({embeds: [embed]});
-    },
+	async advanced(source, title, text, opt) {
+		const channel = source.channel || source;
+		const embed = new MessageEmbed()
+		title ? embed.setTitle(title) : null;
+		text ? embed.setDescription(text) : null;
+		opt && opt.color ? embed.setColor(opt.color) : embed.setColor(this.colors.regular);
+		opt && opt.url ? embed.setURL(opt.url) : null;
+		if (source.channel && opt && opt.author && !opt.icon) embed.setFooter(`For ${source.author.tag} :)`);
+		else if (source.channel && opt && opt.author) embed.setFooter(`For ${source.author.tag} :)`, source.author.displayAvatarURL({ format: "png", size: 256 }));
+		else if (opt && opt.custom && !opt.icon) embed.setFooter(opt.custom);
+		else if (opt && opt.custom && opt.icon) embed.setFooter(opt.custom, opt.icon);
+		else if (opt && opt.custom) embed.setFooter(opt.custom, source.client.user.displayAvatarURL({ format: "png", size: 256 }));
+		else embed.setFooter(`ZeroBot`, source.client.user.displayAvatarURL({ format: "png", size: 256 }));
+		if (opt && opt.embed) return opt.embed(embed);
+		return channel.send({embeds: [embed]});
+	},
 	/**
 	 * Message with a link
 	 * @param {Message|TextChannel} source - A message or text channel to send the message to
@@ -66,12 +66,12 @@ module.exports = {
 	 * @returns Promise<Message> | Embed
 	 */
 	async url(source, url, text, opt) {
-        const channel = source.channel || source;
-        const embed = new MessageEmbed().setColor(this.colors.url);
-        embed.setURL(url).setTitle(text);
-        opt && opt.footer ? embed.setFooter(opt.footer) : null;
-        if (opt && opt.embed) return opt.embed(embed);
-        return channel.send({embeds: [embed]});
+		const channel = source.channel || source;
+		const embed = new MessageEmbed().setColor(this.colors.url);
+		embed.setURL(url).setTitle(text);
+		opt && opt.footer ? embed.setFooter(opt.footer) : null;
+		if (opt && opt.embed) return opt.embed(embed);
+		return channel.send({embeds: [embed]});
 	},
 	/**
 	 * Success message
@@ -94,7 +94,7 @@ module.exports = {
 	/**
 	 * @deprecated Use success instead
 	 */
-    async complete(source,text, opt) {
+	async complete(source,text, opt) {
 		console.warn(`[Messages.js] complete() is deprecated, use success() instead.`);
 		return this.success(source, text, opt);
 	},
@@ -108,14 +108,14 @@ module.exports = {
 	 * @param {CallableFunction} opt.embed - A function that returns an embed object and prevents the text from being sent
 	 * @returns Promise<Message> | Embed
 	 */
-    async warning (source, text, opt) {
-        const channel = source.channel || source;
-        const embed = new MessageEmbed().setColor(this.colors.warning);
-        !(opt && opt.color) ? text = `${text} :warning:` : text = `${text} :yellow_circle:`;
-        opt && opt.big ? embed.setTitle(text) : embed.setDescription(text);
-        if (opt && opt.embed) return opt.embed(embed);
-        return channel.send({embeds: [embed]});
-    },
+	async warning (source, text, opt) {
+		const channel = source.channel || source;
+		const embed = new MessageEmbed().setColor(this.colors.warning);
+		!(opt && opt.color) ? text = `${text} :warning:` : text = `${text} :yellow_circle:`;
+		opt && opt.big ? embed.setTitle(text) : embed.setDescription(text);
+		if (opt && opt.embed) return opt.embed(embed);
+		return channel.send({embeds: [embed]});
+	},
 	/**
 	 * Critical message
 	 * @param {Message|TextChannel} source - A message or text channel to send the message to
@@ -126,12 +126,12 @@ module.exports = {
 	 * @param {CallableFunction} opt.embed - A function that returns an embed object and prevents the text from being sent
 	 * @returns Promise<Message> | Embed
 	 */
-    async critical (source, text, opt) {
-        const channel = source.channel || source;
-        const embed = new MessageEmbed().setColor(this.colors.critical);
-        !(opt && opt.color) ? text = `${text} :no_entry_sign:` : text = `${text} :red_circle:`;
-        opt && opt.big ? embed.setTitle(text) : embed.setDescription(text);
-        if (opt && opt.embed) return opt.embed(embed);
-        return channel.send({embeds: [embed]});
-    }
+	async critical (source, text, opt) {
+		const channel = source.channel || source;
+		const embed = new MessageEmbed().setColor(this.colors.critical);
+		!(opt && opt.color) ? text = `${text} :no_entry_sign:` : text = `${text} :red_circle:`;
+		opt && opt.big ? embed.setTitle(text) : embed.setDescription(text);
+		if (opt && opt.embed) return opt.embed(embed);
+		return channel.send({embeds: [embed]});
+	}
 };

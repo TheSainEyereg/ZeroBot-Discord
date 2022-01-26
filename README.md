@@ -24,15 +24,15 @@ npm i
 3. Create `config.json` like this: 
 ```json
 {
-    "token": "YourToken",
-    "superusers": ["YourDiscordId"],
-    "invite": "YourBotInviteLinlk",
-    "defaults": {
-        "prefix": "z.",
-        "language": "en-US",
-        "user-cooldown": 3,
-        "default-volume": 80
-    }
+	"token": "YourToken",
+	"superusers": ["YourDiscordId"],
+	"invite": "YourBotInviteLinlk",
+	"defaults": {
+		"prefix": "z.",
+		"language": "en-US",
+		"user-cooldown": 3,
+		"default-volume": 80
+	}
 }
 ```
 _p.s. I recommend set defaults to that values._

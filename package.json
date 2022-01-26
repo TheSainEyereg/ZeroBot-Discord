@@ -4,34 +4,34 @@
   "description": "Multifunctional discord bot",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+	"start": "node index.js"
   },
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/TheSainEyereg/ZeroBot-Discord.git",
-    "raw": "https://github.com/TheSainEyereg/ZeroBot-Discord"
+	"type": "git",
+	"url": "git+https://github.com/TheSainEyereg/ZeroBot-Discord.git",
+	"raw": "https://github.com/TheSainEyereg/ZeroBot-Discord"
   },
   "keywords": [
-    "Bot",
-    "Discord",
-    "ZeroBot",
-    "Zero"
+	"Bot",
+	"Discord",
+	"ZeroBot",
+	"Zero"
   ],
   "author": "Olejka",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/TheSainEyereg/ZeroBot-Discord/issues"
+	"url": "https://github.com/TheSainEyereg/ZeroBot-Discord/issues"
   },
   "homepage": "https://github.com/TheSainEyereg/ZeroBot-Discord#readme",
   "dependencies": {
-    "@discordjs/voice": "^0.7.2",
-    "axios": "^0.24.0",
-    "canvas": "^2.8.0",
-    "discord.js": "^13.3.1",
-    "libsodium-wrappers": "^0.7.9",
-    "opusscript": "^0.0.8",
-    "soundcloud-downloader": "^1.0.0",
-    "yt-search": "^2.10.2",
-    "ytdl-core": "^4.10.0"
+	"@discordjs/voice": "^0.7.2",
+	"axios": "^0.24.0",
+	"canvas": "^2.8.0",
+	"discord.js": "^13.3.1",
+	"libsodium-wrappers": "^0.7.9",
+	"opusscript": "^0.0.8",
+	"soundcloud-downloader": "^1.0.0",
+	"yt-search": "^2.10.2",
+	"ytdl-core": "^4.10.0"
   }
 }

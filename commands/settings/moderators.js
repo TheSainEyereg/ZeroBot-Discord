@@ -6,11 +6,11 @@ const Localization = require("../../core/Localization")
 module.exports = {
 	name: "moderators",
 	aliases: ["moderator", "mods"],
-    access: "administrator",
+	access: "administrator",
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);
 		const moderators = Servers.get(message.guild.id, "moderators");
-        const user = message.mentions.users.first();
+		const user = message.mentions.users.first();
 		if (!user) return Messages.critical(message, l.not_found);
 
 		switch (args[0]) {
