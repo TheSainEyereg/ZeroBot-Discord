@@ -79,14 +79,14 @@ module.exports = {
 	 * @param {String} text - The text to send
 	 * @param {Object} [opt] - Optional parameters
 	 * @param {Boolean} opt.big - The text to send in a bigger font 
-	 * @param {Boolean} opt.color - Replaces emoji with a solid color emoji
+	 * @param {Boolean} opt.circle - Replaces emoji with a solid color emoji
 	 * @param {CallableFunction} opt.embed - A function that returns an embed object and prevents the text from being sent
 	 * @returns Promise<Message> | Embed
 	 */
 	async success (source, text, opt) {
 		const channel = source.channel || source;
 		const embed = new MessageEmbed().setColor(this.colors.success);
-		!(opt && opt.color) ? text = `${text} :white_check_mark:` : text = `${text} :green_circle:`;
+		!(opt && opt.circle) ? text = `:white_check_mark: ${text}` : text = `:green_circle: ${text}`;
 		opt && opt.big ? embed.setTitle(text) : embed.setDescription(text);
 		if (opt && opt.embed) return opt.embed(embed);
 		return channel.send({embeds: [embed]});
@@ -104,14 +104,14 @@ module.exports = {
 	 * @param {String} text - The text to send
 	 * @param {Object} [opt] - Optional parameters
 	 * @param {Boolean} opt.big - The text to send in a bigger font
-	 * @param {Boolean} opt.color - Replaces emoji with a solid color emoji
+	 * @param {Boolean} opt.circle - Replaces emoji with a solid color emoji
 	 * @param {CallableFunction} opt.embed - A function that returns an embed object and prevents the text from being sent
 	 * @returns Promise<Message> | Embed
 	 */
 	async warning (source, text, opt) {
 		const channel = source.channel || source;
 		const embed = new MessageEmbed().setColor(this.colors.warning);
-		!(opt && opt.color) ? text = `${text} :warning:` : text = `${text} :yellow_circle:`;
+		!(opt && opt.circle) ? text = `:warning: ${text}` : text = `:yellow_circle: ${text}`;
 		opt && opt.big ? embed.setTitle(text) : embed.setDescription(text);
 		if (opt && opt.embed) return opt.embed(embed);
 		return channel.send({embeds: [embed]});
@@ -122,14 +122,14 @@ module.exports = {
 	 * @param {String} text - The text to send
 	 * @param {Object} [opt] - Optional parameters
 	 * @param {Boolean} opt.big - The text to send in a bigger font 
-	 * @param {Boolean} opt.color - Replaces emoji with a solid color emoji
+	 * @param {Boolean} opt.circle - Replaces emoji with a solid color emoji
 	 * @param {CallableFunction} opt.embed - A function that returns an embed object and prevents the text from being sent
 	 * @returns Promise<Message> | Embed
 	 */
 	async critical (source, text, opt) {
 		const channel = source.channel || source;
 		const embed = new MessageEmbed().setColor(this.colors.critical);
-		!(opt && opt.color) ? text = `${text} :no_entry_sign:` : text = `${text} :red_circle:`;
+		!(opt && opt.circle) ? text = `:no_entry_sign: ${text}` : text = `:red_circle: ${text}`;
 		opt && opt.big ? embed.setTitle(text) : embed.setDescription(text);
 		if (opt && opt.embed) return opt.embed(embed);
 		return channel.send({embeds: [embed]});
