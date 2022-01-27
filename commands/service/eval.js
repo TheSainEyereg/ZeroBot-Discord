@@ -8,12 +8,16 @@ module.exports = {
 	arguments: ["[Code]"],
 	access: "superuser",
 	async execute(message, args) {
+		const code = args.join(" ");
 		try {
-			eval(args.join(" "));
+			const result = await eval(code);
+			if (code.includes("message.channel.send(") || code.includes("message.edit(") || code.includes("message.delete(") || code.includes("Messsages.")) return;
+			Messages.success(message, `Result: \`\`\`${result}\`\`\``);
 		} catch (e) {
 			console.error(e);
 			Logs.critical(`${this.name} command`, `Error in eval: ${e}`);
 			Messages.critical(message, `Error in eval:\n\`\`\`${e}\`\`\``);
 		}
+
 	}
 };
