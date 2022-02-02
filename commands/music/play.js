@@ -25,6 +25,7 @@ module.exports = {
 	async execute(message, args) {
 		let l = Localization.server(message.client, message.guild, this.name);
 		const url = args[0] ? args[0] : "";
+		const client = message.client;
 		const member = message.member;
 		const channel = member?.voice.channel;
 		if (!channel) return Messages.warning(message, l.join_warn);
@@ -72,6 +73,9 @@ module.exports = {
 							message.client.queue.delete(message.guild.id);
 						}
 					}
+					queue.voiceChannel = client.member.voice.channel;
+					console.log(queue.voiceChannel.id);
+					console.log(`[${message.guild.name}] Voice connection state changed to ${newState.status}`);
 				});
 				return connection;
 			} catch (error) {
@@ -160,7 +164,7 @@ module.exports = {
 				}, 120000);
 				return;
 			}
-			const connection = await joinChannel(channel);
+			const connection = await joinChannel(queue.voiceChannel);
 			queue.player = await getMusicPlayer(queue.list[0]);
 			connection.subscribe(queue.player);
 			queue.playing = true;
