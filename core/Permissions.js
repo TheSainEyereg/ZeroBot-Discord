@@ -12,9 +12,9 @@ module.exports = {
 	get(message) {
 		const perms = [];
 		if (superusers.includes(message.author.id)) perms.push("superuser");
-		if (message.author.id == message.guild.ownerID) perms.push("owner");
-		if (message.member.permissions.has("ADMINISTRATOR")) perms.push("administrator");
-		if (Servers.get(message.guild.id, "moderators").includes(message.author.id)) perms.push("moderator");
+		if (message.channel.type !== "DM" && message.author.id == message.guild.ownerID) perms.push("owner");
+		if (message.channel.type !== "DM" && message.member.permissions.has("ADMINISTRATOR")) perms.push("administrator");
+		if (message.channel.type !== "DM" && Servers.get(message.guild.id, "moderators").includes(message.author.id)) perms.push("moderator");
 		perms.push("user");
 		return perms;
 	},
@@ -26,17 +26,21 @@ module.exports = {
 	 * @returns {Array} - The permission level of the user
 	*/
 	getId(message, userID, callback) { //fuck v13
+		if (message.channel.type === "DM") throw Error("Cannot get permission level by id in DM!");
 		if (!parseInt(userID)) throw Error("Id is not int!");
-		if (typeof callback === "undefined") throw Error("No callback!");
-		message.guild.members.fetch(userID).then(member => {
-			const perms = [];
-			if (superusers.includes(userID)) perms.push("superuser");
-			if (member.id == message.guild.ownerId) perms.push("owner");
-			if (member.permissions.has("ADMINISTRATOR")) perms.push("administrator");
-			if (Servers.get(message.guild.id, "moderators").includes(userID)) perms.push("moderator");
-			perms.push("user");
-			callback(perms)
-		})
+		if (typeof callback === "function") {
+			message.guild.members.fetch(userID).then(member => {
+				const perms = [];
+				if (superusers.includes(userID)) perms.push("superuser");
+				if (member.id == message.guild.ownerId) perms.push("owner");
+				if (member.permissions.has("ADMINISTRATOR")) perms.push("administrator");
+				if (Servers.get(message.guild.id, "moderators").includes(userID)) perms.push("moderator");
+				perms.push("user");
+				callback(perms);
+			}).catch(e => {throw Error(e)});
+		} else {
+			
+		}
 	},
 	/**
 	 * Check if a message author has a permission level

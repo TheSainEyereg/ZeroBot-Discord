@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const Messages = require("../../core/Messages");
+const Localization = require("../../core/Localization");
 
 module.exports = {
 	name: "np",
