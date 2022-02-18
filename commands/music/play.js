@@ -73,9 +73,7 @@ module.exports = {
 							message.client.queue.delete(message.guild.id);
 						}
 					}
-					queue.voiceChannel = client.member.voice.channel;
-					console.log(queue.voiceChannel.id);
-					console.log(`[${message.guild.name}] Voice connection state changed to ${newState.status}`);
+					queue.voiceChannel = newState.subscription?.connection?.joinConfig?.channelId;
 				});
 				return connection;
 			} catch (error) {
