@@ -16,8 +16,8 @@ module.exports = {
 		const got_l = client.localization.get(lang);
 		const default_l = client.localization.get(defaults.language);
 		if (item && !(got_l[item] || default_l[item])) throw Error("Item does not exists!");
-		if (item) return Object.keys(got_l).every(item => Object.keys(default_l).includes(item)) && Object.keys(default_l).every(item => Object.keys(got_l).includes(item)) ? got_l[item] : default_l[item];
-		return got_l ? got_l : default_l;
+		if (item) return got_l[item] || default_l[item];
+		return got_l || default_l;
 	},
 	/**
 	 * Get Object with localized strings for a specific server
