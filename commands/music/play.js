@@ -72,8 +72,10 @@ module.exports = {
 							connection.destroy();
 							message.client.queue.delete(message.guild.id);
 						}
+
+						const newChannelId = newState.subscription?.connection?.joinConfig?.channelId;
+						if (queue && (newChannelId !== queue.voiceChannel.id)) queue.voiceChannel =  message.guild.channels.cache.get(newChannelId);
 					}
-					queue.voiceChannel = newState.subscription?.connection?.joinConfig?.channelId;
 				});
 				return connection;
 			} catch (error) {
@@ -147,13 +149,14 @@ module.exports = {
 
 		async function startMusicPlayback() {
 			if (!queue) return;
+			const connection = await joinChannel(queue.voiceChannel);
+			if (queue.voiceChannel.members.size === 1) {
+				Messages.warning(queue.textChannel, l.all_left);
+				message.client.queue.delete(message.guild.id);
+				connection.destroy();
+				return;
+			}
 			if (queue.list.length === 0) {
-				const connection = getVoiceConnection(message.guild.id);
-				if (queue.voiceChannel.members.size === 0) { // Think about moving this to the line 146
-					Messages.regular(queue.textChannel, l.all_left);
-					message.client.queue.delete(message.guild.id);
-					connection.destroy();
-				}
 				setTimeout(_ => {
 					if (queue?.list?.length === 0) {
 						message.client.queue.delete(message.guild.id);
@@ -162,7 +165,6 @@ module.exports = {
 				}, 120000);
 				return;
 			}
-			const connection = await joinChannel(queue.voiceChannel);
 			queue.player = await getMusicPlayer(queue.list[0]);
 			connection.subscribe(queue.player);
 			queue.playing = true;
