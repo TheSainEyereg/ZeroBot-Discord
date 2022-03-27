@@ -210,6 +210,7 @@
 		"requested": "Requested by"
 	},
 	"save": {
+		"description": "Sends music link to your DM",
 		"nothing": "There is nothing playing now!",
 		"dm_disabled": "You have disabled direct messages, open it to use this command!",
 		"sent": "I have sent you a DM with the current song!"
