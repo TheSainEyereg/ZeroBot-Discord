@@ -11,7 +11,7 @@ module.exports = {
 		const code = args.join(" ");
 		try {
 			const result = await eval(code);
-			if (code.includes("message.channel.send(") || code.includes("message.edit(") || code.includes("message.delete(") || code.includes("Messsages.")) return;
+			if (code.includes("message.edit(") || code.includes("message.delete(")) return;
 			Messages.success(message, `Result: \`\`\`${result}\`\`\``);
 		} catch (e) {
 			console.error(e);
