@@ -8,7 +8,7 @@ module.exports = {
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);
 		const queue = message.client.queue.get(message.guild.id);
-		if (!queue) return Messages.warning(message, l.nothing);
+		if (!queue || queue.list.length === 0) return Messages.warning(message, l.nothing);
 
 		const song = queue.list[0];
 		const du = {

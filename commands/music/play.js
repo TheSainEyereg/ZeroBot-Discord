@@ -5,18 +5,17 @@ const {
 	entersState,
 	AudioPlayerStatus,
 	createAudioPlayer,
+	NoSubscriberBehavior,
 	createAudioResource,
 	StreamType,
 	getVoiceConnection
 } = require("@discordjs/voice");
 const config = require("../../config.json");
 const Messages = require("../../core/Messages");
-const ytdl = require("ytdl-core");
-const scdl = require("soundcloud-downloader").default;
-const yts = require("yt-search");
 const Servers = require("../../core/Servers");
-const {Readable} = require("stream");
+const play = require("play-dl");
 const { default: axios } = require("axios");
+const { Readable } = require("stream");
 
 module.exports = {
 	name: "play",
@@ -24,7 +23,7 @@ module.exports = {
 	aliases: ["p"],
 	async execute(message, args) {
 		let l = Localization.server(message.client, message.guild, this.name);
-		const url = args[0] ? args[0] : "";
+		const url = args.join(" ");
 		const client = message.client;
 		const member = message.member;
 		const channel = member?.voice.channel;
@@ -86,25 +85,21 @@ module.exports = {
 
 		async function getMusicPlayer(song) {
 			if (!song) return;
-			const player = createAudioPlayer();
-			let stream;
-			try {
-				if (song.service === "YouTube") {
-					stream = await ytdl(song.id, {filter: "audioonly", quality: "highestaudio", highWaterMark: 1 << 25});
-					stream.on("error", e => {
-						Messages.critical(queue.textChannel, `${l.ytdl_error}: \n\`${e}\``);
-						console.error(e);
-						if (queue) {
-							queue.list.shift();
-							getMusicPlayer(queue.list[0]);
-							return;
-						}
-					});
+			const player = createAudioPlayer({
+				behaviors: {
+					noSubscriber: NoSubscriberBehavior.Play
 				}
-				if (song.service === "SoundCloud") {
-					stream = await scdl.download(song.url, config.SCClient);
+			});
+			let stream;
+			let streamType;
+			try {
+				if (song.service === "YouTube" || song.service === "SoundCloud") {
+					const pdl = await play.stream(song.url);
+					stream = pdl.stream;
+					streamType = pdl.type;
 					stream.on("error", e => {
-						Messages.critical(queue.textChannel, `${l.scdl_error}: \n\`${e}\``);
+						if (e.message === "Premature close") return;
+						Messages.critical(queue.textChannel, `${l.playdl_error}: \n\`${e}\``);
 						console.error(e);
 						if (queue) {
 							queue.list.shift();
@@ -133,7 +128,7 @@ module.exports = {
 			}
 			try {
 				queue.resource = createAudioResource(stream, {
-				  inputType: StreamType.Arbitrary,
+				  inputType: streamType || StreamType.Arbitrary,
 				  inlineVolume: true
 				});
 				queue.resource.volume.setVolumeLogarithmic(queue.volume * 0.5)
@@ -179,129 +174,93 @@ module.exports = {
 			});
 		}
 
-		if (url.match(/^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com|youtu\.?be)\/playlist.+$/gi)) {
-			const list = await yts({ listId: url.split("?list=")[1].split("&")[0]});
-			if (!list) return Messages.warning(message, l.cant_ytp);
-			const size = list.videos.length;
-			for (let i = 0; i < (size > 200 ? 200 : size); i++) {
-				const info = list.videos[i];
-				const song = {
-					service: "YouTube",
-					title: info.title,
-					thumbnail: info.thumbnail,
-					duration: info.duration.seconds,
-					url: "https://www.youtube.com/watch?v="+info.videoId,
-					id: info.videoId,
-					requested: message.author 
-				}
-				queue.list.push(song);
+		play.setToken({
+			soundcloud: {
+				clientId: config.SCClient || (await play.getFreeClientID())
 			}
-			Messages.success(message, `${l.added_many[0]} ${list.videos.length} ${l.added_many[1]}`);
-		} else if (url.match(/^(https?:\/\/)?(www\.)?(m\.)?(youtube\.com\/watch|youtu\.?be\/).+$/gi)) {
+		})
+		
+		const type = await play.validate(url);
+
+		if (type === "yt_video") {
 			try {
-				const info = await ytdl.getInfo(url);
+				const info = await play.video_info(url);
 				if (!info) return Messages.warning(message, l.cant_yts);
 				const song = {
 					service: "YouTube",
-					title: info.videoDetails.title,
-					thumbnail: info.videoDetails.thumbnails[0].url,
-					duration: parseInt(info.videoDetails.lengthSeconds),
-					url: info.videoDetails.video_url,
-					id: info.videoDetails.videoId,
+					title: info.video_details.title,
+					thumbnail: info.video_details.thumbnails[0].url,
+					duration: parseInt(info.video_details.durationInSec),
+					url: info.video_details.url,
+					id: info.video_details.id,
 					requested: message.author 
 				}
 				queue.list.push(song);
 				if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
 			} catch (e) {
 				console.error(e)
-				return Messages.critical(message, `YTDL Error!\n\`${e}\``)
+				return Messages.critical(message, `Can't get YT video info:\n\`${e}\``)
 			}
-		} else if (url.match(/^(https?:\/\/)?(soundcloud\.com)\/(.*)$/gi)) {
-			Messages.warning(message, l.sc_disabled);
-		} else/*if (url.match(/^(https?:\/\/)?(soundcloud\.com)\/.*\/(sets|likes)(.*)$/gi)) {
-			if (url.match(/^(https?:\/\/)?(soundcloud\.com)\/.*\/likes(.*)$/gi)) {
-				const list = await scdl.getLikes({profileUrl: url}, config.SCClient);
-				if (!list) return Messages.warning(message, "Can't get this SoundCloud playlist!");
-				const size = list.collection.length;
-				for (let i = 0; i < (size > 200 ? 200 : size); i++) {
-					const info = list.collection[i].track;
-					const song = {
-						service: "SoundCloud",
-						title: `${info.title} (${info.user.username})`,
-						thumbnail: info.artwork_url ? info.artwork_url : info.user.avatar_url,
-						duration: Math.floor(info.duration/1000),
-						url: info.permalink_url,
-						requested: message.author 
-					}
-					queue.list.push(song);
-				}
-				Messages.success(message, `${l.added_many[0]} ${size} ${l.added_many[1]}`);
-			} else {
-				const list = await scdl.getSetInfo(url);
-				if (!list) return Messages.warning(message, "Can't get this SoundCloud playlist!");
-				const size = list.tracks.length
-				for (let i = 0; i < (size > 200 ? 200 : size); i++) {
-					const info = list.tracks[i];
-					const song = {
-						service: "SoundCloud",
-						title: `${info.title} (${info.user.username})`,
-						thumbnail: info.artwork_url ? info.artwork_url : info.user.avatar_url,
-						duration: Math.floor(info.duration/1000),
-						url: info.permalink_url,
-						requested: message.author 
-					}
-					queue.list.push(song);
-				}
-				Messages.success(message, `${l.added[0]} ${size} s${l.added[1]}`);
-			}
-			
-		} else if (url.match(/^(https?:\/\/)?(soundcloud\.com)\/(.*)$/gi)) {
+		} else if (type === "yt_playlist") {
 			try {
-				const info = await scdl.getInfo(url);
-				if (!info) return Messages.warning(message, "Can't get this song from SoundCloud!");
-				const song = {
-					service: "SoundCloud",
-					title: `${info.title} (${info.user.username})`,
-					thumbnail: info.artwork_url ? info.artwork_url : info.user.avatar_url,
-					duration: Math.floor(info.duration/1000),
-					url: info.permalink_url,
-					requested: message.author 
+				const playlist = await play.playlist_info(url);
+				const list = await playlist.all_videos();
+
+				if (!list) return Messages.warning(message, l.cant_ytp);
+
+				for (let i = 0; i < (list.length > 200 ? 200 : list.length); i++) {
+					const info = list[i];
+					const song = {
+						service: "YouTube",
+						title: info.title,
+						thumbnail: info.thumbnails[0].url,
+						duration: info.durationInSec,
+						url: info.url,
+						id: info.id,
+						requested: message.author 
+					}
+					queue.list.push(song);
 				}
-				queue.list.push(song);
-				if (queue.list.length > 1) return Messages.success(message, `Added \`${song.title}\` to queue!`);
+				Messages.success(message, `${l.added_many[0]} ${list.length} ${l.added_many[1]}`);
 			} catch (e) {
 				console.error(e)
-				return Messages.critical(message, `SCDL Error!\n\`${e}\``)
+				return Messages.critical(message, `Can't get YT playlist info:\n\`${e}\``)
 			}
-		} else*/ if (url.match(/^https?:\/\/.+$/gi)) {
+		} else if (type === "so_track") {
+			Messages.warning(message, l.sc_disabled);
+		} else if (type === "so_playlist") {
+			Messages.warning(message, l.sc_disabled);
+		} else if (type === "search") {
+			const result = await play.search(url, {limit: 1});
+			if (result.length === 0) return Messages.warning(message, l.cant_find);
+			const song = {
+				service: "YouTube",
+				title: result[0].title,
+				thumbnail: result[0].thumbnails[0].url,
+				duration: result[0].durationInSec,
+				url: result[0].url,
+				id: result[0].id,
+				requested: message.author 
+			}
+			queue.list.push(song);
+			if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
+
+		} else {
 			await axios.get(url).then(res => {
 				if (!res.headers["content-type"].match(/^(audio|video)\/.+$/gi)) return Messages.warning(message, l.not_media);
 				const song = {
 					service: "URL",
 					title: "[URL] "+ (url.length > 50 ? url.substr(0, 50)+"..." : url),
-					thumbnail: "https://olejka.ru/s/03d291545d.png",
-					duration: 0,
+					thumbnail: "https://olejka.ru/r/03d291545d.png",
+					duration: 0, // Idk how to calculate this
 					url: url,
 					requested: message.author 
 				}
 				queue.list.push(song);
 				if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
 			}).catch(e =>  Messages.critical(message, `${l.cant_url}\n\`${e}\``));
-		} else {
-			const search = await yts.search(args.join(" "));
-			if (search.videos.length === 0) return Messages.warning(message, l.cant_find);
-			const song = {
-				service: "YouTube",
-				title: search.videos[0].title,
-				thumbnail: search.videos[0].thumbnail,
-				duration: search.videos[0].duration.seconds,
-				url: search.videos[0].url,
-				id: search.videos[0].videoId,
-				requested: message.author 
-			}
-			queue.list.push(song);
-			if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
 		}
+
 		if (!queue.playing) {startMusicPlayback()};
 	}
 }

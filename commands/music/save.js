@@ -5,7 +5,7 @@ const {MessageEmbed} = require("discord.js");
 module.exports = {
 	name: "save",
 	description: "Send current playing song to DM",
-	aliases: ["s", "like", "favorite", "fav"],
+	aliases: ["sav", "like", "favorite", "fav"],
 	async execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);
 		const queue = message.client.queue.get(message.guild.id);

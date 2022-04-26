@@ -46,12 +46,12 @@ module.exports = {
 		text ? embed.setDescription(text) : null;
 		opt && opt.color ? embed.setColor(opt.color) : embed.setColor(this.colors.regular);
 		opt && opt.url ? embed.setURL(opt.url) : null;
-		if (source.channel && opt && opt.author && !opt.icon) embed.setFooter(`For ${source.author.tag} :)`);
-		else if (source.channel && opt && opt.author) embed.setFooter(`For ${source.author.tag} :)`, source.author.displayAvatarURL({ format: "png", size: 256 }));
-		else if (opt && opt.custom && !opt.icon) embed.setFooter(opt.custom);
-		else if (opt && opt.custom && opt.icon) embed.setFooter(opt.custom, opt.icon);
-		else if (opt && opt.custom) embed.setFooter(opt.custom, source.client.user.displayAvatarURL({ format: "png", size: 256 }));
-		else embed.setFooter(`ZeroBot`, source.client.user.displayAvatarURL({ format: "png", size: 256 }));
+		if (source.channel && opt && opt.author && !opt.icon) embed.setFooter({text: `For ${source.author.tag} :)`});
+		else if (source.channel && opt && opt.author) embed.setFooter({text: `For ${source.author.tag} :)`, iconURL: source.author.displayAvatarURL({ format: "png", size: 256 })});
+		else if (opt && opt.custom && !opt.icon) embed.setFooter({text: opt.custom});
+		else if (opt && opt.custom && opt.icon) embed.setFooter({text: opt.custom, iconURL: opt.icon});
+		else if (opt && opt.custom) embed.setFooter({text: opt.custom, iconURL: source.client.user.displayAvatarURL({ format: "png", size: 256 })});
+		else embed.setFooter({text: `ZeroBot`, iconURL: source.client.user.displayAvatarURL({ format: "png", size: 256 })});
 		if (opt && opt.embed) return opt.embed(embed);
 		return channel.send({embeds: [embed]});
 	},
@@ -69,7 +69,7 @@ module.exports = {
 		const channel = source.channel || source;
 		const embed = new MessageEmbed().setColor(this.colors.url);
 		embed.setURL(url).setTitle(text);
-		opt && opt.footer ? embed.setFooter(opt.footer) : null;
+		opt && opt.footer ? embed.setFooter({text: opt.footer}) : null;
 		if (opt && opt.embed) return opt.embed(embed);
 		return channel.send({embeds: [embed]});
 	},
@@ -90,13 +90,6 @@ module.exports = {
 		opt && opt.big ? embed.setTitle(text) : embed.setDescription(text);
 		if (opt && opt.embed) return opt.embed(embed);
 		return channel.send({embeds: [embed]});
-	},
-	/**
-	 * @deprecated Use success instead
-	 */
-	async complete(source,text, opt) {
-		console.warn(`[Messages.js] complete() is deprecated, use success() instead.`);
-		return this.success(source, text, opt);
 	},
 	/**
 	 * Warning message
