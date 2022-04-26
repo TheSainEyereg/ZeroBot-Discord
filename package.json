@@ -28,6 +28,7 @@
     "axios": "^0.26.1",
     "canvas": "^2.9.1",
     "discord.js": "^13.6.0",
+    "ffmpeg-static": "^4.4.1",
     "libsodium-wrappers": "^0.7.10",
     "opusscript": "^0.0.8",
     "play-dl": "^1.9.4"

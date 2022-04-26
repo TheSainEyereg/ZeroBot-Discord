@@ -32,7 +32,8 @@ npm i
 		"language": "en-US",
 		"user-cooldown": 3,
 		"default-volume": 80
-	}
+	},
+	"SCClientId": "Your SoundCloud client id"
 }
 ```
 _p.s. I recommend set defaults to that values._
