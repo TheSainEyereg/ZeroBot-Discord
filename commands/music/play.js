@@ -122,8 +122,9 @@ module.exports = {
 					});
 				}
 			} catch (e) {
-				console.error(e);
 				Messages.critical(queue.textChannel, `${l.get_error}\n\`${e}\``);
+				queue.list.shift();
+				getMusicPlayer(queue.list[0]);
 				return;
 			}
 			try {
