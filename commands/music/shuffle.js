@@ -12,8 +12,9 @@ module.exports = {
 		if (!channel) return Messages.warning(message, l.join_warn);
 		if (channel !== queue.voiceChannel) return Messages.warning(message, l.channel_warn);
 
-		// shuffle queue arrray
-		queue.list = queue.list.sort(() => Math.random() - 0.5);
+		// shuffle queue arrray excluding current song which is at index 0
+		queue.list = [...queue.list.slice(0, 1), ...queue.list.slice(1).sort(() => Math.random() - 0.5)];	
+
 		Messages.success(message, l.shuffled);
 	}
 };
