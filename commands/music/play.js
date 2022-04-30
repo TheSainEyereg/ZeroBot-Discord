@@ -103,8 +103,7 @@ module.exports = {
 						console.error(e);
 						if (queue) {
 							queue.list.shift();
-							getMusicPlayer(queue.list[0]);
-							return;
+							return getMusicPlayer(queue.list[0]);
 						}
 					});
 				}
@@ -116,16 +115,14 @@ module.exports = {
 						console.error(e);
 						if (queue) {
 							queue.list.shift();
-							getMusicPlayer(queue.list[0]);
-							return;
+							return getMusicPlayer(queue.list[0]);
 						}
 					});
 				}
 			} catch (e) {
 				Messages.critical(queue.textChannel, `${l.get_error}\n\`${e}\``);
 				queue.list.shift();
-				getMusicPlayer(queue.list[0]);
-				return;
+				return getMusicPlayer(queue.list[0]);
 			}
 			try {
 				queue.resource = createAudioResource(stream, {
