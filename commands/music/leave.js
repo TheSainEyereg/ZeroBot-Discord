@@ -13,11 +13,12 @@ module.exports = {
 		if (!channel) return Messages.warning(message, l.join_warn);
 		if (channel != queue.voiceChannel) return Messages.warning(message, l.channel_warn);
 		
-		// try {
-		// 	queue.player.stop();
-		// } catch (e) {}
+		try {
+			if (queue.player) queue.player.stop();
+		} catch (e) {}
 
 		connection.destroy();
 		message.client.queue.delete(message.guild.id);
+		delete queue;
 	}
 }
