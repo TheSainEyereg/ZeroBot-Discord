@@ -17,11 +17,13 @@ module.exports = {
 		if (!args[0]) return Messages.regular(message, `${l.current} **${queue.volume * 100}**`);
 
 		const volume = parseInt(args[0]) / 100;
-		const overdrive = args[1] == "overdrive";
+
 		if (!volume) return Messages.warning(message, l.number_warn);
 		if (volume<0.01) return Messages.warning(message, l.small_warn);
+
+		const overdrive = volume > 1 && Permissions.has(message, "superuser");
+		
 		if (volume>1 && !overdrive) return Messages.warning(message, l.big_warn);
-		if (overdrive && !Permissions.has(message, "moderator")) return Messages.warning(message, l.overdrive_warn);
 		if (volume>10 && overdrive) return Messages.warning(message, l.ovrdrive_max_warn);
 
 		queue.resource.volume.setVolumeLogarithmic(volume * 0.5);

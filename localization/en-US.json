@@ -223,7 +223,6 @@
 		"number_warn": "You must give number between 1 and 100!",
 		"small_warn": "Given volume is too small (min volume is 1)",
 		"big_warn": "Given volume is too big (max volume is 100)",
-		"overdrive_warn": "You should have rank moderator or higher to use overdrive!",
 		"ovrdrive_max_warn": "Max overdrive volume is 1000",
 		"set": ["Set", "volume to"]
 	},
