@@ -12,13 +12,13 @@ module.exports = {
 		if (connection?.state.status != VoiceConnectionStatus.Ready) return Messages.warning(message, l.not_in);
 		if (!channel) return Messages.warning(message, l.join_warn);
 		if (channel != queue.voiceChannel) return Messages.warning(message, l.channel_warn);
-		
-		try {
-			if (queue.player) queue.player.stop();
-		} catch (e) {}
 
-		connection.destroy();
-		message.client.queue.delete(message.guild.id);
-		delete queue;
+		try {
+			queue.clear();
+			connection.destroy();
+		} catch (e) {
+			Messages.critical(message, `${l.error}\n\`${e}\``);
+			console.error(e);
+		}
 	}
 }

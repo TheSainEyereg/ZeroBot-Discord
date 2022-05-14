@@ -9,7 +9,7 @@ module.exports = {
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);
 		const queue = message.client.queue.get(message.guild.id);
-		if (!queue) return Messages.warning(message, l.nothing);
+		if (!queue?.playing) return Messages.warning(message, l.nothing);
 		if (queue.list.length === 0) return Messages.warning(message, l.empty);
 
 		function getDuration(seconds) {

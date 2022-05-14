@@ -2,7 +2,7 @@ const Messages = require("../../core/Messages");
 
 module.exports = {
 	name: "shuffle",
-	aliases: ["shuf"],
+	aliases: ["shuff", "shuf"],
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);
 		const queue = message.client.queue.get(message.guild.id);

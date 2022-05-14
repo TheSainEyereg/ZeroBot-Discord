@@ -40,7 +40,14 @@ module.exports = {
 			loop: false,
 			playing: false,
 			skiping: [],
-			list: []
+			list: [],
+
+			clear() {
+				const wasPlaying = this.playing;
+				this.list = [];
+				this.playing = false;
+				if (wasPlaying) this.player.stop();
+			}
 		}
 		if (!message.client.queue.get(message.guild.id)) message.client.queue.set(message.guild.id, queueCounstruct);
 		const queue = message.client.queue.get(message.guild.id);
@@ -62,14 +69,14 @@ module.exports = {
 								await entersState(connection, VoiceConnectionStatus.Connecting, 5_000);
 							} catch {
 								connection.destroy();
-								message.client.queue.delete(message.guild.id);
+								queue.clear();
 							}
 						} else if (connection.rejoinAttempts < 5) {
 							await wait((connection.rejoinAttempts + 1) * 5_000);
 							connection.rejoin();
 						} else {
 							connection.destroy();
-							message.client.queue.delete(message.guild.id);
+							queue.clear();
 						}
 
 						const newChannelId = newState.subscription?.connection?.joinConfig?.channelId;
@@ -97,28 +104,24 @@ module.exports = {
 					const pdl = await play.stream(song.url);
 					stream = pdl.stream;
 					streamType = pdl.type;
-					stream.on("error", e => {
-						if (e.message === "Premature close") return;
-						Messages.critical(queue.textChannel, `${l.playdl_error}: \n\`${e}\``);
-						console.error(e);
-						if (queue) {
-							queue.list.shift();
-							return getMusicPlayer(queue.list[0]);
-						}
-					});
 				}
 				if (song.service === "URL" || song.service.includes("URL")) {
 					const buffer = await axios.get(song.url, {responseType: 'arraybuffer'})
 					stream = Readable.from(buffer.data);
-					stream.on("error", e => {
-						Messages.critical(queue.textChannel, `${l.url_error}: \n\`${e}\``);
-						console.error(e);
-						if (queue) {
-							queue.list.shift();
-							return getMusicPlayer(queue.list[0]);
-						}
-					});
 				}
+				stream.on("error", e => {
+					if (!queue.playing) return;
+					Messages.critical(queue.textChannel, `${l.stream_error}: \n\`${e}\``);
+					console.error(e);
+					if (queue.list.length > 0) {
+						queue.list.shift();
+						return getMusicPlayer(queue.list[0]);
+					}
+				});
+				stream.on("end", () => {
+					console.log("Stream ended");
+				})
+				queue.stream = stream;
 			} catch (e) {
 				Messages.critical(queue.textChannel, `${l.get_error}\n\`${e}\``);
 				queue.list.shift();
@@ -134,7 +137,8 @@ module.exports = {
 			} catch (e) {
 				console.error(e);
 				Messages.critical(queue.textChannel, `${l.play_error}\n\`${e}\``);
-				return;
+				queue.list.shift();
+				return getMusicPlayer(queue.list[0]);
 			}// HERE_BLYAT
 			Messages.advanced(queue.textChannel, l.started, song.title, {custom: `${l.requested} ${song.requested.tag}`, icon: song.requested.displayAvatarURL({ format: "png", size: 256 })})
 			return entersState(player, AudioPlayerStatus.Playing, 5_000);
@@ -145,14 +149,14 @@ module.exports = {
 			const connection = await joinChannel(queue.voiceChannel);
 			if (queue.voiceChannel.members.size === 1) {
 				Messages.warning(queue.textChannel, l.all_left);
-				message.client.queue.delete(message.guild.id);
+				queue.clear();
 				connection.destroy();
 				return;
 			}
 			if (queue.list.length === 0) {
 				setTimeout(_ => {
 					if (!queue.playing && queue?.list?.length === 0) {
-						message.client.queue.delete(message.guild.id);
+						queue.clear();
 						if (connection?.state.status == "ready") connection.destroy();
 					}
 				}, 120000);
@@ -164,7 +168,7 @@ module.exports = {
 	
 			queue.player.on(AudioPlayerStatus.Idle, _ => {
 				queue.playing = false;
-				if (queue !== null) {
+				if (queue.list.length > 0) {
 					if (queue.loop == "queue") queue.list.push(queue.list[0]);
 					if (queue.loop != "song") queue.list.shift();
 					startMusicPlayback();
