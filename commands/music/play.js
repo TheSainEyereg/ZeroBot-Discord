@@ -22,13 +22,13 @@ module.exports = {
 	optional: false, //if (!args[0]) //resume
 	aliases: ["p"],
 	async execute(message, args) {
-		let l = Localization.server(message.client, message.guild, this.name);
+		let l = Localization.server(client, message.guild, this.name);
 		const url = args.join(" ");
 		const client = message.client;
 		const member = message.member;
 		const channel = member?.voice.channel;
 		if (!channel) return Messages.warning(message, l.join_warn);
-		if (!channel.permissionsFor(message.client.user).has("CONNECT") || !channel.permissionsFor(message.client.user).has("SPEAK")) return Messages.warning(message, l.perm_warn);
+		if (!channel.permissionsFor(client.user).has("CONNECT") || !channel.permissionsFor(client.user).has("SPEAK")) return Messages.warning(message, l.perm_warn);
 
 		const queueCounstruct = {
 			guild: message.guild,
@@ -46,11 +46,14 @@ module.exports = {
 				const wasPlaying = this.playing;
 				this.list = [];
 				this.playing = false;
-				if (wasPlaying) this.player.stop();
+				try {
+					if (wasPlaying) this.player.stop();
+				} catch (e) {}
+				client.queue.delete(this.guild.id);
 			}
 		}
-		if (!message.client.queue.get(message.guild.id)) message.client.queue.set(message.guild.id, queueCounstruct);
-		const queue = message.client.queue.get(message.guild.id);
+		if (!client.queue.has(message.guild.id)) client.queue.set(message.guild.id, queueCounstruct);
+		const queue = client.queue.get(message.guild.id);
 
 		async function joinChannel(channel) {
 			if (getVoiceConnection(message.guild.id)?.state.status === VoiceConnectionStatus.Ready) return getVoiceConnection(message.guild.id);
@@ -110,7 +113,7 @@ module.exports = {
 					stream = Readable.from(buffer.data);
 				}
 				stream.on("error", e => {
-					if (!queue.playing) return;
+					if (!queue?.playing) return;
 					Messages.critical(queue.textChannel, `${l.stream_error}: \n\`${e}\``);
 					console.error(e);
 					if (queue.list.length > 0) {
@@ -145,7 +148,7 @@ module.exports = {
 		}
 
 		async function startMusicPlayback() {
-			if (!queue) return;
+			if (!queue?.playing) return;
 			const connection = await joinChannel(queue.voiceChannel);
 			if (queue.voiceChannel.members.size === 1) {
 				Messages.warning(queue.textChannel, l.all_left);
@@ -263,6 +266,6 @@ module.exports = {
 			}).catch(e =>  Messages.critical(message, `${l.cant_url}\n\`${e}\``));
 		}
 
-		if (!queue.playing) {startMusicPlayback()};
+		if (!queue?.playing) {startMusicPlayback()};
 	}
 }
