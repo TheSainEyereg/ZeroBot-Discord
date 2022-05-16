@@ -22,7 +22,7 @@ module.exports = {
 	optional: false, //if (!args[0]) //resume
 	aliases: ["p"],
 	async execute(message, args) {
-		let l = Localization.server(client, message.guild, this.name);
+		let l = Localization.server(message.client, message.guild, this.name);
 		const url = args.join(" ");
 		const client = message.client;
 		const member = message.member;
