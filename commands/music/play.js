@@ -148,7 +148,7 @@ module.exports = {
 		}
 
 		async function startMusicPlayback() {
-			if (!queue?.playing) return;
+			if (queue.list.length === 0) return;
 			const connection = await joinChannel(queue.voiceChannel);
 			if (queue.voiceChannel.members.size === 1) {
 				Messages.warning(queue.textChannel, l.all_left);
