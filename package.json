@@ -31,6 +31,7 @@
     "ffmpeg-static": "^4.4.1",
     "libsodium-wrappers": "^0.7.10",
     "opusscript": "^0.0.8",
-    "play-dl": "^1.9.4"
+    "play-dl": "^1.9.4",
+    "ym-api": "^1.2.1"
   }
 }

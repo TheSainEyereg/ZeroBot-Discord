@@ -17,6 +17,10 @@ const play = require("play-dl");
 const { default: axios } = require("axios");
 const { Readable } = require("stream");
 
+const {YMApi} = require("ym-api");
+const ymApi = new YMApi();
+
+
 module.exports = {
 	name: "play",
 	optional: false, //if (!args[0]) //resume
@@ -109,26 +113,38 @@ module.exports = {
 					streamType = pdl.type;
 				}
 				if (song.service === "URL" || song.service.includes("URL")) {
-					const buffer = await axios.get(song.url, {responseType: 'arraybuffer'})
+					const buffer = await axios.get(song.url, {responseType: "arraybuffer"})
+					stream = Readable.from(buffer.data);
+				}
+				if (song.service === "Yandex") {
+					const downloadInfo = await ymApi.getTrackDownloadInfo(song.id);
+					console.log(downloadInfo);
+					const streamUrl = await ymApi.getTrackDirectLink(downloadInfo[0].downloadInfoUrl);
+					console.log(streamUrl);
+
+					const buffer = await axios.get(streamUrl, {responseType: "arraybuffer"})
 					stream = Readable.from(buffer.data);
 				}
 				stream.on("error", e => {
 					if (!queue?.playing) return;
 					Messages.critical(queue.textChannel, `${l.stream_error}: \n\`${e}\``);
 					console.error(e);
+					queue.list.shift();
 					if (queue.list.length > 0) {
-						queue.list.shift();
 						return getMusicPlayer(queue.list[0]);
 					}
 				});
 				stream.on("end", () => {
-					console.log("Stream ended");
+					//console.log("Stream ended");
 				})
 				queue.stream = stream;
 			} catch (e) {
+				console.error(e);
 				Messages.critical(queue.textChannel, `${l.get_error}\n\`${e}\``);
 				queue.list.shift();
-				return getMusicPlayer(queue.list[0]);
+				if (queue.list.length > 0) {
+					return getMusicPlayer(queue.list[0]);
+				}
 			}
 			try {
 				queue.resource = createAudioResource(stream, {
@@ -183,7 +199,14 @@ module.exports = {
 			soundcloud: {
 				clientId: config.SCClient || (await play.getFreeClientID())
 			}
-		})
+		});
+
+		if (config.YMClient?.uid && config.YMClient?.access_token) {
+			await ymApi.init({
+				access_token: config.YMClient.access_token,
+				uid: config.YMClient.uid
+			})
+		}
 		
 		const type = await play.validate(url);
 
@@ -203,8 +226,8 @@ module.exports = {
 				queue.list.push(song);
 				if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
 			} catch (e) {
-				console.error(e)
-				return Messages.critical(message, `Can't get YT video info:\n\`${e}\``)
+				console.error(e);
+				return Messages.critical(message, `${l.cant_yts}\n\`${e}\``);
 			}
 		} else if (type === "yt_playlist") {
 			try {
@@ -226,10 +249,10 @@ module.exports = {
 					}
 					queue.list.push(song);
 				}
-				Messages.success(message, `${l.added_many[0]} ${list.length} ${l.added_many[1]}`);
+				Messages.success(message, `${l.added_many[0]} ${list.length > 200 ? 200 : list.length} ${l.added_many[1]}`);
 			} catch (e) {
-				console.error(e)
-				return Messages.critical(message, `Can't get YT playlist info:\n\`${e}\``)
+				console.error(e);
+				return Messages.critical(message, `${l.cant_ytp}\n\`${e}\``);
 			}
 		} else if (type === "so_track") {
 			Messages.warning(message, l.sc_disabled);
@@ -250,6 +273,82 @@ module.exports = {
 			queue.list.push(song);
 			if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
 
+		} else if (url.match(/(https:\/\/)?(www.)?music\.yandex\.ru\/album\/([0-9]+)\/track\/[0-9]+/gi)) { // YM track
+			return Messages.warning(message, l.ym_disabled);
+			try {
+				const id = url.match(/track\/([0-9]+)/gi)[0].replace("track/", "");
+				const info = (await ymApi.getTrack(id))[0];
+	
+				if (!info) return Messages.warning(message, l.cant_yms);
+	
+				const song = {
+					service: "Yandex",
+					title: info.artists.map(artist => artist.name).join(", ") + " - " + info.title + (info.version ? ` (${info.version})` : ""),
+					thumbnail: "https://olejka.ru/r/950e92f598.png",
+					duration: Math.floor(info.durationMs / 1000),
+					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
+					id: info.id,
+					requested: message.author
+				}
+				queue.list.push(song);
+				if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
+			} catch (e) {
+				console.error(e);
+				return Messages.critical(message, `${l.cant_yms}\n\`${e}\``);
+			}
+		} else if (url.match(/(https:\/\/)?(www\.)?music\.yandex\.ru\/users\/([A-Za-z0-9-_]+)(\/playlists\/[0-9]+)?/gi)) { // YM playlist
+			return Messages.warning(message, l.ym_disabled);
+			try {
+				const username = url.match(/users\/([A-Za-z0-9-_]+)/gi)[0].replace("users/", "");
+				const playlist = url.match(/playlists\/([0-9]+)/gi)[0]?.replace("playlists/", "") || "3";
+	
+				const list = (await ymApi.getPlaylist(playlist, username)).tracks?.map(track => track.track);
+				if (!list) return Messages.warning(message, l.cant_ymp);
+	
+				for (let i = 0; i < (list.length > 200 ? 200 : list.length); i++) {
+					const info = list[i];
+					const song = {
+						service: "Yandex",
+						title: info.artists.map(artist => artist.name).join(", ") + " - " + info.title + (info.version ? ` (${info.version})` : ""),
+						thumbnail: "https://olejka.ru/r/950e92f598.png",
+						duration: Math.floor(info.durationMs / 1000),
+						url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
+						id: info.id,
+						requested: message.author
+					}
+					queue.list.push(song);
+					if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${list.length > 200 ? 200 : list.length}\` ${l.added[1]}`);
+				}
+			} catch(e) {
+				console.error(e);
+				return Messages.critical(message, `${l.cant_yms}\n\`${e}\``);
+			}
+		} else if (url.match(/(https:\/\/)?(www.)?music\.yandex\.ru\/album\/[0-9]+/gi)) { // YM album
+			return Messages.warning(message, l.ym_disabled);
+			// try {
+			// 	const album = url.match(/album\/([0-9]+)/gi)[0].replace("album/", "");
+
+			// 	const list = (await ymApi.getAlbum(album)).tracks?.map(track => track.track);
+			// 	if (!list) return Messages.warning(message, l.cant_yma);
+	
+			// 	for (let i = 0; i < (list.length > 200 ? 200 : list.length); i++) {
+			// 		const info = list[i];
+			// 		const song = {
+			// 			service: "Yandex",
+			// 			title: info.artists.map(artist => artist.name).join(", ") + " - " + info.title + (info.version ? ` (${info.version})` : ""),
+			// 			thumbnail: "https://olejka.ru/r/950e92f598.png",
+			// 			duration: Math.floor(info.durationMs / 1000),
+			//			url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
+			// 			id: info.id,
+			// 			requested: message.author
+			// 		}
+			// 		queue.list.push(song);
+			// 		if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${list.length > 200 ? 200 : list.length}\` ${l.added[1]}`);
+			// 	}
+			// } catch (e) {
+			// 	console.error(e);
+			// 	return Messages.critical(message, `${l.cant_yma}\n\`${e}\``);
+			// }
 		} else {
 			await axios.get(url).then(res => {
 				if (!res.headers["content-type"].match(/^(audio|video)\/.+$/gi)) return Messages.warning(message, l.not_media);
