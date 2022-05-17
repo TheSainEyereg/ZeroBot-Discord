@@ -31,7 +31,7 @@ module.exports = {
 		
 		for (let i = 0; i < (queueList.length > max ? max : queueList.length); i++) {
 			const song = queueList[i];
-			list.push(`${i == 0 ? ":arrow_forward:" : `**${i}.**`} **${song.title}** \`${getDurationString(song.duration)}\``);
+			list.push(`${i == 0 ? ":arrow_forward:" : `**${i}.**`} **${song.title}** ${getDurationString(song.duration)} \`(${song.requested.tag})\``);
 		}
 		
 		const totalDuration = queueList.map(e => e.duration).reduce((a,b) => a + b);
