@@ -171,7 +171,6 @@
 		"cant_url": "Can't get this URL!",
 		"cant_find": "Sorry, nothing found!",
 		"sc_disabled": "Sorry, SoundCloud is temporarily disabled, use YouTube instead.",
-		"ym_disabled": "Sorry, Yandex Music is temporarily disabled, use YouTube instead.",
 		"not_media": "This is not a media file!"
 	},
 	"stop": {
