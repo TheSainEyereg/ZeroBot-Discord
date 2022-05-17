@@ -1,7 +1,7 @@
 const axios = require('axios');
-const Logs = require("../../core/Logs");
-const Messages = require("../../core/Messages");
-const Localization = require("../../core/Localization");
+const Logs = require("../../components/Logs");
+const Messages = require("../../components/Messages");
+const Localization = require("../../components/Localization");
 
 module.exports = {
 	name: "coub",

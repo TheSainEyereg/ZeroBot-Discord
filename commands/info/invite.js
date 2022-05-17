@@ -1,5 +1,5 @@
-const Messages = require("../../core/Messages");
-const Localization = require("../../core/Localization");
+const Messages = require("../../components/Messages");
+const Localization = require("../../components/Localization");
 
 module.exports = {
 	name: "invite",

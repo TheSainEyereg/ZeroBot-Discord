@@ -1,4 +1,4 @@
-const Messages = require("../../core/Messages.js")
+const Messages = require("../../components/Messages.js")
 
 module.exports = {
 	name: "args-info",

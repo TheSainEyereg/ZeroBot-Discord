@@ -1,6 +1,6 @@
-const Messages = require("../../core/Messages");
-const Servers = require("../../core/Servers");
-const Permissions = require("../../core/Permissions.js");
+const Messages = require("../../components/Messages");
+const Servers = require("../../components/Servers");
+const Permissions = require("../../components/Permissions.js");
 
 module.exports = {
 	name: "volume",

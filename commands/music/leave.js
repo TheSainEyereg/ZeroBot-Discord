@@ -1,4 +1,4 @@
-const Messages = require("../../core/Messages");
+const Messages = require("../../components/Messages");
 const {getVoiceConnection, VoiceConnectionStatus} = require("@discordjs/voice");
 
 module.exports = {

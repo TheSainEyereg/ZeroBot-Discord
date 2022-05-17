@@ -1,6 +1,6 @@
-const Messages = require("../../core/Messages");
-const Permissions = require("../../core/Permissions");
-const Localization = require("../../core/Localization");
+const Messages = require("../../components/Messages");
+const Permissions = require("../../components/Permissions");
+const Localization = require("../../components/Localization");
 
 module.exports = {
 	name: "aliases",

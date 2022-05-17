@@ -1,7 +1,7 @@
 const { MessageEmbed } = require("discord.js")
-const Messages = require("../../core/Messages");
-const Servers = require("../../core/Servers");
-const Localization = require("../../core/Localization");
+const Messages = require("../../components/Messages");
+const Servers = require("../../components/Servers");
+const Localization = require("../../components/Localization");
 
 module.exports = {
 	name: "ban",

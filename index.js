@@ -2,11 +2,11 @@ const {Client, Collection, Intents} = require("discord.js");
 const fs = require("fs");
 const {token, defaults} = require("./config.json");
 
-const Messages = global.Messages = require("./core/Messages.js");
-const Logs = global.Logs = require("./core/Logs.js");
-const Servers = global.Servers = require("./core/Servers.js");
-const Permissions = global.Permissions = require("./core/Permissions.js");
-const Localization = global.Localization = require("./core/Localization.js")
+const Messages = global.Messages = require("./components/Messages.js");
+const Logs = global.Logs = require("./components/Logs.js");
+const Servers = global.Servers = require("./components/Servers.js");
+const Permissions = global.Permissions = require("./components/Permissions.js");
+const Localization = global.Localization = require("./components/Localization.js")
 
 const client = new Client({
 	intents: [

@@ -1,6 +1,6 @@
 const Canvas = require("canvas");
-const Logs = require("../../core/Logs");
-const Localization = require("../../core/Localization");
+const Logs = require("../../components/Logs");
+const Localization = require("../../components/Localization");
 
 module.exports = {
 	name: "rip",

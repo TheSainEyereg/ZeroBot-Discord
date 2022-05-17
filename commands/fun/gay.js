@@ -1,5 +1,5 @@
 const Canvas = require("canvas");
-const Localization = require("../../core/Localization");
+const Localization = require("../../components/Localization");
 
 module.exports = {
 	name: "gay",

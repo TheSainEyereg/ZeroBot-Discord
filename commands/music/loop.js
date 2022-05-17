@@ -1,4 +1,4 @@
-const Messages = require("../../core/Messages");
+const Messages = require("../../components/Messages");
 
 module.exports = {
 	name: "loop",

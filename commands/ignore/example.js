@@ -1,4 +1,4 @@
-const Messages = require("../../core/Messages"); // Requires "Messages" core for cool looking messages
+const Messages = require("../../components/Messages"); // Requires "Messages" components for cool looking messages
 
 module.exports = { // Opens command module
 	name: "example", // Command name

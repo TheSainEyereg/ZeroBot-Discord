@@ -1,7 +1,7 @@
 const fs = require("fs");
 const { exec } = require("child_process");
-const Messages = require("../../core/Messages.js");
-const Logs = require("../../core/Logs.js");
+const Messages = require("../../components/Messages.js");
+const Logs = require("../../components/Logs.js");
 
 module.exports = {
 	name: "update",

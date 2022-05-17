@@ -1,5 +1,5 @@
-const Localization = require("../../core/Localization");
-const Messages = require("../../core/Messages");
+const Localization = require("../../components/Localization");
+const Messages = require("../../components/Messages");
 
 module.exports = {
 	name: "github",

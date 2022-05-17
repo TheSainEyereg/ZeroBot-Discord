@@ -11,8 +11,8 @@ const {
 	getVoiceConnection
 } = require("@discordjs/voice");
 const config = require("../../config.json");
-const Messages = require("../../core/Messages");
-const Servers = require("../../core/Servers");
+const Messages = require("../../components/Messages");
+const Servers = require("../../components/Servers");
 const play = require("play-dl");
 const { default: axios } = require("axios");
 const { Readable } = require("stream");
