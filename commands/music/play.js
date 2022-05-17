@@ -164,7 +164,7 @@ module.exports = {
 		async function startMusicPlayback() {
 			if (queue.list.length === 0) return;
 			const connection = await joinChannel(queue.voiceChannel);
-			if (queue.voiceChannel.members.size === 1) {
+			if (queue.voiceChannel.members.size <= 1) {
 				Messages.warning(queue.textChannel, l.all_left);
 				queue.clear();
 				connection.destroy();
@@ -172,7 +172,7 @@ module.exports = {
 			}
 			if (queue.list.length === 0) {
 				setTimeout(_ => {
-					if (!queue.playing && queue?.list?.length === 0) {
+					if (!queue.playing && queue.list.length === 0) {
 						queue.clear();
 						if (connection?.state.status == "ready") connection.destroy();
 					}
