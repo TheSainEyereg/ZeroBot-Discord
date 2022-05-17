@@ -20,7 +20,7 @@ module.exports = {
 			new MessageEmbed({
 				color: Messages.colors.regular,
 				thumbnail: {
-					url:song.thumbnail
+					url: song.thumbnail
 				},
 				title: song.title,
 				url: song.url,
