@@ -18,8 +18,10 @@ const { default: axios } = require("axios");
 const { Readable } = require("stream");
 
 const {YMApi} = require("ym-api");
+const { promisify } = require("util");
 const ymApi = new YMApi();
 
+const wait = promisify(setTimeout);
 
 module.exports = {
 	name: "play",
