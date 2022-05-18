@@ -43,6 +43,7 @@ module.exports = {
 			volume: Servers.get(message.guild.id, "musicVolume"),
 			loop: false,
 			playing: false,
+			paused: false,
 			skiping: [],
 			list: [],
 
@@ -156,8 +157,8 @@ module.exports = {
 				Messages.critical(queue.textChannel, `${l.play_error}\n\`${e}\``);
 				queue.list.shift();
 				return getMusicPlayer(queue.list[0]);
-			}// HERE_BLYAT
-			Messages.advanced(queue.textChannel, l.started, song.title, {custom: `${l.requested} ${song.requested.tag}`, icon: song.requested.displayAvatarURL({ format: "png", size: 256 })})
+			}
+			// Messages.advanced(queue.textChannel, l.started, song.title, {custom: `${l.requested} ${song.requested.tag}`, icon: song.requested.displayAvatarURL({ format: "png", size: 256 })})
 			return entersState(player, AudioPlayerStatus.Playing, 5_000);
 		}
 
@@ -198,10 +199,12 @@ module.exports = {
 				clientId: config.SCClient || (await play.getFreeClientID())
 			}
 		});
-		await ymApi.init({
-			access_token: config.YMClient.access_token,
-			uid: config.YMClient.uid
-		})
+		if (config.YMClient?.access_token && config.YMClient?.uid) {
+			await ymApi.init({
+				access_token: config.YMClient.access_token,
+				uid: config.YMClient.uid
+			})
+		}
 		
 		const type = await play.validate(url);
 
@@ -269,7 +272,7 @@ module.exports = {
 			if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
 
 		} else if (url.match(/(https:\/\/)?(www.)?music\.yandex\.ru\/album\/([0-9]+)\/track\/[0-9]+/gi)) { // YM track
-			//return Messages.warning(message, l.ym_disabled);
+			if (!config.YMClient?.access_token || !config.YMClient?.uid) return Messages.warning(message, l.yandex_auth);
 			try {
 				const id = url.match(/track\/([0-9]+)/gi)[0].replace("track/", "");
 				const info = (await ymApi.getTrack(id))[0];
@@ -292,7 +295,7 @@ module.exports = {
 				return Messages.critical(message, `${l.cant_yms}\n\`${e}\``);
 			}
 		} else if (url.match(/(https:\/\/)?(www\.)?music\.yandex\.ru\/users\/([A-Za-z0-9-_]+)(\/playlists\/[0-9]+)?/gi)) { // YM playlist
-			//return Messages.warning(message, l.ym_disabled);
+			if (!config.YMClient?.access_token || !config.YMClient?.uid) return Messages.warning(message, l.yandex_auth);
 			try {
 				const username = url.match(/users\/([A-Za-z0-9-_]+)/gi)[0].replace("users/", "");
 				const playlist = url.match(/playlists\/([0-9]+)/gi)[0]?.replace("playlists/", "") || "3";
@@ -319,6 +322,7 @@ module.exports = {
 				return Messages.critical(message, `${l.cant_yms}\n\`${e}\``);
 			}
 		} else if (url.match(/(https:\/\/)?(www.)?music\.yandex\.ru\/album\/[0-9]+/gi)) { // YM album
+			if (!config.YMClient?.access_token || !config.YMClient?.uid) return Messages.warning(message, l.yandex_auth);
 			try {
 				const album = url.match(/album\/([0-9]+)/gi)[0].replace("album/", "");
 

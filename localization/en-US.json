@@ -170,6 +170,7 @@
 		"cant_yma": "Can't get this Yandex Music album!",
 		"cant_url": "Can't get this URL!",
 		"cant_find": "Sorry, nothing found!",
+		"yandex_auth": "Bot has no valid Yandex Music token! Please, set it in config file!",
 		"sc_disabled": "Sorry, SoundCloud is temporarily disabled, use YouTube instead.",
 		"not_media": "This is not a media file!"
 	},

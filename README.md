@@ -27,13 +27,19 @@ npm i
 	"token": "YourToken",
 	"superusers": ["YourDiscordId"],
 	"invite": "YourBotInviteLinlk",
+	
 	"defaults": {
 		"prefix": "z.",
 		"language": "en-US",
 		"user-cooldown": 3,
 		"default-volume": 80
 	},
-	"SCClient": "Your SoundCloud client id"
+
+	"SCClient": "Your SoundCloud client id",
+	"YMClient": {
+		"uid": "Your YandexMusic client id (number)",
+		"access_token": "Your YandexMusic access token"
+	}
 }
 ```
 _p.s. I recommend set defaults to that values._
