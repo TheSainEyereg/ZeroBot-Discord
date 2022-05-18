@@ -87,15 +87,15 @@ module.exports = {
 							try {
 								await entersState(connection, VoiceConnectionStatus.Connecting, 5_000);
 							} catch {
+								queue.clear();
 								connection.destroy();
-								if (!queue.paused) queue.clear();
 							}
 						} else if (connection.rejoinAttempts < 5) {
 							await wait((connection.rejoinAttempts + 1) * 5_000);
 							connection.rejoin();
 						} else {
+							queue.clear();
 							connection.destroy();
-							if (!queue.paused) queue.clear();
 						}
 
 						const newChannelId = newState.subscription?.connection?.joinConfig?.channelId;
@@ -104,8 +104,8 @@ module.exports = {
 				});
 				return connection;
 			} catch (error) {
-				connection.destroy();
 				queue.clear();
+				connection.destroy();
 				throw error;
 			}
 		}
