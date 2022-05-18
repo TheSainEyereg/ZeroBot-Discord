@@ -53,6 +53,7 @@ module.exports = {
 				const wasPlaying = this.playing;
 				this.list = [];
 				this.playing = false;
+				this.paused = false;
 				try {
 					if (wasPlaying) this.player.stop();
 				} catch (e) {}
@@ -61,6 +62,14 @@ module.exports = {
 		}
 		if (!client.queue.has(message.guild.id)) client.queue.set(message.guild.id, queueCounstruct);
 		const queue = client.queue.get(message.guild.id);
+
+		if (!url || url.length < 1) {
+			if (queue.paused) {
+				const resumeCommand = client.commands.get("resume");
+				resumeCommand.execute(message, []);
+			} else Messages.warning(message, l.nothing);
+			return;
+		} 
 
 		async function joinChannel(channel) {
 			if (getVoiceConnection(message.guild.id)?.state.status === VoiceConnectionStatus.Ready) return getVoiceConnection(message.guild.id);
@@ -79,14 +88,14 @@ module.exports = {
 								await entersState(connection, VoiceConnectionStatus.Connecting, 5_000);
 							} catch {
 								connection.destroy();
-								queue.clear();
+								if (!queue.paused) queue.clear();
 							}
 						} else if (connection.rejoinAttempts < 5) {
 							await wait((connection.rejoinAttempts + 1) * 5_000);
 							connection.rejoin();
 						} else {
 							connection.destroy();
-							queue.clear();
+							if (!queue.paused) queue.clear();
 						}
 
 						const newChannelId = newState.subscription?.connection?.joinConfig?.channelId;
@@ -96,6 +105,7 @@ module.exports = {
 				return connection;
 			} catch (error) {
 				connection.destroy();
+				queue.clear();
 				throw error;
 			}
 		}
@@ -224,7 +234,7 @@ module.exports = {
 					requested: message.author 
 				}
 				queue.list.push(song);
-				if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
+				if (queue.list.length > 1) Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
 			} catch (e) {
 				console.error(e);
 				return Messages.critical(message, `${l.cant_yts}\n\`${e}\``);
@@ -271,7 +281,7 @@ module.exports = {
 				requested: message.author 
 			}
 			queue.list.push(song);
-			if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
+			if (queue.list.length > 1) Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
 
 		} else if (url.match(/(https:\/\/)?(www.)?music\.yandex\.ru\/album\/([0-9]+)\/track\/[0-9]+/gi)) { // YM track
 			if (!config.YMClient?.access_token || !config.YMClient?.uid) return Messages.warning(message, l.yandex_auth);
@@ -300,7 +310,7 @@ module.exports = {
 			if (!config.YMClient?.access_token || !config.YMClient?.uid) return Messages.warning(message, l.yandex_auth);
 			try {
 				const username = url.match(/users\/([A-Za-z0-9-_]+)/gi)[0].replace("users/", "");
-				const playlist = url.match(/playlists\/([0-9]+)/gi)[0]?.replace("playlists/", "") || "3";
+				const playlist = url.match(/playlists\/([0-9]+)/gi) ? url.match(/playlists\/([0-9]+)/gi)[0].replace("playlists/", "") : "3";
 	
 				const list = (await ymApi.getPlaylist(playlist, username)).tracks?.map(track => track.track);
 				if (!list) return Messages.warning(message, l.cant_ymp);
@@ -361,10 +371,14 @@ module.exports = {
 					requested: message.author 
 				}
 				queue.list.push(song);
-				if (queue.list.length > 1) return Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
+				if (queue.list.length > 1) Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
 			}).catch(e =>  Messages.critical(message, `${l.cant_url}\n\`${e}\``));
 		}
 
-		if (!queue?.playing) {startMusicPlayback()};
+		if (queue?.paused) {
+			const resumeCommand = client.commands.get("resume");
+			resumeCommand.execute(message, []);
+		};
+		if (!queue?.playing) startMusicPlayback();
 	}
 }

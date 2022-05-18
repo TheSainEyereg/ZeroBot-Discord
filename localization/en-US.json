@@ -153,6 +153,8 @@
 		"arguments": ["(url/serach query)"],
 		"join_warn": "You should join to voice channel to use this!",
 		"perm_warn": "I have no permissions to connect or speak in this channel!",
+		"nothing": "Nothing to play/add!",
+		"resumed": "Resumed!",
 		"stream_error": "Stream error",
 		"get_error": "Error at getting song!",
 		"play_error": "Error at playing song!",
@@ -173,6 +175,23 @@
 		"yandex_auth": "Bot has no valid Yandex Music token! Please, set it in config file!",
 		"sc_disabled": "Sorry, SoundCloud is temporarily disabled, use YouTube instead.",
 		"not_media": "This is not a media file!"
+	},
+	"pause": {
+		"description": "Pauses music",
+		"nothing":"There is nothing playing that I could pause.",
+		"join_warn":"You need to be in a voice channel to use that command!",
+		"channel_warn":"You need to be in the same voice channel as the bot to use that command!",
+		"paused": "Paused!",
+		"already_paused": "Already paused!",
+		"error": "Error at pausing music!"
+	},
+	"resume": {
+		"description": "Resumes music",
+		"nothing":"There is nothing playing that I could resume.",
+		"join_warn":"You need to be in a voice channel to use that command!",
+		"resumed": "Resumed!",
+		"already_resumed": "Already resumed!",
+		"error": "Error at resuming music!"
 	},
 	"stop": {
 		"description": "Stops music",
