@@ -154,7 +154,6 @@
 		"join_warn": "You should join to voice channel to use this!",
 		"perm_warn": "I have no permissions to connect or speak in this channel!",
 		"nothing": "Nothing to play/add!",
-		"resumed": "Resumed!",
 		"stream_error": "Stream error",
 		"get_error": "Error at getting song!",
 		"play_error": "Error at playing song!",
