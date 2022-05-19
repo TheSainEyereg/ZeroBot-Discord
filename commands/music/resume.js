@@ -64,6 +64,7 @@ module.exports = {
 
 		try {
 			queue.connection = await joinChannel(channel);
+			queue.voiceChannel = channel;
 			queue.player.unpause();
 			queue.paused = false;
 			Messages.success(message, l.resumed);
