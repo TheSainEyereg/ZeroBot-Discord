@@ -290,6 +290,7 @@ module.exports = {
 				const info = (await ymApi.getTrack(id))[0];
 	
 				if (!info) return Messages.warning(message, l.cant_yms);
+				if (!info.available) return Messages.warning(message, l.unavailable_yms);
 	
 				const song = {
 					service: "Yandex.Music",
@@ -312,7 +313,7 @@ module.exports = {
 				const username = url.match(/users\/([A-Za-z0-9-_]+)/gi)[0].replace("users/", "");
 				const playlist = url.match(/playlists\/([0-9]+)/gi) ? url.match(/playlists\/([0-9]+)/gi)[0].replace("playlists/", "") : "3";
 	
-				const list = (await ymApi.getPlaylist(playlist, username)).tracks?.map(track => track.track);
+				const list = (await ymApi.getPlaylist(playlist, username)).tracks?.map(track => track.track).filter(track => track.available);
 				if (!list) return Messages.warning(message, l.cant_ymp);
 	
 				for (let i = 0; i < (list.length > 200 ? 200 : list.length); i++) {
@@ -338,7 +339,7 @@ module.exports = {
 			try {
 				const album = url.match(/album\/([0-9]+)/gi)[0].replace("album/", "");
 
-				const list = (await ymApi.getAlbumWithTracks(album)).volumes[0];
+				const list = (await ymApi.getAlbumWithTracks(album))?.volumes[0]?.filter(track => track.available);
 				if (!list) return Messages.warning(message, l.cant_yma);
 	
 				for (let i = 0; i < (list.length > 200 ? 200 : list.length); i++) {
