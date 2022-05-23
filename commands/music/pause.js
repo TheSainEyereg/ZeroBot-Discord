@@ -18,7 +18,7 @@ module.exports = {
 			Messages.success(message, l.paused);
 		} catch (e) {
 			Messages.critical(message, `${l.error}\n\`${e}\``);
-			queue.clear();
+			queue.clear(false);
 			console.error(e);
 		}
 	}

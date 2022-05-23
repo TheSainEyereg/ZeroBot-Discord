@@ -20,7 +20,7 @@ module.exports = {
 			Messages.success(message, `${l.skipped} \`${old}\`!`);
 		} catch (e) {
 			Messages.critical(message, `${l.error}\n\`${e}\``);
-			queue.clear();
+			queue.clear(false);
 			console.error(e);
 		}
 	}

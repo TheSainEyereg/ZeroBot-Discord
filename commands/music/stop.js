@@ -13,7 +13,7 @@ module.exports = {
 		if (channel != queue.voiceChannel) return Messages.warning(message, l.channel_warn);
 
 		try {
-			queue.clear();
+			queue.clear(false);
 			Messages.success(message, l.stopped);
 		} catch (e) {
 			Messages.critical(message, `${l.error}\n\`${e}\``);

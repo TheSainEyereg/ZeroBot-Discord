@@ -49,7 +49,7 @@ module.exports = {
 			skiping: [],
 			list: [],
 
-			clear() {
+			clear(deleteQueue = true) {
 				const wasPlaying = this.playing;
 				this.list = [];
 				this.playing = false;
@@ -57,7 +57,7 @@ module.exports = {
 				try {
 					if (wasPlaying) this.player.stop();
 				} catch (e) {}
-				client.queue.delete(this.guild.id);
+				if (deleteQueue) client.queue.delete(this.guild.id);
 			}
 		}
 		if (!client.queue.has(message.guild.id)) client.queue.set(message.guild.id, queueCounstruct);
@@ -193,6 +193,9 @@ module.exports = {
 				return;
 			}
 			queue.player = await getMusicPlayer(queue.list[0]);
+
+			if (!queue.player) return;
+
 			connection.subscribe(queue.player);
 			queue.playing = true;
 	
@@ -207,7 +210,7 @@ module.exports = {
 		}
 
 		play.setToken({
-			useragent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36",
+			useragent: ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36"],
 			soundcloud: {
 				clientId: config.SCClient || (await play.getFreeClientID())
 			}
