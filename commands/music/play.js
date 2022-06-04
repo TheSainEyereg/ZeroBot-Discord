@@ -384,6 +384,9 @@ module.exports = {
 			const resumeCommand = client.commands.get("resume");
 			resumeCommand.execute(message, []);
 		};
-		if (!queue?.playing) startMusicPlayback();
+		if (!queue?.playing) {
+			startMusicPlayback();
+			Messages.advanced(queue.textChannel, l.started, song.title, {custom: `${l.requested} ${song.requested.tag}`, icon: song.requested.displayAvatarURL({ format: "png", size: 256 })});
+		};
 	}
 }
