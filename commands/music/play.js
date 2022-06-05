@@ -386,7 +386,7 @@ module.exports = {
 		};
 		if (!queue?.playing) {
 			startMusicPlayback();
-			Messages.advanced(queue.textChannel, l.started, song.title, {custom: `${l.requested} ${song.requested.tag}`, icon: song.requested.displayAvatarURL({ format: "png", size: 256 })});
+			Messages.advanced(queue.textChannel, l.started, queue.list[0].title, {custom: `${l.requested} ${queue.list[0].requested.tag}`, icon: queue.list[0].requested.displayAvatarURL({ format: "png", size: 256 })});
 		};
 	}
 }
