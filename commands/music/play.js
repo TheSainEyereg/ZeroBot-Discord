@@ -58,6 +58,12 @@ module.exports = {
 					if (wasPlaying) this.player.stop();
 				} catch (e) {}
 				if (deleteQueue) client.queue.delete(this.guild.id);
+			},
+
+			leave() {
+				const connection = getVoiceConnection(this.guild.id);
+				//this.voiceChannel = undefined;
+				if (connection?.state.status === VoiceConnectionStatus.Ready) connection.disconnect();
 			}
 		}
 		if (!client.queue.has(message.guild.id)) client.queue.set(message.guild.id, queueCounstruct);
@@ -88,14 +94,14 @@ module.exports = {
 								await entersState(connection, VoiceConnectionStatus.Connecting, 5_000);
 							} catch {
 								queue.clear();
-								connection.destroy();
+								queue.leave();
 							}
 						} else if (connection.rejoinAttempts < 5) {
 							await wait((connection.rejoinAttempts + 1) * 5_000);
 							connection.rejoin();
 						} else {
-							queue.clear();
-							connection.destroy();
+							if (!queue.paused) queue.clear();
+							queue.leave();
 						}
 
 						const newChannelId = newState.subscription?.connection?.joinConfig?.channelId;
@@ -105,7 +111,7 @@ module.exports = {
 				return connection;
 			} catch (error) {
 				queue.clear();
-				connection.destroy();
+				queue.leave();
 				throw error;
 			}
 		}
@@ -175,23 +181,7 @@ module.exports = {
 		}
 
 		async function startMusicPlayback() {
-			if (queue.list.length === 0) return;
 			const connection = await joinChannel(queue.voiceChannel);
-			if (queue.voiceChannel.members.size <= 1) {
-				Messages.warning(queue.textChannel, l.all_left);
-				queue.clear();
-				connection.destroy();
-				return;
-			}
-			if (queue.list.length === 0) {
-				setTimeout(_ => {
-					if (!queue.playing && queue.list.length === 0) {
-						queue.clear();
-						if (connection?.state.status == "ready") connection.destroy();
-					}
-				}, 120000);
-				return;
-			}
 			queue.player = await getMusicPlayer(queue.list[0]);
 
 			if (!queue.player) return;
@@ -201,16 +191,30 @@ module.exports = {
 	
 			queue.player.on(AudioPlayerStatus.Idle, _ => {
 				queue.playing = false;
-				if (queue.list.length > 0) {
-					if (queue.loop == "queue") queue.list.push(queue.list[0]);
-					if (queue.loop != "song") queue.list.shift();
-					startMusicPlayback();
+				if (queue.voiceChannel.members.size <= 1) {
+					Messages.warning(queue.textChannel, l.all_left);
+					queue.clear();
+					queue.leave();
+					return;
 				}
+				if (queue.list.length === 0) {
+					setTimeout(_ => {
+						if (!queue.playing && queue.list.length === 0) {
+							queue.clear();
+							queue.leave();
+						}
+					}, 120*1000);
+					return;
+				}
+
+				if (queue.loop == "queue") queue.list.push(queue.list[0]);
+				if (queue.loop != "song") queue.list.shift();
+				startMusicPlayback();
 			});
 		}
 
 		play.setToken({
-			useragent: ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.67 Safari/537.36"],
+			useragent: ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"],
 			soundcloud: {
 				clientId: config.SCClient || (await play.getFreeClientID())
 			}
