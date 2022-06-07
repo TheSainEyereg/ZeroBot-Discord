@@ -191,6 +191,9 @@ module.exports = {
 	
 			queue.player.on(AudioPlayerStatus.Idle, _ => {
 				queue.playing = false;
+				if (queue.loop == "queue") queue.list.push(queue.list[0]);
+				if (queue.loop != "song") queue.list.shift();
+
 				if (queue.voiceChannel.members.size <= 1) {
 					Messages.warning(queue.textChannel, l.all_left);
 					queue.clear();
@@ -207,8 +210,6 @@ module.exports = {
 					return;
 				}
 
-				if (queue.loop == "queue") queue.list.push(queue.list[0]);
-				if (queue.loop != "song") queue.list.shift();
 				startMusicPlayback();
 			});
 		}
