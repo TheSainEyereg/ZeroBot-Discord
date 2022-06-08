@@ -11,7 +11,7 @@ module.exports = {
 		exec("git pull", (e, so, se) => {
 			if (e) return Messages.critical(message, `Error in execution: \n\`\`\`${e}\`\`\``);
 			if (so == `Already up to date.\n`) return Messages.warning(message, `You already up to date!`);
-			Logs.security(__filename, `${message.author.id} (${message.author.tag}) has started updating!...`, {nonl: true});
+			Logs.security(__filename, `${message.author.id} (${message.author.tag}) has started updating!...`);
 			Messages.warning(message, `Update found. Reloading commands and localization...`);
 			message.channel.sendTyping();
 			for (const folder of fs.readdirSync(`./commands`)) {
