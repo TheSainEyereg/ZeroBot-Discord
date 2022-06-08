@@ -105,7 +105,7 @@ module.exports = {
 						}
 
 						const newChannelId = newState.subscription?.connection?.joinConfig?.channelId;
-						if (queue && (newChannelId !== queue.voiceChannel.id)) queue.voiceChannel =  message.guild.channels.cache.get(newChannelId);
+						if (queue && newChannelId && (newChannelId !== queue.voiceChannel.id)) queue.voiceChannel =  message.guild.channels.cache.get(newChannelId);
 					}
 				});
 				return connection;
