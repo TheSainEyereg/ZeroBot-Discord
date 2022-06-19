@@ -370,8 +370,9 @@ module.exports = {
 				return Messages.critical(message, `${l.cant_yma}\n\`${e}\``);
 			}
 		} else {
-			await axios.get(url).then(res => {
-				if (!res.headers["content-type"].match(/^(audio|video)\/.+$/gi)) return Messages.warning(message, l.not_media);
+			try {
+				const res = await axios.get(url);
+				if (!res.headers["content-type"]?.match(/^(audio|video)\/.+$/gi)) return Messages.warning(message, l.not_media);
 				const song = {
 					service: "URL",
 					title: "[URL] "+ (url.length > 50 ? url.substr(0, 50)+"..." : url),
@@ -382,7 +383,9 @@ module.exports = {
 				}
 				queue.list.push(song);
 				if (queue.list.length > 1) Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
-			}).catch(e =>  Messages.critical(message, `${l.cant_url}\n\`${e}\``));
+			} catch (e) {
+				Messages.critical(message, `${l.cant_url}\n\`${e}\``)
+			}
 		}
 
 		if (queue?.paused) {
