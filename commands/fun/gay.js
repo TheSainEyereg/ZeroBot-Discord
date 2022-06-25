@@ -15,7 +15,7 @@ module.exports = {
 
 		try {
 			const avatar = await Canvas.loadImage(user.displayAvatarURL({ format: "jpg", size: 512 }));
-			const background = await Canvas.loadImage("https://olejka.ru/r/475b9ef6.png");
+			const background = await Canvas.loadImage("./assets/images/lgbtOverlay.png");
 	
 			ctx.drawImage(avatar, 0, 0, canvas.width, canvas.height);
 			ctx.globalAlpha = 0.6
@@ -23,7 +23,7 @@ module.exports = {
 		} catch (e) {
 			Messages.critical(message, `${l.error}: ${e}`);
 			Logs.critical(`${this.name} command`, `Error in getting/drawing image: ${e}`);
-			console.error(e);
+			return console.error(e);
 		}
 
 		message.channel.send({files: [{
