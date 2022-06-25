@@ -149,6 +149,22 @@ client.on("messageCreate", async message => {
 	const commandString = args.shift().toLowerCase().replace(/\ /g,"");
 	if (commandString.length === 0) return;
 	make_cooldown();
+
+	// For people who types z.[category] instead of z.help [category]
+	{ // Повторите, питонисты
+		const categories = fs.readdirSync("./commands");
+		const help = client.commands.get("help");
+		if (categories.includes(commandString)) {
+			try {
+				await help.execute(message, [commandString]);
+			} catch (e) {
+				Messages.critical(message, `${localization.error}`);
+				console.error(e);
+			}
+			return;
+		}
+	}
+
 	const command = client.commands.get(commandString) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandString));
 	if (!command) return Messages.advanced(message, false, `${localization.not_found} :no_entry_sign:`, {custom: `${localization.help[0]} ${prefix}help ${localization.help[1]} ${prefix}?`, color: Messages.colors.critical});
 
