@@ -50,6 +50,8 @@ module.exports = {
 			list: [],
 
 			clear(deleteQueue = true) {
+				if (this.deleted) return;
+
 				const wasPlaying = this.playing;
 				this.list = [];
 				this.playing = false;
@@ -57,13 +59,19 @@ module.exports = {
 				try {
 					if (wasPlaying) this.player.stop();
 				} catch (e) {}
-				if (deleteQueue) client.queue.delete(this.guild.id);
+				if (deleteQueue) {
+					client.queue.delete(this.guild.id);
+					this.deleted = true;
+				}
 			},
 
 			leave() {
+				if (this.left) return;
+
 				const connection = getVoiceConnection(this.guild.id);
 				//this.voiceChannel = undefined;
 				if (connection?.state.status === VoiceConnectionStatus.Ready) connection.disconnect();
+				this.left = true;
 			}
 		}
 		if (!client.queue.has(message.guild.id)) client.queue.set(message.guild.id, queueCounstruct);

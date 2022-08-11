@@ -5,7 +5,7 @@ const Permissions = require("../../components/Permissions.js");
 module.exports = {
 	name: "volume",
 	optional: true,
-	aliases: ["vol"],
+	aliases: ["vol", "v"],
 	execute(message, args) {
 		const l = Localization.server(message.client, message.guild, this.name);
 		const queue = message.client.queue.get(message.guild.id);

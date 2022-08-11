@@ -15,7 +15,7 @@ module.exports = {
 
 		try {
 			queue.clear();
-			connection.destroy();
+			queue.leave();
 		} catch (e) {
 			Messages.critical(message, `${l.error}\n\`${e}\``);
 			console.error(e);
