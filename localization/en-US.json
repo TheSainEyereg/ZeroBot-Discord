@@ -7,7 +7,7 @@
 		"cooldown": ["Please wait", "seconds"],
 		"not_found": "Command was not found!",
 		"help": ["For help type", "or"],
-		"rank_warn": "You should have one of this ranks to execute this!",
+		"rank_warn": "You should have one of this ranks to execute this:",
 		"rank_higher": "or higher",
 		"args_warn": "This command requires arguments!",
 		"error": "Error in command execution! SORRY!"
@@ -17,7 +17,7 @@
 		"description": "Changes prefix",
 		"arguments": ["[prefix]"],
 		"max_warn": "Max prefix length is 3!",
-		"changed": "Successfuly changed prefix to"
+		"changed": "Successfully changed prefix to"
 	},
 	"language": {
 		"description": "Changes ZeroBot language",
@@ -25,7 +25,7 @@
 		"current": "This server language is",
 		"available": "Available languages",
 		"help": ["Type", "(language) to select language"],
-		"changed": "Successfuly changed language to"
+		"changed": "Successfully changed language to"
 	},
 	"logs": {
 		"description": "Changes log channel",
@@ -33,7 +33,7 @@
 		"current": "Current log channel is",
 		"not_setup": "No logs channel setup!",
 		"not_found": "No channel was found!",
-		"changed": "Successfuly changed log channel to"
+		"changed": "Successfully changed log channel to"
 	},
 	"moderators": {
 		"description": "Add/remove moderator",
@@ -150,7 +150,7 @@
 
 	"play" : {
 		"description": "Play music",
-		"arguments": ["(url/serach query)"],
+		"arguments": ["(url/search query)"],
 		"join_warn": "You should join to voice channel to use this!",
 		"perm_warn": "I have no permissions to connect or speak in this channel!",
 		"nothing": "Nothing to play/add!",
@@ -159,7 +159,7 @@
 		"play_error": "Error at playing song!",
 		"started": "Started playing",
 		"requested": "Requested by",
-		"all_left": "All members left the channel! Music will be stoped!",
+		"all_left": "All members left the channel! Music will be stopped!",
 		"added": ["Added", "to queue!"],
 		"added_many": ["Added", "songs to queue!"],
 		"cant_yts": "Can't get this song from YouTube!",
@@ -246,7 +246,7 @@
 		"number_warn": "You must give number between 1 and 100!",
 		"small_warn": "Given volume is too small (min volume is 1)",
 		"big_warn": "Given volume is too big (max volume is 100)",
-		"ovrdrive_max_warn": "Max overdrive volume is 1000",
+		"overdrive_max_warn": "Max overdrive volume is 1000",
 		"set": ["Set", "volume to"]
 	},
 	"loop": {
@@ -259,12 +259,11 @@
 		"queue_warn": "The queue loop is already enabled.",
 		"song_warn": "The current song loop is already enabled.",
 		"off_warn": "The loop is already disabled.",
-		"switch_queue": "Looping the queue.",
 		"queue": "The queue loop has been enabled.",
-		"switch_song": "Looping the current song.",
 		"song": "The current song loop has been enabled.",
-		"switch_off": "Looping is now disabled.",
-		"off": "The loop has been disabled."
+		"off": "The loop has been disabled.",
+		"switch_queue": "Looping the queue.",
+		"switch_song": "Looping the current song."
 	},
 	"shuffle": {
 		"description": "Shuffles queue",
