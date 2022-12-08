@@ -24,14 +24,14 @@
   },
   "homepage": "https://github.com/TheSainEyereg/ZeroBot-Discord#readme",
   "dependencies": {
-    "@discordjs/voice": "^0.9.0",
+    "@discordjs/voice": "^0.11.0",
     "axios": "^0.27.2",
     "canvas": "^2.9.1",
-    "discord.js": "^13.7.0",
+    "discord.js": "^13.9.2",
     "ffmpeg-static": "^5.0.2",
     "libsodium-wrappers": "^0.7.10",
     "opusscript": "^0.0.8",
-    "play-dl": "^1.9.5",
+    "play-dl": "^1.9.6",
     "ym-api": "^1.2.1"
   }
 }

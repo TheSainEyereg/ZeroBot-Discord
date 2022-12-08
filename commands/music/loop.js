@@ -34,7 +34,7 @@ module.exports = {
 				Messages.success(message, l.switch_song);
 			} else if (queue.loop === "song") {
 				queue.loop = false;
-				Messages.success(message, l.switch_off);
+				Messages.success(message, l.off);
 			}
 		}
 	}

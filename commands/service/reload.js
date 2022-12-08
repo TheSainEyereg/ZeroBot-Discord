@@ -18,6 +18,8 @@ module.exports = {
 				if (ignore.includes(folder)) continue;
 				const files = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith(".js"));
 				for (const file of files) {
+					if (!file.isFile()) continue;
+						
 					delete require.cache[require.resolve(`../../commands/${folder}/${file}`)];
 					try {
 						const command = require(`../../commands/${folder}/${file}`);
@@ -34,6 +36,8 @@ module.exports = {
 			Messages.success(message, "Completed reloading!");
 		} else if (args[0] == "localization"){
 			for (const file of fs.readdirSync("./localization")) {
+				if (!file.isFile()) continue;
+
 				delete require.cache[require.resolve(`../../localization/${file}`)]
 				const localization = require(`../../localization/${file}`);
 				message.client.localization.set(file.split(".")[0], localization);
