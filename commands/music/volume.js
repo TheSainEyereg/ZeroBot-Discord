@@ -24,7 +24,7 @@ module.exports = {
 		const overdrive = volume > 1 && Permissions.has(message, "superuser");
 		
 		if (volume>1 && !overdrive) return Messages.warning(message, l.big_warn);
-		if (volume>10 && overdrive) return Messages.warning(message, l.ovrdrive_max_warn);
+		if (volume>10 && overdrive) return Messages.warning(message, l.overdrive_max_warn);
 
 		queue.resource.volume.setVolumeLogarithmic(volume * 0.5);
 		queue.volume = volume;
