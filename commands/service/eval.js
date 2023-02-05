@@ -8,7 +8,7 @@ module.exports = {
 	arguments: ["[Code]"],
 	access: "superuser",
 	async execute(message, args) {
-		const code = args.join(" ");
+		const code = args.join(" ").replace(/```([a-z0-9]+\n)?(.*?)```/gs, "$2");
 		try {
 			const result = await eval(code);
 			if (code.includes("message.edit(") || code.includes("message.delete(")) return;
