@@ -151,7 +151,7 @@ client.on("messageCreate", async message => {
 	make_cooldown();
 
 	// For people who types z.[category] instead of z.help [category]
-	{ // Повторите, питонисты
+	{
 		const categories = fs.readdirSync("./commands");
 		const help = client.commands.get("help");
 		if (categories.includes(commandString)) {
