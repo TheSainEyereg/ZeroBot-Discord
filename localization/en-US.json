@@ -333,5 +333,10 @@
 		"description": "Make tombstone with user (or with you)",
 		"arguments": ["(@user)", "(\"quick\")"],
 		"error": "Error in getting/drawing image"
+	},
+	"god": {
+		"description": "Make someone god",
+		"arguments": ["(@user)", "(\"quick\")"],
+		"error": "Error in getting/drawing image"
 	}
 }
