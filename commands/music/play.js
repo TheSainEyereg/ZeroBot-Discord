@@ -93,6 +93,14 @@ module.exports = {
 				guildId: channel.guild.id,
 				adapterCreator: channel.guild.voiceAdapterCreator,
 			});
+
+			connection.on("stateChange", (oldState, newState) => {
+				const networkStateChangeHandler = (_, newNetworkState) => clearInterval(newNetworkState.udp?.keepAliveInterval);
+
+				oldState.networking?.off("stateChange", networkStateChangeHandler);
+				newState.networking?.on("stateChange", networkStateChangeHandler);
+			});
+
 			try {
 				await entersState(connection, VoiceConnectionStatus.Ready, 30_000);
 				connection.on("stateChange", async (_, newState) => {
