@@ -1,0 +1,23 @@
+import type { User } from "discord.js";
+
+export interface EmbedOptions {
+	url?: string;
+	circle?: boolean;
+	color?: number;
+	footer?: string;
+	footerIcon?: string;
+	footerUser?: User;
+}
+
+export interface ParsedArgument {
+	text: string;
+	optional: boolean;
+}
+
+export interface ArgumentCheckAnswer {
+	missing: boolean;
+	all: ParsedArgument[];
+
+	text?: string;
+	pos?: number;
+}
