@@ -36,10 +36,10 @@ export default class Database {
 	private prepareGetAndReturnServer = async (serverId: string): Promise<ServerSettings> => {
 		await this.db.wait();
 
-		const [response] = await this.db.select<ServerSettings>("server:"+serverId);
+		const [response] = await this.db.select<ServerSettings>("servers:"+serverId);
 
 		if (!response?.prefix || !response?.language || !response?.musicVolume) {
-			return (await this.db.create<ServerSettings>("server:"+serverId, this.configDefault))[0];
+			return (await this.db.create<ServerSettings>("servers:"+serverId, this.configDefault))[0];
 		}
 
 		return response;
@@ -53,7 +53,7 @@ export default class Database {
 	updateServer = async (serverId: string, key: keyof ServerSettings, value: ServerSettings[keyof ServerSettings]) => {
 		const data = await this.prepareGetAndReturnServer(serverId);
 
-		this.db.update<ServerSettings>("server:"+serverId, Object.assign(data, { [key]: value }));
+		this.db.update<ServerSettings>("servers:"+serverId, Object.assign(data, { [key]: value }));
 	};
 
 
