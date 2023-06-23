@@ -33,22 +33,6 @@ export class Client extends OriginalClient {
 		this.musicQueue = new Collection();
 		this.db = database;
 
-		const commandsPath = path.join(__dirname, "commands");
-		for (const directory of fs.readdirSync(commandsPath)) {
-			const dirPath = path.join(commandsPath, directory);
-			if (!fs.statSync(dirPath).isDirectory()) continue;
-
-			for (const file of fs.readdirSync(dirPath).filter(f => f.endsWith(".ts") || f.endsWith(".js"))) {
-				const filePath = path.join(dirPath, file);
-
-				// eslint-disable-next-line @typescript-eslint/no-var-requires
-				const required = require(filePath).default;
-	
-				const command: Command = new required();
-				this.commands.set(command.name, command);
-			}
-		}
-
 		const eventsPath = path.join(__dirname, "events");
 		for (const file of fs.readdirSync(eventsPath).filter(f => f.endsWith(".ts") || f.endsWith(".js"))) {
 			const filePath = path.join(eventsPath, file);
@@ -64,7 +48,24 @@ export class Client extends OriginalClient {
 			}
 		}
 
-		console.log("Bot started");
+		const commandsPath = path.join(__dirname, "commands");
+		const requiredCommands: Command[] = [];
+		for (const directory of fs.readdirSync(commandsPath)) {
+			const dirPath = path.join(commandsPath, directory);
+			if (!fs.statSync(dirPath).isDirectory()) continue;
+
+			for (const file of fs.readdirSync(dirPath).filter(f => f.endsWith(".ts") || f.endsWith(".js"))) {
+				const filePath = path.join(dirPath, file);
+
+				// eslint-disable-next-line @typescript-eslint/no-var-requires
+				const required = require(filePath).default;
+	
+				const command: Command = new required();
+
+				requiredCommands.push(command);
+			}
+		}
+		requiredCommands.forEach((command, index) => this.commands.set(command.data && requiredCommands.find((c, i) => c.data?.name === command.data?.name && i !== index) ? `${command.data.name}:${command.name}` : command.name, command));
 	}
 
 	loginWithDB = async (token: string, db_username: string, db_password: string) => {

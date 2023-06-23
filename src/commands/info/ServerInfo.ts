@@ -1,7 +1,7 @@
 import Command from "../../Command";
 import {
 	type Message,
-	type CommandInteraction,
+	type ChatInputCommandInteraction,
 	type Guild,
 	SlashCommandBuilder,
 	EmbedBuilder,
@@ -19,7 +19,7 @@ export default class ServerInfo extends Command {
 		.setName(this.name)
 		.setDescription(this.description);
 
-	executeSlash = async (interaction: CommandInteraction) => {
+	executeSlash = async (interaction: ChatInputCommandInteraction) => {
 		interaction.reply({ embeds: [this.displayServerInfo(interaction.guild!)] });
 	};
 

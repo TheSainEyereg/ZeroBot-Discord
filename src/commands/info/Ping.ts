@@ -1,7 +1,7 @@
 import Command from "../../Command";
 import {
 	type Message,
-	type CommandInteraction,
+	type ChatInputCommandInteraction,
 	SlashCommandBuilder,
 } from "discord.js";
 import { Access } from "../../components/enums";
@@ -18,7 +18,7 @@ export default class Ping extends Command {
 		.setName(this.name)
 		.setDescription(this.description);
 
-	executeSlash = async (interaction: CommandInteraction) => {
+	executeSlash = async (interaction: ChatInputCommandInteraction) => {
 		interaction.reply({ embeds: [this.displayPing(interaction)] });
 	};
 
@@ -26,7 +26,7 @@ export default class Ping extends Command {
 		message.reply({ embeds: [this.displayPing(message)] });
 	};
 
-	private displayPing(base: CommandInteraction | Message) {
+	private displayPing(base: ChatInputCommandInteraction | Message) {
 		return regular("Pong!", `${Date.now() - base.createdTimestamp}ms.`);
 	}
 }

@@ -9,10 +9,10 @@ export default class InteractionCreate extends Event {
 	execute = async (interaction: Interaction) => {
 		const { client } = interaction;
 
-		if (!interaction.isCommand()) return;
+		if (!interaction.isChatInputCommand()) return;
 
 		
-		const command = client.commands.get(interaction.commandName);
+		const command = client.commands.get(interaction.commandName) || client.commands.get(`${interaction.commandName}:${interaction.options.getSubcommand()}`);
 		if (!command) return;
 
 		if (!await hasAccess(interaction.member as GuildMember, command.access)) return interaction.reply({
@@ -27,10 +27,10 @@ export default class InteractionCreate extends Event {
 			await command.executeSlash(interaction);
 		} catch (e: unknown) {
 			console.error(e);
-			interaction.followUp({
+			interaction[!interaction.deferred && !interaction.replied ? "reply" : "followUp"]({
 				ephemeral: true,
 				embeds: [
-					critical("Error occurred!", `Error: \`${e}\``)
+					critical("Error occurred!", `\`\`\`\n${e}\n\`\`\``)
 				]
 			});
 		}

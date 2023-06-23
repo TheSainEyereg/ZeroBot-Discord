@@ -7,9 +7,10 @@ process.stdin.resume();
 
 
 const db = new Database({
-	prefix: config.prefix!,
+	prefix: config.prefix,
+	prefixEnabled: config.prefixEnabled,
 	language: config.language,
-	musicVolume: config.music.volumeDefault
+	musicVolume: config.music.volumeDefault,
 });
 db.connect(surrealDB.url, surrealDB.namespace, surrealDB.database);
 

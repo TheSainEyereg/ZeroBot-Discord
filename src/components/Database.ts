@@ -4,6 +4,7 @@ type ServerSettings = {
 	prefix: string;
 	language: string;
 	musicVolume: number;
+	prefixEnabled: boolean;
 	musicChannel?: string;
 	logChannel?: string;
 }
@@ -34,13 +35,10 @@ export default class Database {
 
 
 	private prepareGetAndReturnServer = async (serverId: string): Promise<ServerSettings> => {
-		await this.db.wait();
-
 		const [response] = await this.db.select<ServerSettings>("servers:"+serverId);
 
-		if (!response?.prefix || !response?.language || !response?.musicVolume) {
+		if (!response?.prefix || !response?.language || !response?.musicVolume)
 			return (await this.db.create<ServerSettings>("servers:"+serverId, this.configDefault))[0];
-		}
 
 		return response;
 	};
@@ -58,9 +56,9 @@ export default class Database {
 
 
 	getModerators = async (serverId: string) => {
-		const result = await this.db.query<[AssociatedModerator]>("SELECT * FROM moderators WHERE serverId = $serverId", { serverId });
+		const [ result ] = await this.db.query<[AssociatedModerator[]]>("SELECT * FROM moderators WHERE serverId = $serverId", { serverId });
 
-		return result.map(({ result }) => result?.userId).filter(Boolean);
+		return result.result?.map(({ userId }) => userId) || [];
 	};
 
 	addModerator = (serverId: string, userId: string) => this.db.create<AssociatedModerator>("moderators:"+userId, { serverId, userId });
@@ -73,6 +71,6 @@ export default class Database {
 		return result.map(({ userId }) => userId);
 	};
 
-	restrictForUser = (userId: string) => this.db.create<RestrictedUser>("restricted:"+userId, { userId });
-	removeRestrictedForUser = (userId: string) => this.db.delete<RestrictedUser>("restricted:"+userId);
+	addRestrictedUser = (userId: string) => this.db.create<RestrictedUser>("restricted:"+userId, { userId });
+	removeRestrictedUser = (userId: string) => this.db.delete<RestrictedUser>("restricted:"+userId);
 }

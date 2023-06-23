@@ -1,7 +1,7 @@
 import Command from "../../Command";
 import {
 	type Message,
-	type CommandInteraction,
+	type ChatInputCommandInteraction,
 	type GuildMember,
 	SlashCommandBuilder,
 	EmbedBuilder,
@@ -17,14 +17,15 @@ export default class UserInfo extends Command {
 
 	data = new SlashCommandBuilder()
 		.setName(this.name)
-		.setDescription(this.description).addUserOption(option =>
+		.setDescription(this.description)
+		.addUserOption(option =>
 			option
 				.setName("target")
 				.setDescription("User to show info about")
 				.setRequired(false)
 		);
 
-	executeSlash = async (interaction: CommandInteraction) => {
+	executeSlash = async (interaction: ChatInputCommandInteraction) => {
 		const member = interaction.options.getMember("target") || interaction.member;
 
 		interaction.reply({ embeds: [this.displayUserInfo(member as GuildMember)] });
