@@ -61,8 +61,8 @@ export default class Database {
 		return result.result?.map(({ userId }) => userId) || [];
 	};
 
-	addModerator = (serverId: string, userId: string) => this.db.create<AssociatedModerator>("moderators:"+userId, { serverId, userId });
-	removeModerator = (serverId: string, userId: string) => this.db.delete<AssociatedModerator>("moderators:"+userId);
+	addModerator = (serverId: string, userId: string) => this.db.create<AssociatedModerator>("moderators", { serverId, userId });
+	removeModerator = (serverId: string, userId: string) => this.db.query("DELETE moderators WHERE serverId = $serverId AND userId = $userId", { serverId, userId });
 
 
 	getRestricted = async () => {
@@ -71,6 +71,6 @@ export default class Database {
 		return result.map(({ userId }) => userId);
 	};
 
-	addRestrictedUser = (userId: string) => this.db.create<RestrictedUser>("restricted:"+userId, { userId });
-	removeRestrictedUser = (userId: string) => this.db.delete<RestrictedUser>("restricted:"+userId);
+	addRestrictedUser = (userId: string) => this.db.create<RestrictedUser>("restricted", { userId });
+	removeRestrictedUser = (userId: string) => this.db.query("DELETE restricted WHERE userId = $userId", { userId });
 }
