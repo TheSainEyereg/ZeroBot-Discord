@@ -4,6 +4,7 @@ config();
 export default {
 	token: process.env.BOT_TOKEN!,
 	prefix: process.env.BOT_PREFIX!,
+	invite: process.env.BOT_INVITE_LINK!,
 	prefixEnabled: !!process.env.BOT_PREFIX,
 	superusers: process.env.BOT_SUS?.split(/ +/),
 
