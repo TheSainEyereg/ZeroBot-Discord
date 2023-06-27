@@ -19,10 +19,10 @@ export default class Aliases extends Command {
 	executeSlash = async () => {};
 
 	executePrefix = async (message: Message, args: string[]) => {
-		message.reply({ embeds: [await this.displayPing(message, args[0])] });
+		message.reply({ embeds: [await this.displayAliases(message, args[0])] });
 	};
 
-	private async displayPing(message: Message ,commandString: string) {
+	private async displayAliases(message: Message ,commandString: string) {
 		const { client, member } = message;
 
 		const command = client.commands.get(commandString) || client.commands.find((cmd, key) => (key.split(":")[1] === commandString) || (cmd.aliases && cmd.aliases.includes(commandString)));
