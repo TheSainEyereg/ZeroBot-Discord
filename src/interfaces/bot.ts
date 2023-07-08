@@ -27,4 +27,6 @@ export interface CategoryMeta {
 	name: string;
 	description: string;
 	access?: Access;
+	hidden?: boolean;
+	ignored?: boolean;
 }

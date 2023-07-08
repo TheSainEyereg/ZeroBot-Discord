@@ -29,6 +29,16 @@ const meta: CategoryMeta[] = [
 		name: "settings",
 		access: Access.Administrator,
 		description: "Settings"
+	},
+	{
+		name: "ignored",
+		description: "-",
+		ignored: true
+	},
+	{
+		name: "test",
+		description: "-",
+		hidden: true
 	}
 ];
 

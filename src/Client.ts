@@ -53,10 +53,10 @@ export class Client extends OriginalClient {
 		const requiredCommands: Command[] = [];
 		for (const directory of fs.readdirSync(commandsPath)) {
 			const dirPath = path.join(commandsPath, directory);
-			const categoryMeta = meta.find(c => c.name === directory) || null;
-			
-
 			if (!fs.statSync(dirPath).isDirectory()) continue;
+			
+			const categoryMeta = meta.find(c => c.name === directory) || null;
+			if (categoryMeta?.ignored) continue;
 
 			for (const file of fs.readdirSync(dirPath).filter(f => f.endsWith(".ts") || f.endsWith(".js"))) {
 				const filePath = path.join(dirPath, file);
