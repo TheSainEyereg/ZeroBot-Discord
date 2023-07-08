@@ -3,7 +3,6 @@ import {
 	type Message
 } from "discord.js";
 import { Access } from "../../components/enums";
-import { hasAccess } from "../../components/checkManager";
 import { critical, regular, warning } from "../../components/messages";
 
 export default class Aliases extends Command {
@@ -23,7 +22,7 @@ export default class Aliases extends Command {
 	};
 
 	private async displayMeta(message: Message ,commandString: string) {
-		const { client, member } = message;
+		const { client } = message;
 
 		const command = client.commands.get(commandString) || client.commands.find((cmd, key) => (key.split(":")[1] === commandString) || (cmd.aliases && cmd.aliases.includes(commandString)));
 
