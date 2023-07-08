@@ -1,9 +1,0 @@
-{
-	"access": {
-		"superusers": ["suOnly", "service"],
-		"administrators": ["adminOnly", "settings"],
-		"moderators": ["modsOnly", "moderation"]
-	},
-	"hide": ["test"],
-	"ignore": ["ignore"]
-}

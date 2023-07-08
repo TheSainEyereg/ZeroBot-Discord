@@ -16,8 +16,8 @@ export default class Prefix extends Command {
 	access = Access.Administrator;
 
 	data = new SlashCommandBuilder()
-		.setName("settings")
-		.setDescription("Settings")
+		.setName(this.categoryMeta!.name)
+		.setDescription(this.categoryMeta!.description)
 		.addSubcommand(subcommand =>
 			subcommand
 				.setName(this.name)

@@ -5,6 +5,7 @@ import Command from "./Command";
 import type Database from "./components/Database";
 import { MusicQueue } from "./interfaces/music";
 import { Client as OriginalClient, GatewayIntentBits, Partials, Collection } from "discord.js";
+import meta from "./commands/meta";
 
 
 export class Client extends OriginalClient {
@@ -52,6 +53,9 @@ export class Client extends OriginalClient {
 		const requiredCommands: Command[] = [];
 		for (const directory of fs.readdirSync(commandsPath)) {
 			const dirPath = path.join(commandsPath, directory);
+			const categoryMeta = meta.find(c => c.name === directory) || null;
+			
+
 			if (!fs.statSync(dirPath).isDirectory()) continue;
 
 			for (const file of fs.readdirSync(dirPath).filter(f => f.endsWith(".ts") || f.endsWith(".js"))) {
@@ -60,7 +64,7 @@ export class Client extends OriginalClient {
 				// eslint-disable-next-line @typescript-eslint/no-var-requires
 				const required = require(filePath).default;
 	
-				const command: Command = new required();
+				const command: Command = new required(categoryMeta);
 
 				requiredCommands.push(command);
 			}

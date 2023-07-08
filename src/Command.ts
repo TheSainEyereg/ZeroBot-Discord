@@ -1,5 +1,6 @@
 import type { Message, ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
 import type { Access } from "./components/enums";
+import type { CategoryMeta } from "./interfaces/bot";
 
 
 export default abstract class Command {
@@ -8,9 +9,12 @@ export default abstract class Command {
 	abstract args: string[];
 	abstract aliases: string[];
 	abstract access: Access;
+	categoryMeta: CategoryMeta | null;
 	
 	abstract data: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | SlashCommandSubcommandsOnlyBuilder | null; // Slash command
 
 	abstract executeSlash(interaction: ChatInputCommandInteraction): Promise<void>;
 	abstract executePrefix(message: Message, args: string[]): Promise<void>;
+
+	constructor(categoryMeta: CategoryMeta | null) { this.categoryMeta = categoryMeta; }
 }

@@ -1,4 +1,5 @@
 import type { User } from "discord.js";
+import type { Access } from "../components/enums";
 
 export interface EmbedOptions {
 	url?: string;
@@ -20,4 +21,10 @@ export interface ArgumentCheckAnswer {
 
 	text?: string;
 	pos?: number;
+}
+
+export interface CategoryMeta {
+	name: string;
+	description: string;
+	access?: Access;
 }
