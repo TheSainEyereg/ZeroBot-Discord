@@ -6,6 +6,7 @@ import type Database from "./components/Database";
 import { MusicQueue } from "./interfaces/music";
 import { Client as OriginalClient, GatewayIntentBits, Partials, Collection } from "discord.js";
 import meta from "./commands/meta";
+import type { CategoryMeta } from "./interfaces/bot";
 
 
 export class Client extends OriginalClient {
@@ -39,9 +40,9 @@ export class Client extends OriginalClient {
 			const filePath = path.join(eventsPath, file);
 
 			// eslint-disable-next-line @typescript-eslint/no-var-requires
-			const required = require(filePath).default;
+			const required: new () => Event = require(filePath).default;
 
-			const event: Event = new required();
+			const event = new required();
 			if (event.once) {
 				this.once(event.event, event.execute);
 			} else {
@@ -62,9 +63,9 @@ export class Client extends OriginalClient {
 				const filePath = path.join(dirPath, file);
 
 				// eslint-disable-next-line @typescript-eslint/no-var-requires
-				const required = require(filePath).default;
+				const required: new (_: CategoryMeta | null) => Command = require(filePath).default;
 	
-				const command: Command = new required(categoryMeta);
+				const command = new required(categoryMeta);
 
 				requiredCommands.push(command);
 			}
