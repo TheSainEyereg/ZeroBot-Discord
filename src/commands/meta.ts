@@ -5,7 +5,7 @@ import { CategoryMeta } from "../interfaces/bot";
 const meta: CategoryMeta[] = [
 	{
 		name: "info",
-		description: "Category with commands that returns useful information",
+		description: "Commands with useful information",
 	},
 	{
 		name: "moderation",
