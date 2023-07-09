@@ -44,9 +44,7 @@ export default class Database {
 	};
 
 
-	getServer = async (serverId: string) => {
-		return await this.prepareGetAndReturnServer(serverId);
-	};
+	getServer = (serverId: string) => this.prepareGetAndReturnServer(serverId);
 
 	updateServer = async (serverId: string, key: keyof ServerSettings, value: ServerSettings[keyof ServerSettings]) => {
 		const data = await this.prepareGetAndReturnServer(serverId);
