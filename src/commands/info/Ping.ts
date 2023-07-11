@@ -27,6 +27,6 @@ export default class Ping extends Command {
 	};
 
 	private displayPing(base: ChatInputCommandInteraction | Message) {
-		return regular("Pong!", `${Date.now() - base.createdTimestamp}ms.`);
+		return regular("Pong!", `Latency: \`${Date.now() - base.createdTimestamp}ms\`\nAPI Latency: \`${base.client.ws.ping}ms\``);
 	}
 }
