@@ -69,8 +69,7 @@ export default class Help extends Command {
 		const categoryCommands = targetCommands.filter(({ categoryMeta }) => categoryMeta?.name === category);
 
 		const commandsLines = isSlash ?
-			// categoryCommands.map(({ description }, key) => ({description, key: key.split(":")})).map(({ description, key }) =>`</${key[0]}${key[1] ? ` ${key[1]}` : ""}:${application.commands.cache.find(({name}) => name === key[0])?.id}> — ${description}`) :
-			categoryCommands.map(({ description }, key) => ({description, key: key.split(":")})).map(({ description, key }) =>`**/${key[0]}${key[1] ? ` ${key[1]}` : ""}** — ${description}`) :
+			categoryCommands.map(({ description }, key) => ({description, key: key.split(":")})).map(({ description, key }) =>`**</${key[0]}${key[1] ? ` ${key[1]}` : ""}:${application.commands.cache.find(({name}) => name === key[0])?.id}>** — ${description}`) :
 			categoryCommands.map(({name, description, args}) => `**${prefix}${name}** ${args.map(arg => `\`${arg}\``).join(" ")} — ${description}`);
 
 		return regular(`Commands of category \`${category}\`:`, commandsLines.join("\n"), { footerUser: user });
