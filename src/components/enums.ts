@@ -8,8 +8,8 @@ export enum Access {
 }
 
 export enum Colors {
-	Regular = 0xce38e8,
-	Url = 0x1194f0,
+	Regular = 0x3d7edf,
+	Url = 0x00a8fc,
 	Success = 0x44e838,
 	Warning = 0xe5e838,
 	Critical = 0xe83838,
