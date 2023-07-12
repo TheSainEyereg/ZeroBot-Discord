@@ -70,7 +70,7 @@ export default class Help extends Command {
 		if (!category) return new EmbedBuilder({
 			color: Colors.Regular,
 			author: {
-				name: "List of categories",
+				name: "List of commands",
 				icon_url: client.user.displayAvatarURL({ size: 256 }),
 			},
 			fields: categories.map(({ displayName, hasAccess, commands }) => ({
