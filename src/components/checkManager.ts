@@ -12,6 +12,8 @@ export async function hasAccess(member: GuildMember, type: Access) {
 	const restricted = await member.client.db.getRestricted();
 	if (restricted.includes(member.user.id)) return false;
 
+	if (type === Access.User) return true;
+
 	const cloned = [...order];
 
 	if (member.user.id === member.guild.ownerId) return cloned.splice(Access.Administrator).includes(type);
@@ -20,8 +22,6 @@ export async function hasAccess(member: GuildMember, type: Access) {
 
 	const moderators = await member.client.db.getModerators(member.guild.id);
 	if (moderators.includes(member.user.id)) return cloned.splice(Access.Moderator).includes(type);
-
-	return type === Access.User;
 }
 
 export function hasMissedArg(passed: string[], required: string[]): ArgumentCheckAnswer {
