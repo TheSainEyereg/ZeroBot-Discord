@@ -29,17 +29,17 @@ export function url(title: string, url: string, description?: string, opt?: Embe
 }
 
 export function success(title?: string, description?: string, opt?: EmbedOptions) {
-	return advanced((opt?.circle ? ":green_circle: " : ":white_check_mark: ") + title, description, Object.assign({color: Colors.Success}, opt));
+	return advanced((opt?.circle ? "🟢 " : "✅ ") + title, description, Object.assign({color: Colors.Success}, opt));
 }
 
 export function warning(title?: string, description?: string, opt?: EmbedOptions) {
-	return advanced((opt?.circle ? ":yellow_circle: " : ":warning: ") + title, description, Object.assign({color: Colors.Warning}, opt));
+	return advanced((opt?.circle ? "🟡 " : "⚠️ ") + title, description, Object.assign({color: Colors.Warning}, opt));
 }
 
 export function critical(title?: string, description?: string, opt?: EmbedOptions) {
-	return advanced((opt?.circle ? ":red_circle: " : ":no_entry_sign: ") + title, description, Object.assign({color: Colors.Critical}, opt));
+	return advanced((opt?.circle ? "🔴 " : "❌ ") + title, description, Object.assign({color: Colors.Critical}, opt));
 }
 
 export function question(title?: string, description?: string, opt?: EmbedOptions) {
-	return advanced((opt?.circle ? ":blue_circle: " : ":question: ") + title, description, Object.assign({color: Colors.Question}, opt));
+	return advanced((opt?.circle ? "🔵 " : "❔ ") + title, description, Object.assign({color: Colors.Question}, opt));
 }
