@@ -64,7 +64,7 @@ export default class UserInfo extends Command {
 				},
 				{
 					name: "Roles",
-					value: `\`${member.roles.cache.map(role => role.name).join(", ")}\``,
+					value: `\`${member.roles.cache.map(role => role.name).join("`, `")}\``,
 					inline: false
 				},
 				{
