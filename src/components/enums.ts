@@ -24,3 +24,9 @@ export enum MusicServices {
 //	VK,
 	Raw
 }
+
+export enum LoopMode {
+	Disabled,
+	Queue,
+	Track
+}

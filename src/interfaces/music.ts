@@ -1,28 +1,39 @@
-import type { Guild, TextChannel, VoiceChannel, User } from "discord.js";
+import type { Guild, GuildTextBasedChannel, BaseGuildVoiceChannel, GuildMember } from "discord.js";
 import type { AudioPlayer, AudioResource } from "@discordjs/voice";
-import { MusicServices } from "../components/enums";
+import type { LoopMode, MusicServices } from "../components/enums";
+import { Track } from "ym-api/dist/types";
 
 
 export interface Song {
 	service: MusicServices,
 	title: string,
-	thumbnail: string,
+	thumbnailUrl: string,
 	duration: number,
 	url: string,
-	requestedBy: User
+	id?: number,
+	requestedBy: GuildMember
 }
-
 
 export interface MusicQueue {
 	guild: Guild,
-	textChannel: TextChannel,
-	voiceChannel: VoiceChannel,
-	player: AudioPlayer,
-	resource: AudioResource,
+	textChannel: GuildTextBasedChannel,
+	voiceChannel: BaseGuildVoiceChannel,
+	player?: AudioPlayer,
+	resource?: AudioResource,
 	volume: number,
-	loop: boolean,
+	loopMode: LoopMode,
+	list: Song[],
+
 	playing: boolean,
-	stopped: boolean,
 	paused: boolean,
-	list: Song[]
+	stopped: boolean,
+	left: boolean,
+	deleted: boolean,
+
+	clear: (deleteQueue?: boolean) => void,
+	leaveChannel: (deleteQueue?: boolean) => void,
 }
+
+
+// Fix for broken ym-api types
+export type YMApiTrack = Track & { version?: string };
