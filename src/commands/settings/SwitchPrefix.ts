@@ -6,7 +6,7 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 import { Access } from "../../components/enums";
-import { success } from "../../components/messages";
+import { regular, success } from "../../components/messages";
 
 export default class SwitchPrefix extends Command {
 	name = "switch-prefix";
@@ -26,7 +26,6 @@ export default class SwitchPrefix extends Command {
 					option
 						.setName("state")
 						.setDescription("the new state")
-						.setRequired(false)
 				)
 		);
 
@@ -42,10 +41,10 @@ export default class SwitchPrefix extends Command {
 
 	private async setPrefixState( guild: Guild, newState: boolean | null) {
 		const { prefixEnabled } = await guild.client.db.getServer(guild.id);
+		if (!newState) return regular(`Prefix commands is currently ${prefixEnabled ? "enabled" : "disabled"}`);
 
-		const state = newState !== null ? newState : !prefixEnabled;
-		guild.client.db.updateServer(guild.id, "prefixEnabled", state);
+		guild.client.db.updateServer(guild.id, "prefixEnabled", newState);
 
-		return success(`Prefix commands ${state ? "enabled" : "disabled"}`);
+		return success(`Prefix commands ${newState ? "enabled" : "disabled"}`);
 	}
 }
