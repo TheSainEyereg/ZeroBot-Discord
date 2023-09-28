@@ -2,9 +2,9 @@ import { Surreal } from "surrealdb.js";
 
 type ServerSettings = {
 	prefix: string;
+	prefixEnabled: boolean;
 	language: string;
 	musicVolume: number;
-	prefixEnabled: boolean;
 	musicChannel?: string;
 	logChannel?: string;
 }
