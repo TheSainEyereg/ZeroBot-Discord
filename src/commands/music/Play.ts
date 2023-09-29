@@ -14,7 +14,7 @@ import { MusicQueue, Song, YMApiTrack } from "../../interfaces/music";
 import { VoiceConnectionStatus, getVoiceConnection } from "@discordjs/voice";
 import type { SpotifyTrack, SpotifyPlaylist, SpotifyAlbum } from "play-dl";
 
-export default class Prefix extends Command {
+export default class Play extends Command {
 	name = "play";
 	description = "Plays track or searches for it";
 	aliases = ["p"];
@@ -123,7 +123,7 @@ export default class Prefix extends Command {
 				if (queue.list.length > 1) return success(`Added \`${song.title}\` to queue`);
 			} catch (e) {
 				console.error(e);
-				return critical(`Can't fetch video from YouTube: ${e}`);
+				return critical("Can't fetch video from YouTube", `\`\`\`\n${e}\n\`\`\``);
 			}
 		} else if (type === "yt_playlist") {
 			try {
@@ -146,7 +146,7 @@ export default class Prefix extends Command {
 				}
 			} catch (e) {
 				console.error(e);
-				return critical(`Can't fetch playlist from YouTube: ${e}`);
+				return critical("Can't fetch playlist from YouTube", `\`\`\`\n${e}\n\`\`\``);
 			}
 		} else if (type === "so_track") {
 			warning(" Soundcloud is not supported yet");
@@ -169,7 +169,7 @@ export default class Prefix extends Command {
 				if (queue.list.length > 1) return success(`Added \`${song.title}\` to queue`);
 			} catch (e) {
 				console.error(e);
-				return critical(`Can't fetch track from Spotify: ${e}`);
+				return critical("Can't fetch track from Spotify", `\`\`\`\n${e}\n\`\`\``);
 			}
 		} else if (type === "sp_playlist") {
 			try {
@@ -192,7 +192,7 @@ export default class Prefix extends Command {
 				}
 			} catch (e) {
 				console.error(e);
-				return critical(`Can't fetch playlist from Spotify: ${e}`);
+				return critical("Can't fetch playlist from Spotify", `\`\`\`\n${e}\n\`\`\``);
 			}
 		} else if (type === "sp_album") {
 			try {
@@ -215,7 +215,7 @@ export default class Prefix extends Command {
 				}
 			} catch (e) {
 				console.error(e);
-				return critical(`Can't fetch playlist from Spotify: ${e}`);
+				return critical("Can't fetch playlist from Spotify", `\`\`\`\n${e}\n\`\`\``);
 			}
 		} else if (type === "search") {
 			const result = await play.search(query, {limit: 1});
@@ -239,8 +239,6 @@ export default class Prefix extends Command {
 				const info = (await ymApi.getTrack(id))[0] as YMApiTrack;
 	
 				if (!info.available) return warning("Track is not available");
-
-				console.log(JSON.stringify(info));
 	
 				const song: Song = {
 					service: MusicServices.Yandex,
@@ -256,7 +254,7 @@ export default class Prefix extends Command {
 				if (queue.list.length > 1) return success(`Added \`${song.title}\` to queue`);
 			} catch (e) {
 				console.error(e);
-				return critical(`Can't fetch track from Yandex: ${e}`);
+				return critical("Can't fetch track from Yandex", `\`\`\`\n${e}\n\`\`\``);
 			}
 		} else if (query.match(/(https:\/\/)?(www\.)?music\.yandex\.ru\/users\/([A-Za-z0-9-_]+)(\/playlists\/[0-9]+)?/gi)) { // YM playlist
 			try {
@@ -283,7 +281,7 @@ export default class Prefix extends Command {
 				}
 			} catch(e) {
 				console.error(e);
-				return critical(`Can't fetch playlist from Yandex: ${e}`);
+				return critical("Can't fetch playlist from Yandex", `\`\`\`\n${e}\n\`\`\``);
 			}
 		} else if (query.match(/(https:\/\/)?(www.)?music\.yandex\.ru\/album\/[0-9]+/gi)) { // YM album
 			try {
@@ -308,7 +306,7 @@ export default class Prefix extends Command {
 				}
 			} catch (e) {
 				console.error(e);
-				return critical(`Can't fetch album from Yandex: ${e}`);
+				return critical("Can't fetch album from Yandex", `\`\`\`\n${e}\n\`\`\``);
 			}
 		} else {
 			return warning("Raw URLs currently not supported");
@@ -338,7 +336,7 @@ export default class Prefix extends Command {
 			startMusicPlayback(queue);
 			const requestedBy = queue.list[0].requestedBy;
 			return regular(`${queue.list.length > 1 ? `Added ${queue.list.length} songs and s` : "S"}tarted playback`, queue.list[0].title, {
-				footer: `Requested by ${requestedBy.nickname}`,
+				footer: `Requested by ${requestedBy.displayName}`,
 				footerIcon: requestedBy.displayAvatarURL({ size: 256 })
 			});
 		}
