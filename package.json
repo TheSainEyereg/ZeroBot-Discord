@@ -1,37 +1,38 @@
 {
-  "name": "zerobot",
-  "version": "1.0.0",
+  "name": "zerobot-discord",
+  "version": "2.0.0",
   "description": "Multifunctional discord bot",
-  "main": "index.js",
+  "main": "src/bot.ts",
   "scripts": {
-    "start": "node index.js"
+    "build": "tsc",
+    "start": "node dist/bot",
+    "migrate": "node migrate",
+    "dev": "nodemon  --signal SIGINT src/bot",
+    "lint": "eslint src/**/*.ts"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/TheSainEyereg/ZeroBot-Discord.git",
-    "raw": "https://github.com/TheSainEyereg/ZeroBot-Discord"
-  },
-  "keywords": [
-    "Bot",
-    "Discord",
-    "ZeroBot",
-    "Zero"
-  ],
+  "repository": "https://github.com/TheSainEyereg/ZeroBot-Discord.git",
   "author": "Olejka",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/TheSainEyereg/ZeroBot-Discord/issues"
+  "devDependencies": {
+    "@types/node": "^20.3.1",
+    "@types/node-fetch": "2.x",
+    "@typescript-eslint/eslint-plugin": "^5.59.11",
+    "@typescript-eslint/parser": "^5.59.11",
+    "eslint": "^8.43.0",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.3"
   },
-  "homepage": "https://github.com/TheSainEyereg/ZeroBot-Discord#readme",
   "dependencies": {
-    "@discordjs/voice": "^0.11.0",
-    "axios": "^0.27.2",
-    "canvas": "^2.9.3",
-    "discord.js": "^13.9.2",
-    "ffmpeg-static": "^5.0.2",
-    "libsodium-wrappers": "^0.7.10",
-    "opusscript": "^0.0.8",
-    "play-dl": "^1.9.6",
+    "@discordjs/opus": "^0.9.0",
+    "@discordjs/voice": "^0.16.0",
+    "better-sqlite3": "^8.4.0",
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.3.1",
+    "libsodium-wrappers": "^0.7.13",
+    "node-fetch": "2",
+    "play-dl": "^1.9.7",
+    "surrealdb.js": "^0.8.0",
     "ym-api": "^1.2.1"
   }
 }

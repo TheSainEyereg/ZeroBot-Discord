@@ -104,6 +104,4 @@ dist
 .tern-port
 
 # Secutrity files
-/config.json
-storage/*
-service/test
+old

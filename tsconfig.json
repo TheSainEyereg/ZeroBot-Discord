@@ -1,0 +1,28 @@
+{
+	"ts-node": {
+	  "files": true
+	},
+	"files": [
+	  "src/@types/discord.d.ts"
+	],
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "commonjs",
+        "rootDir": "./src/",
+        "outDir": "./dist/",
+        "strict": true,
+        "moduleResolution": "node",
+		"sourceMap": true,
+        "esModuleInterop": true,
+        "removeComments": true,
+		"resolveJsonModule": true,
+		"noImplicitAny": true, 
+	},
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules",
+        "dist"
+	]
+}
