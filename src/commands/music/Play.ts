@@ -107,6 +107,8 @@ export default class Play extends Command {
 		const { play, ymApi } = await initMusic();
 		
 		const type = await play.validate(query);
+
+		const queueLength = queue.list.length;
 	
 		if (type === "yt_video") {
 			try {
@@ -122,7 +124,7 @@ export default class Play extends Command {
 				};
 				queue.list.push(song);
 
-				if (queue.list.length > 1) return success(`Added \`${song.title}\` to queue`);
+				if (queueLength > 1) return success(`Added \`${song.title}\` to queue`);
 			} catch (e) {
 				console.error(e);
 				return critical("Can't fetch video from YouTube", `\`\`\`\n${e}\n\`\`\``);
@@ -132,8 +134,6 @@ export default class Play extends Command {
 				const playlist = await play.playlist_info(query);
 				const list = await playlist.all_videos();
 
-				if (queue.list.length > 1) return success(`Added ${list.length > 200 ? 200 : list.length} tracks to queue`);
-
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.YouTube,
 					title: info.title!,
@@ -142,6 +142,8 @@ export default class Play extends Command {
 					url: info.url,
 					requestedBy: member
 				})));
+
+				if (queueLength > 1) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
 			} catch (e) {
 				console.error(e);
 				return critical("Can't fetch playlist from YouTube", `\`\`\`\n${e}\n\`\`\``);
@@ -164,7 +166,7 @@ export default class Play extends Command {
 				};
 				queue.list.push(song);
 
-				if (queue.list.length > 1) return success(`Added \`${song.title}\` to queue`);
+				if (queueLength > 1) return success(`Added \`${song.title}\` to queue`);
 			} catch (e) {
 				console.error(e);
 				return critical("Can't fetch track from Spotify", `\`\`\`\n${e}\n\`\`\``);
@@ -174,8 +176,6 @@ export default class Play extends Command {
 				const playlist = await play.spotify(query) as SpotifyPlaylist;
 				const list = await playlist.all_tracks();
 
-				if (queue.list.length > 1) return success(`Added ${list.length > 200 ? 200 : list.length} tracks to queue`);
-
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.Spotify,
 					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
@@ -184,6 +184,8 @@ export default class Play extends Command {
 					url: info.url,
 					requestedBy: member
 				})));
+
+				if (queueLength > 1) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
 			} catch (e) {
 				console.error(e);
 				return critical("Can't fetch playlist from Spotify", `\`\`\`\n${e}\n\`\`\``);
@@ -192,8 +194,6 @@ export default class Play extends Command {
 			try {
 				const playlist = await play.spotify(query) as SpotifyAlbum;
 				const list = await playlist.all_tracks();
-				
-				if (queue.list.length > 1) return success(`Added ${list.length > 200 ? 200 : list.length} tracks to queue`);
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.Spotify,
@@ -203,6 +203,8 @@ export default class Play extends Command {
 					url: info.url,
 					requestedBy: member
 				})));
+				
+				if (queueLength > 1) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
 			} catch (e) {
 				console.error(e);
 				return critical("Can't fetch playlist from Spotify", `\`\`\`\n${e}\n\`\`\``);
@@ -221,7 +223,7 @@ export default class Play extends Command {
 			};
 			queue.list.push(song);
 
-			if (queue.list.length > 1) return success(`Added \`${song.title}\` to queue`);
+			if (queueLength > 1) return success(`Added \`${song.title}\` to queue`);
 	
 		} else if (query.match(/(https:\/\/)?(www.)?music\.yandex\.ru\/album\/([0-9]+)\/track\/[0-9]+/gi)) { // YM track
 			try {
@@ -241,7 +243,7 @@ export default class Play extends Command {
 				};
 				queue.list.push(song);
 
-				if (queue.list.length > 1) return success(`Added \`${song.title}\` to queue`);
+				if (queueLength > 1) return success(`Added \`${song.title}\` to queue`);
 			} catch (e) {
 				console.error(e);
 				return critical("Can't fetch track from Yandex", `\`\`\`\n${e}\n\`\`\``);
@@ -251,35 +253,9 @@ export default class Play extends Command {
 				const username = query.match(/users\/([A-Za-z0-9-_]+)/gi)![0].replace("users/", "");
 				const playlist = query.match(/playlists\/([0-9]+)/gi) ? parseInt(query.match(/playlists\/([0-9]+)/gi)![0].replace("playlists/", "")) : 3;
 	
-				const list = (await ymApi.getPlaylist(playlist, username)).tracks?.map(track => track.track).filter(track => track.available);
+				const list = (await ymApi.getPlaylist(playlist, username)).tracks?.map(track => track.track).filter(track => track.available) as YMApiTrack[];
 				if (!list) throw new Error("Can't get info");
-	
-				if (queue.list.length > 1) return success(`Added ${list.length > 200 ? 200 : list.length} tracks to queue`);
 
-				for (let i = 0; i < (list.length > 200 ? 200 : list.length); i++) {
-					const info = list[i] as YMApiTrack;
-					const song: Song = {
-						service: MusicServices.Yandex,
-						title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
-						thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
-						duration: Math.floor(info.durationMs / 1000),
-						url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
-						id: info.id,
-						requestedBy: member
-					};
-					queue.list.push(song);
-				}
-			} catch(e) {
-				console.error(e);
-				return critical("Can't fetch playlist from Yandex", `\`\`\`\n${e}\n\`\`\``);
-			}
-		} else if (query.match(/(https:\/\/)?(www.)?music\.yandex\.ru\/album\/[0-9]+/gi)) { // YM album
-			try {
-				const album = parseInt(query.match(/album\/([0-9]+)/gi)![0].replace("album/", ""));
-	
-				const list = (await ymApi.getAlbumWithTracks(album))?.volumes[0]?.filter(track => track.available) as YMApiTrack[];
-
-				if (queue.list.length > 1) return success(`Added ${list.length > 200 ? 200 : list.length} tracks to queue`);
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.Yandex,
@@ -290,6 +266,29 @@ export default class Play extends Command {
 					id: info.id,
 					requestedBy: member
 				})));
+	
+				if (queueLength > 1) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
+			} catch(e) {
+				console.error(e);
+				return critical("Can't fetch playlist from Yandex", `\`\`\`\n${e}\n\`\`\``);
+			}
+		} else if (query.match(/(https:\/\/)?(www.)?music\.yandex\.ru\/album\/[0-9]+/gi)) { // YM album
+			try {
+				const album = parseInt(query.match(/album\/([0-9]+)/gi)![0].replace("album/", ""));
+	
+				const list = (await ymApi.getAlbumWithTracks(album))?.volumes[0]?.filter(track => track.available) as YMApiTrack[];
+
+				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
+					service: MusicServices.Yandex,
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
+					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
+					duration: Math.floor(info.durationMs / 1000),
+					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
+					id: info.id,
+					requestedBy: member
+				})));
+
+				if (queueLength > 1) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
 			} catch (e) {
 				console.error(e);
 				return critical("Can't fetch album from Yandex", `\`\`\`\n${e}\n\`\`\``);
@@ -308,7 +307,7 @@ export default class Play extends Command {
 			// 			requested: message.author 
 			// 		}
 			// 		queue.list.push(song);
-			// 		if (queue.list.length > 1) Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
+			// 		if (queueLength > 1) Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
 			// 	} catch (e) {
 			// 		Messages.critical(message, `${l.cant_url}\n\`${e}\``)
 			// 	}
@@ -321,7 +320,7 @@ export default class Play extends Command {
 		if (!queue.playing && queue.list[0]) {
 			startMusicPlayback(queue);
 			const requestedBy = queue.list[0].requestedBy;
-			return regular(`${queue.list.length > 1 ? `Added ${queue.list.length} songs and s` : "S"}tarted playback`, queue.list[0].title, {
+			return regular(`${queueLength > 1 ? `Added ${queue.list.length} songs and s` : "S"}tarted playback`, queue.list[0].title, {
 				footer: `Requested by ${requestedBy.displayName}`,
 				footerIcon: requestedBy.displayAvatarURL({ size: 256 })
 			});
