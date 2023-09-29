@@ -14,6 +14,8 @@ import { MusicQueue, Song, YMApiTrack } from "../../interfaces/music";
 import { VoiceConnectionStatus, getVoiceConnection } from "@discordjs/voice";
 import type { SpotifyTrack, SpotifyPlaylist, SpotifyAlbum } from "play-dl";
 
+const MAX_ITEMS = 200;
+
 export default class Play extends Command {
 	name = "play";
 	description = "Plays track or searches for it";
@@ -131,19 +133,15 @@ export default class Play extends Command {
 				const list = await playlist.all_videos();
 
 				if (queue.list.length > 1) return success(`Added ${list.length > 200 ? 200 : list.length} tracks to queue`);
-	
-				for (let i = 0; i < (list.length > 200 ? 200 : list.length); i++) {
-					const info = list[i];
-					const song: Song = {
-						service: MusicServices.YouTube,
-						title: info.title!,
-						thumbnailUrl: info.thumbnails[0].url,
-						duration: info.durationInSec,
-						url: info.url,
-						requestedBy: member
-					};
-					queue.list.push(song);
-				}
+
+				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
+					service: MusicServices.YouTube,
+					title: info.title!,
+					thumbnailUrl: info.thumbnails[0].url,
+					duration: info.durationInSec,
+					url: info.url,
+					requestedBy: member
+				})));
 			} catch (e) {
 				console.error(e);
 				return critical("Can't fetch playlist from YouTube", `\`\`\`\n${e}\n\`\`\``);
@@ -177,19 +175,15 @@ export default class Play extends Command {
 				const list = await playlist.all_tracks();
 
 				if (queue.list.length > 1) return success(`Added ${list.length > 200 ? 200 : list.length} tracks to queue`);
-				
-				for (let i = 0; i < (list.length > 200 ? 200 : list.length); i++) {
-					const info = list[i];
-					const song: Song = {
-						service: MusicServices.Spotify,
-						title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
-						thumbnailUrl: info.thumbnail?.url || "",
-						duration: info.durationInSec,
-						url: info.url,
-						requestedBy: member
-					};
-					queue.list.push(song);
-				}
+
+				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
+					service: MusicServices.Spotify,
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
+					thumbnailUrl: info.thumbnail?.url || "",
+					duration: info.durationInSec,
+					url: info.url,
+					requestedBy: member
+				})));
 			} catch (e) {
 				console.error(e);
 				return critical("Can't fetch playlist from Spotify", `\`\`\`\n${e}\n\`\`\``);
@@ -200,19 +194,15 @@ export default class Play extends Command {
 				const list = await playlist.all_tracks();
 				
 				if (queue.list.length > 1) return success(`Added ${list.length > 200 ? 200 : list.length} tracks to queue`);
-				
-				for (let i = 0; i < (list.length > 200 ? 200 : list.length); i++) {
-					const info = list[i];
-					const song: Song = {
-						service: MusicServices.Spotify,
-						title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
-						thumbnailUrl: info.thumbnail?.url || "",
-						duration: info.durationInSec,
-						url: info.url,
-						requestedBy: member
-					};
-					queue.list.push(song);
-				}
+
+				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
+					service: MusicServices.Spotify,
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
+					thumbnailUrl: info.thumbnail?.url || "",
+					duration: info.durationInSec,
+					url: info.url,
+					requestedBy: member
+				})));
 			} catch (e) {
 				console.error(e);
 				return critical("Can't fetch playlist from Spotify", `\`\`\`\n${e}\n\`\`\``);
@@ -287,23 +277,19 @@ export default class Play extends Command {
 			try {
 				const album = parseInt(query.match(/album\/([0-9]+)/gi)![0].replace("album/", ""));
 	
-				const list = (await ymApi.getAlbumWithTracks(album))?.volumes[0]?.filter(track => track.available);
+				const list = (await ymApi.getAlbumWithTracks(album))?.volumes[0]?.filter(track => track.available) as YMApiTrack[];
 
 				if (queue.list.length > 1) return success(`Added ${list.length > 200 ? 200 : list.length} tracks to queue`);
-	
-				for (let i = 0; i < (list.length > 200 ? 200 : list.length); i++) {
-					const info = list[i] as YMApiTrack;
-					const song: Song = {
-						service: MusicServices.Yandex,
-						title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} + ${info.version ? ` (${info.version})` : ""}`,
-						thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
-						duration: Math.floor(info.durationMs / 1000),
-						url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
-						id: info.id,
-						requestedBy: member
-					};
-					queue.list.push(song);
-				}
+
+				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
+					service: MusicServices.Yandex,
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} + ${info.version ? ` (${info.version})` : ""}`,
+					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
+					duration: Math.floor(info.durationMs / 1000),
+					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
+					id: info.id,
+					requestedBy: member
+				})));
 			} catch (e) {
 				console.error(e);
 				return critical("Can't fetch album from Yandex", `\`\`\`\n${e}\n\`\`\``);
