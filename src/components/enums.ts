@@ -17,12 +17,12 @@ export enum Colors {
 }
 
 export enum MusicServices {
-	YouTube,
-//	SoundCloud,
-	Spotify,
-	Yandex,
-//	VK,
-	Raw
+	YouTube = "YouTube",
+//	SoundCloud = "SoundCloud",
+	Spotify = "Spotify",
+	Yandex = "Yandex",
+//	VK = "VK",
+	Raw = "URL",
 }
 
 export enum LoopMode {
