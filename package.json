@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/bot",
+    "migrate": "node migrate",
     "dev": "nodemon  --signal SIGINT src/bot",
     "lint": "eslint src/**/*.ts"
   },
