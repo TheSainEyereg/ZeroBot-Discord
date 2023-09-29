@@ -49,7 +49,7 @@ export default class Prefix extends Command {
 
 		if (volume < 1 || volume > 100) return warning("Volume must be a number between 1 and 100");
 
-		guild.client.db.updateServer(guild.id, "musicVolume", volume / 100);
+		guild.client.db.updateServer(guild.id, "musicVolume", volume * 0.01);
 		return success("Default volume changed!", `The default music volume is set to ${volume}%`);
 	}
 }
