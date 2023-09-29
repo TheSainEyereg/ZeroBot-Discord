@@ -232,7 +232,7 @@ export default class Play extends Command {
 	
 				const song: Song = {
 					service: MusicServices.Yandex,
-					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} + ${info.version ? ` (${info.version})` : ""}`,
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
 					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
@@ -260,7 +260,7 @@ export default class Play extends Command {
 					const info = list[i] as YMApiTrack;
 					const song: Song = {
 						service: MusicServices.Yandex,
-						title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} + ${info.version ? ` (${info.version})` : ""}`,
+						title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
 						thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 						duration: Math.floor(info.durationMs / 1000),
 						url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
@@ -283,7 +283,7 @@ export default class Play extends Command {
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.Yandex,
-					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} + ${info.version ? ` (${info.version})` : ""}`,
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
 					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
