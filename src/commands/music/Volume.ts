@@ -13,7 +13,7 @@ export default class Ping extends Command {
 	name = "volume";
 	description = "Change playback volume";
 	aliases = ["v"];
-	args = [];
+	args = ["(volume)"];
 	access = Access.User;
 
 	data = new SlashCommandBuilder()

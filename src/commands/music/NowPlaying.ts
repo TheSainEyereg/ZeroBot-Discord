@@ -21,14 +21,14 @@ export default class NowPlaying extends Command {
 		.setDescription(this.description);
 
 	executeSlash = async (interaction: ChatInputCommandInteraction) => {
-		interaction.reply({ embeds: [this.stop(interaction.member as GuildMember)] });
+		interaction.reply({ embeds: [this.now(interaction.member as GuildMember)] });
 	};
 
 	executePrefix = async (message: Message) => {
-		message.reply({ embeds: [this.stop(message.member as GuildMember)] });
+		message.reply({ embeds: [this.now(message.member as GuildMember)] });
 	};
 
-	private stop(member: GuildMember) {
+	private now(member: GuildMember) {
 		const { client: { musicQueue }, guild } = member;
 
 		const queue = musicQueue.get(guild.id);
