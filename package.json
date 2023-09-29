@@ -5,9 +5,9 @@
   "main": "src/bot.ts",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/bot",
+    "start": "node dist/app",
     "migrate": "node migrate",
-    "dev": "nodemon  --signal SIGINT src/bot",
+    "dev": "nodemon  --signal SIGINT src/app",
     "lint": "eslint src/**/*.ts"
   },
   "repository": "https://github.com/TheSainEyereg/ZeroBot-Discord.git",
