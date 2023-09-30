@@ -15,8 +15,8 @@ export default {
 		user: process.env.SURREAL_DB_USER!,
 		pass: process.env.SURREAL_DB_PASS!,
 
-		namespace: "bots",
-		database: "zerobot"
+		namespace: process.env.SURREAL_DB_NAMESPACE!,
+		database: process.env.SURREAL_DB_DATABASE!
 	},
 
 	music: {

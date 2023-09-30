@@ -4,8 +4,8 @@ const { Surreal } = require("surrealdb.js");
 require("dotenv").config();
 
 const db = new Surreal(process.env.SURREAL_DB_URL, {
-	ns: "bots",
-	db: "zerobot"
+	ns: process.env.SURREAL_DB_NAMESPACE,
+	db: process.env.SURREAL_DB_DATABASE
 });
 
 (async () => {
