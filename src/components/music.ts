@@ -104,15 +104,15 @@ export async function getMusicPlayer(queue: MusicQueue, song: Song) {
 			stream = pdl.stream;
 			streamType = pdl.type;
 		}
-		if (song.service === MusicServices.Raw) {
-			const res = await fetch(song.url);
-			stream = Readable.from(await res.buffer());
-		}
 		if (song.service === MusicServices.Yandex) {
 			const downloadInfo = await ymApi.getTrackDownloadInfo(song.id!);
 			const directUrl = await ymApi.getTrackDirectLink(downloadInfo.find(i => i.bitrateInKbps === 192)!.downloadInfoUrl);
 
 			const res = await fetch(directUrl);
+			stream = Readable.from(await res.buffer());
+		}
+		if (song.service === MusicServices.Raw) {
+			const res = await fetch(song.url);
 			stream = Readable.from(await res.buffer());
 		}
 

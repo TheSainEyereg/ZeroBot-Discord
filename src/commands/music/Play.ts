@@ -226,77 +226,74 @@ export default class Play extends Command {
 			if (queueLength) return success(`Added \`${song.title}\` to queue`);
 	
 		} else if (query.match(/(https:\/\/)?(www.)?music\.yandex\.ru\/album\/([0-9]+)\/track\/[0-9]+/gi)) { // YM track
-			return warning("Yandex is not supported yet");
-			// try {
-			// 	const id = parseInt(query.match(/track\/([0-9]+)/gi)![0].replace("track/", ""));
-			// 	const info = (await ymApi.getTrack(id))[0] as YMApiTrack;
+			try {
+				const id = parseInt(query.match(/track\/([0-9]+)/gi)![0].replace("track/", ""));
+				const info = (await ymApi.getTrack(id))[0] as YMApiTrack;
 	
-			// 	if (!info.available) return warning("Track is not available");
+				if (!info.available) return warning("Track is not available");
 	
-			// 	const song: Song = {
-			// 		service: MusicServices.Yandex,
-			// 		title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
-			// 		thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
-			// 		duration: Math.floor(info.durationMs / 1000),
-			// 		url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
-			// 		id: info.id,
-			// 		requestedBy: member
-			// 	};
-			// 	queue.list.push(song);
+				const song: Song = {
+					service: MusicServices.Yandex,
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
+					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
+					duration: Math.floor(info.durationMs / 1000),
+					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
+					id: info.id,
+					requestedBy: member
+				};
+				queue.list.push(song);
 
-			// 	if (queueLength) return success(`Added \`${song.title}\` to queue`);
-			// } catch (e) {
-			// 	console.error(e);
-			// 	return critical("Can't fetch track from Yandex", `\`\`\`\n${e}\n\`\`\``);
-			// }
+				if (queueLength) return success(`Added \`${song.title}\` to queue`);
+			} catch (e) {
+				console.error(e);
+				return critical("Can't fetch track from Yandex", `\`\`\`\n${e}\n\`\`\``);
+			}
 		} else if (query.match(/(https:\/\/)?(www\.)?music\.yandex\.ru\/users\/([A-Za-z0-9-_]+)(\/playlists\/[0-9]+)?/gi)) { // YM playlist
-			return warning("Yandex is not supported yet");
-			// try {
-			// 	const username = query.match(/users\/([A-Za-z0-9-_]+)/gi)![0].replace("users/", "");
-			// 	const playlist = query.match(/playlists\/([0-9]+)/gi) ? parseInt(query.match(/playlists\/([0-9]+)/gi)![0].replace("playlists/", "")) : 3;
+			try {
+				const username = query.match(/users\/([A-Za-z0-9-_]+)/gi)![0].replace("users/", "");
+				const playlist = query.match(/playlists\/([0-9]+)/gi) ? parseInt(query.match(/playlists\/([0-9]+)/gi)![0].replace("playlists/", "")) : 3;
 	
-			// 	const list = (await ymApi.getPlaylist(playlist, username)).tracks?.map(track => track.track).filter(track => track.available) as YMApiTrack[];
-			// 	if (!list) throw new Error("Can't get info");
+				const list = (await ymApi.getPlaylist(playlist, username)).tracks?.map(track => track.track).filter(track => track.available) as YMApiTrack[];
+				if (!list) throw new Error("Can't get info");
 
-			// 	queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
-			// 		service: MusicServices.Yandex,
-			// 		title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
-			// 		thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
-			// 		duration: Math.floor(info.durationMs / 1000),
-			// 		url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
-			// 		id: info.id,
-			// 		requestedBy: member
-			// 	})));
+				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
+					service: MusicServices.Yandex,
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
+					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
+					duration: Math.floor(info.durationMs / 1000),
+					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
+					id: info.id,
+					requestedBy: member
+				})));
 	
-			// 	if (queueLength) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
-			// } catch(e) {
-			// 	console.error(e);
-			// 	return critical("Can't fetch playlist from Yandex", `\`\`\`\n${e}\n\`\`\``);
-			// }
+				if (queueLength) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
+			} catch(e) {
+				console.error(e);
+				return critical("Can't fetch playlist from Yandex", `\`\`\`\n${e}\n\`\`\``);
+			}
 		} else if (query.match(/(https:\/\/)?(www.)?music\.yandex\.ru\/album\/[0-9]+/gi)) { // YM album
-			return warning("Yandex is not supported yet");
-			// try {
-			// 	const album = parseInt(query.match(/album\/([0-9]+)/gi)![0].replace("album/", ""));
+			try {
+				const album = parseInt(query.match(/album\/([0-9]+)/gi)![0].replace("album/", ""));
 	
-			// 	const list = (await ymApi.getAlbumWithTracks(album))?.volumes[0]?.filter(track => track.available) as YMApiTrack[];
+				const list = (await ymApi.getAlbumWithTracks(album))?.volumes[0]?.filter(track => track.available) as YMApiTrack[];
 
-			// 	queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
-			// 		service: MusicServices.Yandex,
-			// 		title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
-			// 		thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
-			// 		duration: Math.floor(info.durationMs / 1000),
-			// 		url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
-			// 		id: info.id,
-			// 		requestedBy: member
-			// 	})));
+				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
+					service: MusicServices.Yandex,
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
+					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
+					duration: Math.floor(info.durationMs / 1000),
+					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
+					id: info.id,
+					requestedBy: member
+				})));
 
-			// 	if (queueLength) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
-			// } catch (e) {
-			// 	console.error(e);
-			// 	return critical("Can't fetch album from Yandex", `\`\`\`\n${e}\n\`\`\``);
-			// }
+				if (queueLength) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
+			} catch (e) {
+				console.error(e);
+				return critical("Can't fetch album from Yandex", `\`\`\`\n${e}\n\`\`\``);
+			}
 		} else {
-			return warning("Raw URLs currently not supported");
+			return warning("Raw URLs are not supported yet");
 			// 	try {
 			// 		const res = await axios.get(url);
 			// 		if (!res.headers["content-type"]?.match(/^(audio|video)\/.+$/gi)) return Messages.warning(message, l.not_media);
