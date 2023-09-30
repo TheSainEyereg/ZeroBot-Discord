@@ -38,7 +38,7 @@ const db = new Surreal(process.env.SURREAL_DB_URL, {
 	}
 
 	await db.close();
-
-	fs.unlinkSync("./storage");
+	
+	fs.rmSync("./storage", { recursive: true, force: true });
 
 })().catch(err => console.error(err));
