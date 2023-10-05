@@ -21,7 +21,7 @@ export default class Play extends Command {
 	description = "Plays track or searches for it";
 	aliases = ["p"];
 	args = ["(url/search)"];
-	access = Access.Administrator;
+	access = Access.User;
 
 	data = new SlashCommandBuilder()
 		.setName(this.name)
