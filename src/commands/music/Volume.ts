@@ -9,6 +9,8 @@ import { Access } from "../../components/enums";
 import { regular, success, warning } from "../../components/messages";
 import { hasAccess } from "../../components/checkManager";
 
+const MAX_OVERDRIVE = 10000;
+
 export default class Ping extends Command {
 	name = "volume";
 	description = "Change playback volume";
@@ -24,7 +26,6 @@ export default class Ping extends Command {
 				.setName("volume")
 				.setDescription("volume")
 				.setMinValue(1)
-				.setMaxValue(100)
 		);
 
 	executeSlash = async (interaction: ChatInputCommandInteraction) => {
@@ -52,7 +53,8 @@ export default class Ping extends Command {
 		if (!volume) return regular(`The current volume is ${queue.volume * 100}%`);
 
 		const isOverdrive = volume > 100;
-		if (volume < 1 || isOverdrive && !await hasAccess(member, Access.Moderator)) return warning("Volume must be a number between 1 and 100");
+		const allowedOverdrive = await hasAccess(member, Access.Moderator);
+		if (volume < 1 || isOverdrive && (!allowedOverdrive || volume > MAX_OVERDRIVE)) return warning(`Volume must be a number between 1 and ${allowedOverdrive ? MAX_OVERDRIVE : 100}`);
 	
 		queue.volume = isOverdrive ? 1 : volume * 0.01;
 		queue.resource?.volume?.setVolumeLogarithmic(volume * 0.01 * 0.5);
