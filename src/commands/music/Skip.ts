@@ -39,15 +39,9 @@ export default class Skip extends Command {
 
 		// TODO: Skip vote
 
-		try {
-			const old = queue.list[0].title;
-			if (queue.loopMode == LoopMode.Track) queue.list.shift();
-			queue.player?.stop();
-			return success("Skipped", `Track \`${old}\` was skipped by ${member.user}`);
-		} catch (e) {
-			console.error(e);
-			queue.clear(false);
-			return critical("Error occurred!", `\`\`\`\n${e}\n\`\`\``);
-		}
+		const old = queue.list[0].title;
+		if (queue.loopMode == LoopMode.Track) queue.list.shift();
+		queue.player?.stop();
+		return success("Skipped", `Track \`${old}\` was skipped by ${member.user}`);
 	}
 }

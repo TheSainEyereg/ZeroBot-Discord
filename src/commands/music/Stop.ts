@@ -37,12 +37,7 @@ export default class Stop extends Command {
 		if (!channel) return warning("You must be in a voice channel to skip");
 		if (channel != queue.voiceChannel) return warning("You must be in the same voice channel to skip");
 
-		try {
-			queue.clear(false);
-			return success("Stopped playback");
-		} catch (e) {
-			console.error(e);
-			return critical("Error occurred!", `\`\`\`\n${e}\n\`\`\``);
-		}
+		queue.clear(false);
+		return success("Stopped playback");
 	}
 }
