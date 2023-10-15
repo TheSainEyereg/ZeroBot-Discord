@@ -60,7 +60,7 @@ export default class Queue extends Command {
 			title: "Music queue",
 			description: list.join("\n") + (queueList.length > MAX_ITEMS ? `\n\n__**And ${queueList.length-MAX_ITEMS} more**__` : ""),
 			footer:	{
-				text: `Total songs: ${queueList.length} | Total duration: ${this.getDurationString(totalDuration)} | ${queue.loopMode}`,
+				text: `Total songs: ${queueList.length} | Total duration: ${this.getDurationString(totalDuration)} | Looping ${queue.loopMode}`,
 			}
 		});
 	}

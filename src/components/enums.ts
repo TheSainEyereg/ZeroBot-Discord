@@ -26,7 +26,7 @@ export enum MusicServices {
 }
 
 export enum LoopMode {
-	Disabled = "Looping disabled",
-	Queue = "Looping queue",
-	Track = "Looping track"
+	Disabled = "disabled",
+	Queue = "queue",
+	Track = "track"
 }
