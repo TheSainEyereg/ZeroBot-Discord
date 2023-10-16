@@ -4,7 +4,7 @@ import {
 	type ChatInputCommandInteraction,
 	SlashCommandBuilder,
 } from "discord.js";
-import { Access } from "../../components/enums";
+import { Access } from "../../enums";
 import { url } from "../../components/messages";
 import config from "../../config";
 

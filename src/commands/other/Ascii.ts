@@ -4,7 +4,7 @@ import {
 	type ChatInputCommandInteraction,
 	SlashCommandBuilder,
 } from "discord.js";
-import { Access } from "../../components/enums";
+import { Access } from "../../enums";
 import fetch from "node-fetch";
 
 export default class Ascii extends Command {

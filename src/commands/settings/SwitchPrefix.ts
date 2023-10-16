@@ -5,7 +5,7 @@ import {
 	type Guild,
 	SlashCommandBuilder,
 } from "discord.js";
-import { Access } from "../../components/enums";
+import { Access } from "../../enums";
 import { regular, success } from "../../components/messages";
 
 export default class SwitchPrefix extends Command {

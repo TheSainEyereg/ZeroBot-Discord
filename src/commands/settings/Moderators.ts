@@ -6,7 +6,7 @@ import {
 	type GuildMember,
 	SlashCommandBuilder,
 } from "discord.js";
-import { Access } from "../../components/enums";
+import { Access } from "../../enums";
 import { regular, success, warning } from "../../components/messages";
 
 export default class Moderators extends Command {

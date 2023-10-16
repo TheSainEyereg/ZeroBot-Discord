@@ -6,7 +6,7 @@ import {
 	SlashCommandBuilder,
 	EmbedBuilder
 } from "discord.js";
-import { Access, Colors } from "../../components/enums";
+import { Access, Colors } from "../../enums";
 
 export default class Ascii extends Command {
 	name = "avatar";

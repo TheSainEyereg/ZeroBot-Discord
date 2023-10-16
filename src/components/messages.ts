@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "discord.js";
-import { Colors } from "./enums";
+import { Colors } from "../enums";
 import { EmbedOptions } from "../interfaces/bot";
 
 

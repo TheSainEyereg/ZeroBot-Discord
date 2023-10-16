@@ -3,7 +3,7 @@ import config from "../config";
 import { ChannelType, Events, GuildMember, Message } from "discord.js";
 import { hasAccess, hasMissedArg } from "../components/checkManager";
 import { critical, regular, warning } from "../components/messages";
-import { Access } from "../components/enums";
+import { Access } from "../enums";
 
 export default class Ready extends Event {
 	event = Events.MessageCreate;

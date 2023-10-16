@@ -5,7 +5,7 @@ import {
 	SlashCommandBuilder,
 	GuildMember,
 } from "discord.js";
-import { Access } from "../../components/enums";
+import { Access } from "../../enums";
 import { regular, success, warning } from "../../components/messages";
 import { hasAccess } from "../../components/checkManager";
 

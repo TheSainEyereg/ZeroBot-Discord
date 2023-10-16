@@ -1,4 +1,4 @@
-import { Access } from "../components/enums";
+import { Access } from "../enums";
 import { CategoryMeta } from "../interfaces/bot";
 
 

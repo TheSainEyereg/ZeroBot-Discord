@@ -7,7 +7,7 @@ import {
 	type GuildMember,
 	PermissionFlagsBits,
 } from "discord.js";
-import { Access, LoopMode, MusicServices } from "../../components/enums";
+import { Access, LoopMode, MusicServices } from "../../enums";
 import { critical, regular, success, warning } from "../../components/messages";
 import { startMusicPlayback, initMusic } from "../../components/music";
 import { MusicQueue, Song, YMApiTrack } from "../../interfaces/music";

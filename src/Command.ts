@@ -1,5 +1,5 @@
 import type { Message, ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
-import type { Access } from "./components/enums";
+import type { Access } from "./enums";
 import type { CategoryMeta } from "./interfaces/bot";
 
 

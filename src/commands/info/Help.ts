@@ -6,7 +6,7 @@ import {
 	SlashCommandBuilder,
 	EmbedBuilder,
 } from "discord.js";
-import { Access, Colors } from "../../components/enums";
+import { Access, Colors } from "../../enums";
 import { regular, warning } from "../../components/messages";
 import meta from "../meta";
 import { hasAccess } from "../../components/checkManager";

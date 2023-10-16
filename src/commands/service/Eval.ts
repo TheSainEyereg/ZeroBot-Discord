@@ -2,7 +2,7 @@ import Command from "../../Command";
 import type {
 	Message
 } from "discord.js";
-import { Access } from "../../components/enums";
+import { Access } from "../../enums";
 import { critical, success } from "../../components/messages";
 
 export default class Eval extends Command {

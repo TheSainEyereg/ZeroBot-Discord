@@ -8,7 +8,7 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 // Import Access enums for access property
-import { Access } from "../../components/enums";
+import { Access } from "../../enums";
 // Import messages component with prepared embeds
 import { regular } from "../../components/messages";
 

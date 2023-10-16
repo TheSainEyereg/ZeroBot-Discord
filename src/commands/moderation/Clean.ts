@@ -6,7 +6,7 @@ import {
 	type GuildMember,
 	SlashCommandBuilder,
 } from "discord.js";
-import { Access } from "../../components/enums";
+import { Access } from "../../enums";
 import { success, warning } from "../../components/messages";
 
 export default class Clean extends Command {

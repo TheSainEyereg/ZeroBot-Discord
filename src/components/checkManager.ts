@@ -1,6 +1,6 @@
 import { GuildMember, PermissionFlagsBits } from "discord.js";
 import config from "../config";
-import { Access } from "./enums";
+import { Access } from "../enums";
 import { ArgumentCheckAnswer, ParsedArgument } from "../interfaces/bot";
 
 

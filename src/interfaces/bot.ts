@@ -1,5 +1,5 @@
 import type { User } from "discord.js";
-import type { Access } from "../components/enums";
+import type { Access } from "../enums";
 
 export interface EmbedOptions {
 	url?: string;

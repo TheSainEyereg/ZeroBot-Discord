@@ -6,7 +6,7 @@ import {
 	GuildMember,
 	EmbedBuilder,
 } from "discord.js";
-import { Access, Colors } from "../../components/enums";
+import { Access, Colors } from "../../enums";
 import { warning } from "../../components/messages";
 
 const MAX_ITEMS = 15;

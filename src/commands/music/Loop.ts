@@ -5,7 +5,7 @@ import {
 	SlashCommandBuilder,
 	GuildMember,
 } from "discord.js";
-import { Access, LoopMode } from "../../components/enums";
+import { Access, LoopMode } from "../../enums";
 import { success, warning } from "../../components/messages";
 
 export default class Loop extends Command {

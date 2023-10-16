@@ -17,7 +17,7 @@ import { YMApi } from "ym-api";
 import { Readable } from "node:stream";
 import { promisify } from "node:util";
 import { MusicQueue, Song } from "../interfaces/music";
-import { LoopMode, MusicServices } from "./enums";
+import { LoopMode, MusicServices } from "../enums";
 import { critical } from "./messages";
 
 import config from "../config";

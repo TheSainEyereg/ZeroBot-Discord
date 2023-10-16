@@ -5,8 +5,8 @@ import {
 	SlashCommandBuilder,
 	GuildMember,
 } from "discord.js";
-import { Access } from "../../components/enums";
-import { critical, success, warning } from "../../components/messages";
+import { Access } from "../../enums";
+import { success, warning } from "../../components/messages";
 
 export default class Stop extends Command {
 	name = "stop";

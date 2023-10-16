@@ -1,6 +1,6 @@
 import type { Guild, GuildTextBasedChannel, BaseGuildVoiceChannel, GuildMember } from "discord.js";
 import type { AudioPlayer, AudioResource } from "@discordjs/voice";
-import type { LoopMode, MusicServices } from "../components/enums";
+import type { LoopMode, MusicServices } from "../enums";
 import { Track } from "ym-api/dist/types";
 
 
