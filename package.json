@@ -7,8 +7,8 @@
     "build": "tsc",
     "start": "node dist/app",
     "migrate": "node migrate",
-    "dev": "nodemon  src/app",
-	"dev:debug": "nodemon --inspect src/app",
+    "dev": "nodemon  src/app.ts",
+    "dev:debug": "nodemon --inspect src/app.ts",
     "lint": "eslint src/**/*.ts"
   },
   "repository": "https://github.com/TheSainEyereg/ZeroBot-Discord.git",
