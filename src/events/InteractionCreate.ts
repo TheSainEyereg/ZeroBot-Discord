@@ -12,7 +12,7 @@ export default class InteractionCreate extends Event {
 		if (!interaction.isChatInputCommand()) return;
 
 		
-		const command = client.commands.get(interaction.commandName) || client.commands.get(`${interaction.commandName}:${interaction.options.getSubcommand()}`);
+		const command = client.commands.get(`${interaction.commandName}:${interaction.options.getSubcommand(false)}`) || client.commands.get(interaction.commandName);
 		if (!command) return;
 
 		if (!await hasAccess(interaction.member as GuildMember, command.access)) return interaction.reply({

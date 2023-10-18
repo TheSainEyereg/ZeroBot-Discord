@@ -70,7 +70,8 @@ export class Client extends OriginalClient {
 				requiredCommands.push(command);
 			}
 		}
-		requiredCommands.forEach((command, index) => this.commands.set(command.data && requiredCommands.find((c, i) => c.data?.name === command.data?.name && i !== index) ? `${command.data.name}:${command.name}` : command.name, command));
+
+		requiredCommands.forEach(command => this.commands.set(command.name !== command.data?.name ? `${command.data?.name}:${command.name}` : command.name, command));
 	}
 
 	loginWithDB = async (token: string, db_username: string, db_password: string) => {
