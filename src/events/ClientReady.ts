@@ -9,15 +9,9 @@ export default class Ready extends Event {
 		console.log(`Ready! Logged in as ${client.user!.tag}`);
 
 		// Merge commands with duplicate names
-		const commandsJSON = client.commands.filter(cmd => cmd.data !== null).map(cmd => cmd.data!.toJSON());
-		for (const cmd of commandsJSON) {
-			for (const c of commandsJSON) {
-				if (c.name === cmd.name && c !== cmd) {
-					commandsJSON.splice(commandsJSON.indexOf(c), 1);
-					cmd.options = [...cmd.options!, ...c.options!];
-				}
-			}
-		}
+		let commandsJSON = client.commands.filter(cmd => cmd.data !== null).map(cmd => cmd.data!.toJSON());
+		commandsJSON.forEach(cmd => commandsJSON.forEach(c => (c.name === cmd.name && c !== cmd) && (cmd.options = [... cmd.options!, ... c.options!])));
+		commandsJSON = commandsJSON.filter((cmd, i) => commandsJSON.findIndex(c => c.name === cmd.name) === i);
 
 		//await client.application!.commands.set([]);
 		await client.application!.commands.set(commandsJSON);
