@@ -17,17 +17,28 @@ export default class Skip extends Command {
 
 	data = new SlashCommandBuilder()
 		.setName(this.name)
-		.setDescription(this.description);
+		.setDescription(this.description)
+		.addIntegerOption(option =>
+			option
+				.setName("amount")
+				.setDescription("Amount of songs to skip")
+				.setMinValue(1)
+				.setRequired(false)
+		);
 
 	executeSlash = async (interaction: ChatInputCommandInteraction) => {
-		interaction.reply({ embeds: [this.skip(interaction.member as GuildMember)] });
+		const amount = interaction.options.getInteger("amount") || 1;
+
+		interaction.reply({ embeds: [this.skip(interaction.member as GuildMember, amount)] });
 	};
 
-	executePrefix = async (message: Message) => {
-		message.reply({ embeds: [this.skip(message.member as GuildMember)] });
+	executePrefix = async (message: Message, args: string[]) => {
+		const amount = parseInt(args[0]) || 1;
+
+		message.reply({ embeds: [this.skip(message.member as GuildMember, amount)] });
 	};
 
-	private skip(member: GuildMember) {
+	private skip(member: GuildMember, amount: number) {
 		const { client: { musicQueue }, guild, voice: { channel } } = member;
 
 		const queue = musicQueue.get(guild.id);
@@ -37,11 +48,15 @@ export default class Skip extends Command {
 		if (!channel) return warning("You must be in a voice channel to skip");
 		if (channel != queue.voiceChannel) return warning("You must be in the same voice channel to skip");
 
+		const oldLength = queue.list.length, oldTrack = queue.list[0].title;
+
 		// TODO: Skip vote
 
-		const old = queue.list[0].title;
+		queue.list.splice(1, amount - 1); // Start from index 1 because 1st is the current song
+
 		if (queue.loopMode == LoopMode.Track) queue.list.shift();
 		queue.player?.stop();
-		return success("Skipped", `Track \`${old}\` was skipped by ${member.user}`);
+
+		return success("Skipped", `${amount === 1 ?  `Track \`${oldTrack}\`` : `\`${amount > oldLength ? oldLength : amount}\` tracks`} was skipped by ${member.user}`);
 	}
 }
