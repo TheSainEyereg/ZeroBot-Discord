@@ -102,7 +102,6 @@ export async function getMusicPlayer(queue: MusicQueue, song: Song) {
 				.filter(({ durationInSec }) =>  (durationInSec - song.duration > -3) && (durationInSec - song.duration < 10));
 				// .sort((a, b) => a.durationInSec - b.durationInSec);
 				// .slice(0, 3).sort((a, b) => b.views - a.views);
-			console.log(res);
 			if (res.length === 0) throw new Error("Can't find this song");
 			const pdl = await play.stream(res[0].url);
 			stream = pdl.stream;
