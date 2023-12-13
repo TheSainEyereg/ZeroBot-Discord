@@ -41,7 +41,7 @@ export default class SwitchPrefix extends Command {
 
 	private async setPrefixState( guild: Guild, newState: boolean | null) {
 		const { prefixEnabled } = await guild.client.db.getServer(guild.id);
-		if (!newState) return regular(`Prefix commands is currently ${prefixEnabled ? "enabled" : "disabled"}`);
+		if (newState === null) return regular(`Prefix commands is currently ${prefixEnabled ? "enabled" : "disabled"}`);
 
 		guild.client.db.updateServer(guild.id, "prefixEnabled", newState);
 
