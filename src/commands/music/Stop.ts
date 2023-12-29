@@ -32,9 +32,8 @@ export default class Stop extends Command {
 
 		const queue = musicQueue.get(guild.id);
 
-		if (!queue?.playing) return warning("Nothing is playing now");
-		if (queue.list.length === 0) return warning("There is nothing to skip");
-		if (!channel) return warning("You must be in a voice channel to skip");
+		if (!queue) return warning("There is no queue");
+		if (!channel) return warning("You must be in a voice channel to stop");
 		if (channel != queue.voiceChannel) return warning("You must be in the same voice channel to skip");
 
 		queue.clear(false);

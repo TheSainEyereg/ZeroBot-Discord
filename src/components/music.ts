@@ -3,14 +3,13 @@ import {
 	createAudioPlayer,
 	createAudioResource,
 	entersState,
-	getVoiceConnection,
 	joinVoiceChannel,
 	NoSubscriberBehavior,
 	StreamType,
 	VoiceConnectionDisconnectReason,
 	VoiceConnectionStatus,
 } from "@discordjs/voice";
-import type { GuildChannel, VoiceChannel } from "discord.js";
+import type { VoiceChannel } from "discord.js";
 import play from "play-dl";
 import fetch from "node-fetch";
 import { YMApi } from "ym-api";
@@ -42,15 +41,15 @@ export async function initMusic() {
 	return { play, ymApi };
 }
 
-export async function joinChannel(channel: GuildChannel) {
-	if (getVoiceConnection(channel.guild.id)?.state.status === VoiceConnectionStatus.Ready) return getVoiceConnection(channel.guild.id);
-	const queue = channel.client.musicQueue.get(channel.guild.id);
-	if (!queue) throw new Error("Queue not found");
+export async function joinChannel(queue: MusicQueue) {
+	const { voiceChannel } = queue;
+
+	if (queue.connection?.state.status === VoiceConnectionStatus.Ready) return queue.connection;
 
 	const connection = joinVoiceChannel({
-		channelId: channel.id,
-		guildId: channel.guild.id,
-		adapterCreator: channel.guild.voiceAdapterCreator,
+		channelId: voiceChannel.id,
+		guildId: voiceChannel.guild.id,
+		adapterCreator: voiceChannel.guild.voiceAdapterCreator,
 	});
 
 	try {
@@ -61,7 +60,7 @@ export async function joinChannel(channel: GuildChannel) {
 					try {
 						await entersState(connection, VoiceConnectionStatus.Connecting, 5_000);
 					} catch {
-						queue.leaveChannel();
+						queue.leaveChannel(!queue.paused);
 					}
 				} else if (connection.rejoinAttempts < 5) {
 					await wait((connection.rejoinAttempts + 1) * 5_000);
@@ -71,7 +70,7 @@ export async function joinChannel(channel: GuildChannel) {
 				}
 
 				const newChannelId = newState.subscription?.connection?.joinConfig?.channelId;
-				if (queue && newChannelId && (newChannelId !== queue.voiceChannel.id)) queue.voiceChannel = channel.guild.channels.cache.get(newChannelId) as VoiceChannel;
+				if (queue && newChannelId && (newChannelId !== queue.voiceChannel.id)) queue.voiceChannel = voiceChannel.guild.channels.cache.get(newChannelId) as VoiceChannel;
 			}
 		});
 		return connection;
@@ -100,8 +99,6 @@ export async function getMusicPlayer(queue: MusicQueue, song: Song) {
 		if (song.service === MusicServices.Spotify) {
 			const res = (await play.search(song.title, { limit: 5 }))
 				.filter(({ durationInSec }) =>  (durationInSec - song.duration > -3) && (durationInSec - song.duration < 10));
-				// .sort((a, b) => a.durationInSec - b.durationInSec);
-				// .slice(0, 3).sort((a, b) => b.views - a.views);
 			if (res.length === 0) throw new Error("Can't find this song");
 			const pdl = await play.stream(res[0].url);
 			stream = pdl.stream;
@@ -149,13 +146,11 @@ export async function getMusicPlayer(queue: MusicQueue, song: Song) {
 }
 
 export async function startMusicPlayback(queue: MusicQueue) {
-	const connection = await joinChannel(queue.voiceChannel);
-	if (!connection) return;
-
+	queue.connection = await joinChannel(queue);
 	queue.player = await getMusicPlayer(queue, queue.list[0]);
 	if (!queue.player) return;
 
-	connection.subscribe(queue.player);
+	queue.connection.subscribe(queue.player);
 	queue.playing = true;
 
 	queue.player.on(AudioPlayerStatus.Idle, () => {

@@ -11,7 +11,7 @@ import { Access, LoopMode, MusicServices } from "../../enums";
 import { critical, regular, success, warning } from "../../components/messages";
 import { startMusicPlayback, initMusic } from "../../components/music";
 import { MusicQueue, Song, YMApiTrack } from "../../interfaces/music";
-import { VoiceConnectionStatus, getVoiceConnection } from "@discordjs/voice";
+import { VoiceConnectionStatus } from "@discordjs/voice";
 import type { SpotifyTrack, SpotifyPlaylist, SpotifyAlbum } from "play-dl";
 
 const MAX_ITEMS = 200;
@@ -58,6 +58,7 @@ export default class Play extends Command {
 			voiceChannel: voiceChannel,
 			player: undefined,
 			resource: undefined,
+			message: undefined,
 			volume: (await db.getServer(guild.id)).musicVolume,
 			loopMode: LoopMode.Disabled,
 			list: [],
@@ -90,8 +91,7 @@ export default class Play extends Command {
 			leaveChannel(deleteQueue = true) {
 				if (this.left) return;
 	
-				const connection = getVoiceConnection(this.guild.id);
-				if (connection?.state.status === VoiceConnectionStatus.Ready) connection.disconnect();
+				if (this.connection?.state.status === VoiceConnectionStatus.Ready) this.connection.disconnect();
 				this.left = true;
 
 				if (deleteQueue) this.clear();
@@ -294,6 +294,7 @@ export default class Play extends Command {
 			}
 		} else {
 			return warning("Raw URLs are not supported yet");
+			// TODO: Discord URL, mt website url, etc.
 			// 	try {
 			// 		const res = await axios.get(url);
 			// 		if (!res.headers["content-type"]?.match(/^(audio|video)\/.+$/gi)) return Messages.warning(message, l.not_media);
@@ -312,9 +313,6 @@ export default class Play extends Command {
 			// 	}
 			// }
 		}
-
-		// TODO: resume
-		// if (queue.paused)
 
 		if (!queue.playing && queue.list[0]) {
 			startMusicPlayback(queue);

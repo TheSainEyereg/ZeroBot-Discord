@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import { Access } from "../../enums";
 import { critical, success, warning } from "../../components/messages";
-import { VoiceConnectionStatus, getVoiceConnection } from "@discordjs/voice";
+import { VoiceConnectionStatus } from "@discordjs/voice";
 
 export default class Leave extends Command {
 	name = "leave";
@@ -31,11 +31,10 @@ export default class Leave extends Command {
 	private leave(member: GuildMember) {
 		const { client: { musicQueue }, guild, voice: { channel } } = member;
 
-		const connection = getVoiceConnection(guild.id);
-		if (connection?.state.status != VoiceConnectionStatus.Ready) return warning("Bot isn't in a voice channel");
-
 		const queue = musicQueue.get(guild.id);
 		if (!queue) return critical("Guild music queue is absent", "Disconnect bot from the voice channel manually");
+
+		if (queue.connection?.state.status != VoiceConnectionStatus.Ready) return warning("Bot isn't in a voice channel");
 
 		if (!channel) return warning("You must be in a voice channel");
 		if (channel != queue.voiceChannel) return warning("You must be in the same voice channel");

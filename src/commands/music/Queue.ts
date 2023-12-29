@@ -46,7 +46,7 @@ export default class Queue extends Command {
 
 		const queue = musicQueue.get(guild.id);
 
-		if (!queue) return warning("Nothing is playing now");
+		if (!queue) return warning("There is no queue");
 		if (queue.list.length === 0) return warning("Queue is empty");
 
 		const queueList = Array.from(queue.list);

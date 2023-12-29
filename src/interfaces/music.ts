@@ -1,5 +1,5 @@
-import type { Guild, GuildTextBasedChannel, BaseGuildVoiceChannel, GuildMember } from "discord.js";
-import type { AudioPlayer, AudioResource } from "@discordjs/voice";
+import type { Guild, GuildTextBasedChannel, BaseGuildVoiceChannel, GuildMember, Message } from "discord.js";
+import type { AudioPlayer, AudioResource, VoiceConnection } from "@discordjs/voice";
 import type { LoopMode, MusicServices } from "../enums";
 import { Track } from "ym-api/dist/types";
 
@@ -18,8 +18,10 @@ export interface MusicQueue {
 	guild: Guild,
 	textChannel: GuildTextBasedChannel,
 	voiceChannel: BaseGuildVoiceChannel,
+	connection?: VoiceConnection,
 	player?: AudioPlayer,
 	resource?: AudioResource,
+	message?: Message,
 	volume: number,
 	loopMode: LoopMode,
 	list: Song[],
