@@ -22,7 +22,7 @@ export enum MusicServices {
 	Spotify = "Spotify",
 	Yandex = "Yandex",
 //	VK = "VK",
-	Raw = "URL",
+	Raw = "File",
 }
 
 export enum LoopMode {

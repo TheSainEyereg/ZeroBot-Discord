@@ -6,6 +6,8 @@ import {
 	type GuildTextBasedChannel,
 	type GuildMember,
 	PermissionFlagsBits,
+	Attachment,
+	escapeMarkdown,
 } from "discord.js";
 import { Access, LoopMode, MusicServices } from "../../enums";
 import { critical, regular, success, warning } from "../../components/messages";
@@ -26,25 +28,44 @@ export default class Play extends Command {
 	data = new SlashCommandBuilder()
 		.setName(this.name)
 		.setDescription(this.description)
-		.addStringOption(option =>
-			option
+		.addSubcommand(subcommand =>
+			subcommand
 				.setName("query")
-				.setDescription("Track url or search query")
-				.setRequired(true)
+				.setDescription("Plays track from url or search query")
+				.addStringOption(option =>
+					option
+						.setName("query")
+						.setDescription("Track url or search query")
+						.setRequired(true)
+				)
+		)
+		.addSubcommand(subcommand =>
+			subcommand
+				.setName("file")
+				.setDescription("Plays track from file")
+				.addAttachmentOption(option =>
+					option
+						.setName("file")
+						.setDescription("Track file")
+						.setRequired(true)
+				)
 		);
 
 	executeSlash = async (interaction: ChatInputCommandInteraction) => {
 		const query = interaction.options.getString("query");
-		interaction.reply({ embeds: [await this.play(interaction.channel as GuildTextBasedChannel, interaction.member as GuildMember, query)] });
+		const file = interaction.options.getAttachment("file");
+		interaction.reply({ embeds: [await this.play(interaction.channel as GuildTextBasedChannel, interaction.member as GuildMember, { query, file })] });
 	};
 
 	executePrefix = async (message: Message, args: string[]) => {
 		const query = args.join(" ") || null;
-		message.reply({ embeds: [await this.play(message.channel as GuildTextBasedChannel, message.member!, query)] });
+		const file = message.attachments.first() || null;
+		message.reply({ embeds: [await this.play(message.channel as GuildTextBasedChannel, message.member!, { query, file })] });
 	};
 
-	private async play(textChannel: GuildTextBasedChannel, member: GuildMember, query: string | null) {
+	private async play(textChannel: GuildTextBasedChannel, member: GuildMember, source: {query: string | null; file: Attachment | null}) {
 		const { client: { db }, client, guild, voice } = member;
+		const { query, file } = source;
 
 		const voiceChannel = voice.channel;
 		if (!voiceChannel) return warning("You must be in a voice channel to play music!");
@@ -102,21 +123,38 @@ export default class Play extends Command {
 		if (!client.musicQueue.has(guild.id)) client.musicQueue.set(guild.id, queueCounstruct);
 		const queue = client.musicQueue.get(guild.id)!;
 
-		if (!query?.length) return warning("Nothing to play");
-
 		const { play, ymApi } = await initMusic();
 		
-		const type = await play.validate(query);
+		const type = query?.length ? await play.validate(query) : null;
 
 		const queueLength = queue.list.length;
 	
-		if (type === "yt_video") {
+		if (!query?.length) {
+			if (!file) return warning("Nothing to play");
+
+			try {
+				if (!file.contentType?.startsWith("audio/")) throw new Error("Media is not an audio file");
+				const song = {
+					service: MusicServices.Raw,
+					title: escapeMarkdown(file.name),
+					thumbnailUrl: "https://olejka.ru/s/875449ff66.png",
+					duration: file.duration! * 1000,
+					url: file.url,
+					requestedBy: member
+				};
+				queue.list.push(song);
+				if (queueLength) return success(`Added \`${song.title}\` to queue`);
+			} catch (e) {
+				console.error(e);
+				return critical("Can't fetch track from URL", `\`\`\`\n${e}\n\`\`\``);
+			}
+		} else if (type === "yt_video") {
 			try {
 				const info = await play.video_info(query);
 
 				const song: Song = {
 					service: MusicServices.YouTube,
-					title: info.video_details.title!,
+					title: escapeMarkdown(info.video_details.title!),
 					thumbnailUrl: info.video_details.thumbnails[0].url,
 					duration: info.video_details.durationInSec,
 					url: info.video_details.url,
@@ -136,7 +174,7 @@ export default class Play extends Command {
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.YouTube,
-					title: info.title!,
+					title: escapeMarkdown(info.title!),
 					thumbnailUrl: info.thumbnails[0].url,
 					duration: info.durationInSec,
 					url: info.url,
@@ -158,7 +196,7 @@ export default class Play extends Command {
 
 				const song: Song = {
 					service: MusicServices.Spotify,
-					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
+					title: escapeMarkdown(`${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`),
 					thumbnailUrl: info.thumbnail?.url || "",
 					duration: info.durationInSec,
 					url: info.url,
@@ -178,7 +216,7 @@ export default class Play extends Command {
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.Spotify,
-					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
+					title: escapeMarkdown(`${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`),
 					thumbnailUrl: info.thumbnail?.url || "",
 					duration: info.durationInSec,
 					url: info.url,
@@ -197,7 +235,7 @@ export default class Play extends Command {
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.Spotify,
-					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
+					title: escapeMarkdown(`${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`),
 					thumbnailUrl: info.thumbnail?.url || "",
 					duration: info.durationInSec,
 					url: info.url,
@@ -215,7 +253,7 @@ export default class Play extends Command {
 
 			const song: Song = {
 				service: MusicServices.YouTube,
-				title: result[0].title!,
+				title: escapeMarkdown(result[0].title!),
 				thumbnailUrl: result[0].thumbnails[0].url,
 				duration: result[0].durationInSec,
 				url: result[0].url,
@@ -234,7 +272,7 @@ export default class Play extends Command {
 	
 				const song: Song = {
 					service: MusicServices.Yandex,
-					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
+					title: escapeMarkdown(`${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`),
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
 					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
@@ -258,7 +296,7 @@ export default class Play extends Command {
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.Yandex,
-					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
+					title: escapeMarkdown(`${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`),
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
 					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
@@ -279,7 +317,7 @@ export default class Play extends Command {
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.Yandex,
-					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
+					title: escapeMarkdown(`${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`),
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
 					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
@@ -292,27 +330,28 @@ export default class Play extends Command {
 				console.error(e);
 				return critical("Can't fetch album from Yandex", `\`\`\`\n${e}\n\`\`\``);
 			}
-		} else {
-			return warning("Raw URLs are not supported yet");
-			// TODO: Discord URL, mt website url, etc.
-			// 	try {
-			// 		const res = await axios.get(url);
-			// 		if (!res.headers["content-type"]?.match(/^(audio|video)\/.+$/gi)) return Messages.warning(message, l.not_media);
-			// 		const song = {
-			// 			service: "URL",
-			// 			title: "[URL] "+ (url.length > 50 ? url.substr(0, 50)+"..." : url),
-			// 			thumbnail: "https://olejka.ru/r/03d291545d.png",
-			// 			duration: 0, // Idk how to calculate this
-			// 			url: url,
-			// 			requested: message.author 
-			// 		}
-			// 		queue.list.push(song);
-			// 		if (queueLength) Messages.success(message, `${l.added[0]} \`${song.title}\` ${l.added[1]}`);
-			// 	} catch (e) {
-			// 		Messages.critical(message, `${l.cant_url}\n\`${e}\``)
-			// 	}
-			// }
-		}
+		} else if (query.match(/^https?:\/\/(cdn\.discordapp\.com|media.discordapp.net)\/(ephemeral-)?attachments\/[0-9]+\/[0-9]+\/.*/gi)) { // Discord link
+			try {
+				const res = await fetch(query);
+				if (!res.headers.get("content-type")?.startsWith("audio/")) throw new Error("Media is not an audio file");
+
+				const name = /filename=(.*);?/gi.exec(res.headers.get("content-disposition") ?? "")?.[1] ?? `[URL] ${query}`.replace(/https?:\/\//gi, "");
+
+				const song = {
+					service: MusicServices.Raw,
+					title: escapeMarkdown(name.length > 60 ? `${name.slice(0, 60)}...` : name),
+					thumbnailUrl: "https://olejka.ru/r/03d291545d.png",
+					duration: 0, // Idk how to calculate this
+					url: query,
+					requestedBy: member
+				};
+				queue.list.push(song);
+				if (queueLength) return success(`Added \`${song.title}\` to queue`);
+			} catch (e) {
+				console.error(e);
+				return critical("Can't fetch track from URL", `\`\`\`\n${e}\n\`\`\``);
+			}
+		} else return warning("Passed URL is not supported");
 
 		if (!queue.playing && queue.list[0]) {
 			startMusicPlayback(queue);

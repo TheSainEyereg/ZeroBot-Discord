@@ -158,13 +158,13 @@ export async function startMusicPlayback(queue: MusicQueue) {
 		if (queue.loopMode == LoopMode.Queue) queue.list.push(queue.list[0]);
 		if (queue.loopMode != LoopMode.Track) queue.list.shift();
 
-		if (queue.voiceChannel.members.size <= 1) {
+		if (queue.voiceChannel.members.filter(m => !m.user.bot).size === 0) {
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			queue.textChannel.send({ embeds: [critical("All left", "All members left from voice channel, playback is stopped")] }).catch(() => {});
 			queue.leaveChannel();
 			return;
 		}
-		if (queue.list.length === 0) return setTimeout(() => (!queue.playing && queue.list.length === 0) && queue.leaveChannel(), 120 * 1000);
+		if (queue.list.length === 0) return setTimeout(() => (!queue.playing && queue.list.length === 0) && queue.leaveChannel(), 120_000);
 
 		startMusicPlayback(queue);
 	});
