@@ -38,16 +38,16 @@ export default class Loop extends Command {
 			embeds: [
 				this.loop(message.member as GuildMember, (() => {
 					switch (args[0]) {
-					case "track":
-					case "t":
-						return LoopMode.Track;
-					case "queue":
-					case "q":
-						return LoopMode.Queue;
-					case "off":
-						return LoopMode.Disabled;
-					default:
-						return null;
+						case "track":
+						case "t":
+							return LoopMode.Track;
+						case "queue":
+						case "q":
+							return LoopMode.Queue;
+						case "off":
+							return LoopMode.Disabled;
+						default:
+							return null;
 					}
 				})())
 			]

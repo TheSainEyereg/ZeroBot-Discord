@@ -5,35 +5,35 @@ import { Track } from "ym-api/dist/types";
 
 
 export interface Song {
-	service: MusicServices,
-	title: string,
-	thumbnailUrl: string,
-	duration: number,
-	url: string,
-	id?: number,
-	requestedBy: GuildMember
+	service: MusicServices;
+	title: string;
+	thumbnailUrl: string;
+	duration: number;
+	url: string;
+	id?: number;
+	requestedBy: GuildMember;
 }
 
 export interface MusicQueue {
-	guild: Guild,
-	textChannel: GuildTextBasedChannel,
-	voiceChannel: BaseGuildVoiceChannel,
-	connection?: VoiceConnection,
-	player?: AudioPlayer,
-	resource?: AudioResource,
-	message?: Message,
-	volume: number,
-	loopMode: LoopMode,
-	list: Song[],
+	guild: Guild;
+	textChannel: GuildTextBasedChannel;
+	voiceChannel: BaseGuildVoiceChannel;
+	connection?: VoiceConnection;
+	player?: AudioPlayer;
+	resource?: AudioResource;
+	message?: Message;
+	volume: number;
+	loopMode: LoopMode;
+	list: Song[];
 
-	playing: boolean,
-	paused: boolean,
-	stopped: boolean,
-	left: boolean,
-	deleted: boolean,
+	playing: boolean;
+	paused: boolean;
+	stopped: boolean;
+	left: boolean;
+	deleted: boolean;
 
-	clear: (deleteQueue?: boolean) => void,
-	leaveChannel: (deleteQueue?: boolean) => void,
+	clear: (deleteQueue?: boolean) => void;
+	leaveChannel: (deleteQueue?: boolean) => void;
 }
 
 
