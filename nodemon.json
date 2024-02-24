@@ -7,6 +7,8 @@
 	},
 	"watch": ["src/"],
 	"signal": "SIGINT",
-	"env": {},
+	"env": {
+		"NODE_ENV": "development"
+	},
 	"ext": "js,json,ts"
 }

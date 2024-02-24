@@ -22,7 +22,7 @@ export default class Eval extends Command {
 		try {
 			const result = await eval(code);
 			if (code.includes("message.edit(") || code.includes("message.delete(")) return;
-			message.reply({ embeds: [success("Result:", `\`\`\`${result}\`\`\``)] });
+			message.reply({ embeds: [success("Result", `${result}`.length ? `\`\`\`${result}\`\`\`` : "Empty response")] });
 		} catch (e) {
 			console.error(e);
 			message.reply({ embeds: [critical("Error in eval", `\`\`\`${e}\`\`\``)] });
