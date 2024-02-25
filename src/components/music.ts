@@ -73,6 +73,7 @@ export async function joinChannel(queue: MusicQueue) {
 				if (queue && newChannelId && (newChannelId !== queue.voiceChannel.id)) queue.voiceChannel = voiceChannel.guild.channels.cache.get(newChannelId) as VoiceChannel;
 			}
 		});
+		queue.left = false;
 		return connection;
 	} catch (error) {
 		queue.leaveChannel();
@@ -158,7 +159,7 @@ export async function startMusicPlayback(queue: MusicQueue) {
 		if (queue.loopMode == LoopMode.Queue) queue.list.push(queue.list[0]);
 		if (queue.loopMode != LoopMode.Track) queue.list.shift();
 
-		if (queue.voiceChannel.members.filter(m => !m.user.bot).size === 0) {
+		if (!queue.left && queue.voiceChannel.members.filter(m => !m.user.bot).size === 0) {
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			queue.textChannel.send({ embeds: [critical("All left", "All members left from voice channel, playback is stopped")] }).catch(() => {});
 			queue.leaveChannel();
