@@ -136,7 +136,7 @@ export default class Play extends Command {
 				if (!file.contentType?.startsWith("audio/")) throw new Error("Media is not an audio file");
 				const song = {
 					service: MusicServices.Raw,
-					title: escapeMarkdown(file.name),
+					title: file.name,
 					thumbnailUrl: "https://olejka.ru/s/875449ff66.png",
 					duration: file.duration! * 1000,
 					url: file.url,
@@ -154,7 +154,7 @@ export default class Play extends Command {
 
 				const song: Song = {
 					service: MusicServices.YouTube,
-					title: escapeMarkdown(info.video_details.title!),
+					title: info.video_details.title!,
 					thumbnailUrl: info.video_details.thumbnails[0].url,
 					duration: info.video_details.durationInSec,
 					url: info.video_details.url,
@@ -174,7 +174,7 @@ export default class Play extends Command {
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.YouTube,
-					title: escapeMarkdown(info.title!),
+					title: info.title!,
 					thumbnailUrl: info.thumbnails[0].url,
 					duration: info.durationInSec,
 					url: info.url,
@@ -196,7 +196,7 @@ export default class Play extends Command {
 
 				const song: Song = {
 					service: MusicServices.Spotify,
-					title: escapeMarkdown(`${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`),
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
 					thumbnailUrl: info.thumbnail?.url || "",
 					duration: info.durationInSec,
 					url: info.url,
@@ -216,7 +216,7 @@ export default class Play extends Command {
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.Spotify,
-					title: escapeMarkdown(`${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`),
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
 					thumbnailUrl: info.thumbnail?.url || "",
 					duration: info.durationInSec,
 					url: info.url,
@@ -235,7 +235,7 @@ export default class Play extends Command {
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.Spotify,
-					title: escapeMarkdown(`${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`),
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
 					thumbnailUrl: info.thumbnail?.url || "",
 					duration: info.durationInSec,
 					url: info.url,
@@ -253,7 +253,7 @@ export default class Play extends Command {
 
 			const song: Song = {
 				service: MusicServices.YouTube,
-				title: escapeMarkdown(result[0].title!),
+				title: result[0].title!,
 				thumbnailUrl: result[0].thumbnails[0].url,
 				duration: result[0].durationInSec,
 				url: result[0].url,
@@ -272,7 +272,7 @@ export default class Play extends Command {
 	
 				const song: Song = {
 					service: MusicServices.Yandex,
-					title: escapeMarkdown(`${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`),
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
 					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
@@ -296,7 +296,7 @@ export default class Play extends Command {
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.Yandex,
-					title: escapeMarkdown(`${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`),
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
 					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
@@ -317,7 +317,7 @@ export default class Play extends Command {
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
 					service: MusicServices.Yandex,
-					title: escapeMarkdown(`${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`),
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
 					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
@@ -339,7 +339,7 @@ export default class Play extends Command {
 
 				const song = {
 					service: MusicServices.Raw,
-					title: escapeMarkdown(name.length > 60 ? `${name.slice(0, 60)}...` : name),
+					title: name.length > 60 ? `${name.slice(0, 60)}...` : name,
 					thumbnailUrl: "https://olejka.ru/r/03d291545d.png",
 					duration: 0, // Idk how to calculate this
 					url: query,
@@ -356,7 +356,7 @@ export default class Play extends Command {
 		if (!queue.playing && queue.list[0]) {
 			startMusicPlayback(queue);
 			const requestedBy = queue.list[0].requestedBy;
-			return regular(`${queueLength ? `Added ${queue.list.length} songs and s` : "S"}tarted playback`, queue.list[0].title, {
+			return regular(`${queueLength ? `Added ${queue.list.length} songs and s` : "S"}tarted playback`, escapeMarkdown(queue.list[0].title), {
 				footer: `Requested by ${requestedBy.displayName}`,
 				footerIcon: requestedBy.displayAvatarURL({ size: 256 })
 			});

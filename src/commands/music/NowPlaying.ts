@@ -5,6 +5,7 @@ import {
 	SlashCommandBuilder,
 	GuildMember,
 	EmbedBuilder,
+	escapeMarkdown,
 } from "discord.js";
 import { Access, Colors } from "../../enums";
 import { warning } from "../../components/messages";
@@ -47,7 +48,7 @@ export default class NowPlaying extends Command {
 			thumbnail: {
 				url: song.thumbnailUrl
 			},
-			title: song.title,
+			title: escapeMarkdown(song.title),
 			url: song.url,
 			description: `Duration: \`${("0"+du.hours).slice(-2)}:${("0"+du.minutes).slice(-2)}:${("0"+du.seconds).slice(-2)}\`\nSource: ${song.service}`,
 			footer: {

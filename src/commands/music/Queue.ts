@@ -5,6 +5,7 @@ import {
 	SlashCommandBuilder,
 	GuildMember,
 	EmbedBuilder,
+	escapeMarkdown,
 } from "discord.js";
 import { Access, Colors } from "../../enums";
 import { warning } from "../../components/messages";
@@ -51,7 +52,7 @@ export default class Queue extends Command {
 
 		const queueList = Array.from(queue.list);
 		
-		const list = queueList.slice(0, MAX_ITEMS).map((song, i) => `${(queue.playing || queue.paused) && i == 0 ? queue.playing ? ":arrow_forward:" : ":pause_button:" : `**${i + 1}.**`} **[${song.title}](${song.url})** \`${this.getDurationString(song.duration)}\` by \`${song.requestedBy.displayName}\``);
+		const list = queueList.slice(0, MAX_ITEMS).map((song, i) => `${(queue.playing || queue.paused) && i == 0 ? queue.playing ? ":arrow_forward:" : ":pause_button:" : `**${i + 1}.**`} **[${escapeMarkdown(song.title)}](${song.url})** \`${this.getDurationString(song.duration)}\` by \`${song.requestedBy.displayName}\``);
 		
 		const totalDuration = queueList.map(e => e.duration).reduce((a,b) => a + b);
 
