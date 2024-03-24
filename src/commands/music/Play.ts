@@ -14,7 +14,7 @@ import { critical, regular, success, warning } from "../../components/messages";
 import { startMusicPlayback, initMusic } from "../../components/music";
 import { MusicQueue, Song, YMApiTrack } from "../../interfaces/music";
 import { VoiceConnectionStatus } from "@discordjs/voice";
-import type { SpotifyTrack, SpotifyPlaylist, SpotifyAlbum } from "play-dl";
+import type { SpotifyTrack, SpotifyPlaylist, SpotifyAlbum, SoundCloudTrack, SoundCloudPlaylist } from "play-dl";
 
 const MAX_ITEMS = 200;
 
@@ -187,9 +187,32 @@ export default class Play extends Command {
 				return critical("Can't fetch playlist from YouTube", `\`\`\`\n${e}\n\`\`\``);
 			}
 		} else if (type === "so_track") {
-			return warning(" Soundcloud is not supported yet");
+			const info = await play.soundcloud(query) as SoundCloudTrack;
+
+			const song: Song = {
+				service: MusicServices.SoundCloud,
+				title: info.name,
+				thumbnailUrl: info.thumbnail,
+				duration: info.durationInSec,
+				url: info.url,
+				requestedBy: member
+			};
+
+			queue.list.push(song);
 		} else if (type === "so_playlist") {
-			return warning(" Soundcloud is not supported yet");
+			const playlist = await play.soundcloud(query) as SoundCloudPlaylist;
+			const list = await playlist.all_tracks();
+
+			queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
+				service: MusicServices.SoundCloud,
+				title: info.name,
+				thumbnailUrl: info.thumbnail,
+				duration: info.durationInSec,
+				url: info.url,
+				requestedBy: member
+			})));
+
+			if (queueLength) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
 		} else if (type === "sp_track") {
 			try {
 				const info = await play.spotify(query) as SpotifyTrack;

@@ -25,18 +25,17 @@ const wait = promisify(setTimeout);
 const ymApi = new YMApi();
 
 export async function initMusic() {
+	const client_id = await play.getFreeClientID().catch(() => null);
+
 	play.setToken({
 		useragent: ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"],
 		... youtube.cookie && { youtube },
+		... client_id && { soundcloud: { client_id } }
 	});
 
-	// TODO: try/catch setToken for SoundCloud due to possible fetch errors when getting free token
+	if (spotify.client_id && spotify.client_secret && spotify.refresh_token && spotify.market) await play.setToken({ spotify }).catch(() => null);
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	if (spotify.client_id && spotify.client_secret && spotify.refresh_token && spotify.market) await play.setToken({ spotify }).catch(() => {});
-
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	if (yandex.uid && yandex.access_token) await ymApi.init(yandex).catch(() => {});
+	if (yandex.uid && yandex.access_token) await ymApi.init(yandex).catch(() => null);
 
 	return { play, ymApi };
 }
@@ -92,7 +91,7 @@ export async function getMusicPlayer(queue: MusicQueue, song: Song) {
 	let stream: Readable | null = null;
 	let streamType: StreamType | null = null;
 	try {
-		if (song.service === MusicServices.YouTube) {
+		if (song.service === MusicServices.YouTube || song.service === MusicServices.SoundCloud) {
 			const pdl = await play.stream(song.url);
 			stream = pdl.stream;
 			streamType = pdl.type;
