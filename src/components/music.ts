@@ -9,7 +9,7 @@ import {
 	VoiceConnectionDisconnectReason,
 	VoiceConnectionStatus,
 } from "@discordjs/voice";
-import type { VoiceChannel } from "discord.js";
+import { escapeMarkdown, type VoiceChannel } from "discord.js";
 import play from "play-dl";
 import fetch from "node-fetch";
 import { YMApi } from "ym-api";
@@ -135,8 +135,7 @@ export async function getMusicPlayer(queue: MusicQueue, song: Song) {
 		player.play(queue.resource);
 	} catch (e) {
 		console.error(e);
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		queue.textChannel.send({ embeds: [critical("Attempt to play failed", `${e}`)] }).catch(() => {});
+		queue.textChannel.send({ embeds: [critical(`Attempt to play \`${escapeMarkdown(song.title)}\` failed`, `${e}`)] }).catch(() => null);
 		queue.list.shift();
 		return getMusicPlayer(queue, queue.list[0]);
 	}
