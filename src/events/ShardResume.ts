@@ -1,14 +1,13 @@
-import { env } from "node:process";
 import Event from "../Event";
-import { ActivityType, Events, Guild } from "discord.js";
+import { ActivityType, Events } from "discord.js";
 
 export default class ShardResume extends Event {
 	event = Events.ShardResume;
 	once = true;
 
-	execute = async (guild: Guild) => {
-		const { client: { user, guilds }} = guild;
+	execute = async () => {
+		const { client: { user, guilds }} = this;
 		
-		user.setActivity(`${guilds.cache.size} servers`, { type: ActivityType.Watching });
+		user?.setActivity(`${guilds.cache.size} servers`, { type: ActivityType.Watching });
 	};
 }

@@ -40,9 +40,9 @@ export class Client extends OriginalClient {
 			const filePath = path.join(eventsPath, file);
 
 			// eslint-disable-next-line @typescript-eslint/no-var-requires
-			const required: new () => Event = require(filePath).default;
+			const required: new (_: Client) => Event = require(filePath).default;
 
-			const event = new required();
+			const event = new required(this);
 			if (event.once) {
 				this.once(event.event, event.execute);
 			} else {

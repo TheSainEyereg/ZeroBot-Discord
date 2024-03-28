@@ -1,4 +1,3 @@
-import { env } from "node:process";
 import Event from "../Event";
 import { ActivityType, Events, Guild } from "discord.js";
 
