@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/app",
-    "migrate": "node migrate",
+    "migrate": "node migrate.mjs",
+    "spotify": "node spotify.mjs",
     "dev": "nodemon  src/app.ts",
     "dev:debug": "nodemon --inspect src/app.ts",
     "lint": "eslint src/**/*.ts"
