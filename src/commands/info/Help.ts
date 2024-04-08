@@ -1,3 +1,4 @@
+import { env } from "node:process";
 import Command from "../../Command";
 import {
 	type Message,
@@ -60,7 +61,7 @@ export default class Help extends Command {
 					const [command, subcommand] = key.split(":");
 					return {
 						description, args,
-						displaySlash: `</${command}${subcommand ? ` ${subcommand}` : ""}:${application.commands.cache.find(({ name }) => name === command)?.id}>`,
+						displaySlash: `</${command}${subcommand ? ` ${subcommand}` : ""}:${(env.NODE_ENV !== "development" ? application : guild).commands.cache.find(({ name }) => name === command)?.id}>`,
 						displayPrefix: `${prefix}${subcommand || command}`,
 					};
 				}),

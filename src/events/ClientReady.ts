@@ -17,7 +17,9 @@ export default class Ready extends Event {
 		commandsJSON.forEach(cmd => commandsJSON.forEach(c => (c.name === cmd.name && c !== cmd) && (cmd.options = [... cmd.options!, ... c.options!])));
 		commandsJSON = commandsJSON.filter((cmd, i) => commandsJSON.findIndex(c => c.name === cmd.name) === i);
 
-		env.NODE_ENV !== "development" ? await application.commands.set(commandsJSON) : await guilds.fetch(env.DEV_GUILD!).then(guild => guild.commands.set(commandsJSON));
+		env.NODE_ENV !== "development" 
+			? await application.commands.set(commandsJSON)
+			: await guilds.fetch(env.DEV_GUILD!).then(guild => guild.commands.set(commandsJSON));
 		console.log("Slash commands registered!");
 	};
 }
