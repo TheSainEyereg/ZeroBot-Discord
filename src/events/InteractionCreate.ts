@@ -27,7 +27,7 @@ export default class InteractionCreate extends Event {
 			await command.executeSlash(interaction);
 		} catch (e: unknown) {
 			console.error(e);
-			interaction[!interaction.deferred && !interaction.replied ? "reply" : "followUp"]({
+			interaction[!interaction.deferred && !interaction.replied ? "reply" : !interaction.replied ? "editReply" : "followUp"]({
 				ephemeral: true,
 				embeds: [
 					critical("Error occurred!", `\`\`\`\n${e}\n\`\`\``)

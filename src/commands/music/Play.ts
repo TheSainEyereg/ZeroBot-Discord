@@ -54,13 +54,18 @@ export default class Play extends Command {
 	executeSlash = async (interaction: ChatInputCommandInteraction) => {
 		const query = interaction.options.getString("query");
 		const file = interaction.options.getAttachment("file");
-		interaction.reply({ embeds: [await this.play(interaction.channel as GuildTextBasedChannel, interaction.member as GuildMember, { query, file })] });
+
+		await interaction.deferReply();
+		interaction.editReply({ embeds: [await this.play(interaction.channel as GuildTextBasedChannel, interaction.member as GuildMember, { query, file })] });
 	};
 
 	executePrefix = async (message: Message, args: string[]) => {
 		const query = args.join(" ") || null;
 		const file = message.attachments.first() || null;
+
+		await message.react("⏱️");
 		message.reply({ embeds: [await this.play(message.channel as GuildTextBasedChannel, message.member!, { query, file })] });
+		await message.reactions.cache.get("⏱️")?.remove();
 	};
 
 	private async play(textChannel: GuildTextBasedChannel, member: GuildMember, source: {query: string | null; file: Attachment | null}) {
