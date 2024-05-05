@@ -9,12 +9,11 @@ import {
 	Attachment,
 	escapeMarkdown,
 } from "discord.js";
-import { Access, LoopMode, MusicServices } from "../../enums";
+import { Access, MusicServices } from "../../enums";
 import { critical, regular, success, warning } from "../../components/messages";
-import { startMusicPlayback, initMusic } from "../../components/music";
-import { MusicQueue, Song, YMApiTrack } from "../../interfaces/music";
-import { VoiceConnectionStatus } from "@discordjs/voice";
+import { Song, YMApiTrack } from "../../interfaces/music";
 import type { SpotifyTrack, SpotifyPlaylist, SpotifyAlbum, SoundCloudTrack, SoundCloudPlaylist } from "play-dl";
+import MusicQueue from "../../components/MusicQueue";
 
 const MAX_ITEMS = 200;
 
@@ -78,57 +77,13 @@ export default class Play extends Command {
 		const minePermissions = voiceChannel.permissionsFor(client.user);
 		if (!minePermissions || !minePermissions.has(PermissionFlagsBits.Connect) || !minePermissions.has(PermissionFlagsBits.Speak)) return warning("I don't have permissions to join your voice channel!");
 
-		const queueCounstruct: MusicQueue = {
-			guild: guild,
-			textChannel: textChannel,
-			voiceChannel: voiceChannel,
-			player: undefined,
-			resource: undefined,
-			message: undefined,
-			volume: (await db.getServer(guild.id)).musicVolume,
-			loopMode: LoopMode.Disabled,
-			list: [],
-
-			playing: false,
-			paused: false,
-			stopped: false,
-			left: false,
-			deleted: false,
-
-			clear(deleteQueue = true) {
-				if (this.deleted) return;
-	
-				const wasPlaying = this.playing;
-				this.list = [];
-				this.playing = false;
-				this.paused = false;
-
-				try {
-					if (wasPlaying && this.player) this.player.stop();
-					// eslint-disable-next-line no-empty
-				} catch (e) {}
-
-				if (deleteQueue) {
-					guild.client.musicQueue.delete(this.guild.id);
-					this.deleted = true;
-				}
-			},
-	
-			leaveChannel(deleteQueue = true) {
-				if (this.left) return;
-	
-				if (this.connection?.state.status === VoiceConnectionStatus.Ready) this.connection.disconnect();
-				this.left = true;
-
-				if (deleteQueue) this.clear();
-			}
-
-		};
+		const queueCounstruct = new MusicQueue(textChannel, voiceChannel);
+		queueCounstruct.volume = (await db.getServer(guild.id)).musicVolume;
 
 		if (!client.musicQueue.has(guild.id)) client.musicQueue.set(guild.id, queueCounstruct);
 		const queue = client.musicQueue.get(guild.id)!;
 
-		const { play, ymApi } = await initMusic();
+		const { play, ymApi } = await queue.initMusic();
 		
 		const type = query?.length ? await play.validate(query) : null;
 
@@ -382,7 +337,7 @@ export default class Play extends Command {
 		} else return warning("Passed URL is not supported");
 
 		if (!queue.playing && queue.list[0]) {
-			startMusicPlayback(queue);
+			queue.startMusicPlayback();
 			const requestedBy = queue.list[0].requestedBy;
 			return regular(`${queueLength ? `Added ${queue.list.length} songs and s` : "S"}tarted playback`, escapeMarkdown(queue.list[0].title), {
 				footer: `Requested by ${requestedBy.displayName}`,

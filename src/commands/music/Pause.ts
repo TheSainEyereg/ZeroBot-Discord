@@ -40,6 +40,7 @@ export default class Pause extends Command {
 
 		try {
 			queue.player?.pause();
+			queue.trackTime = Date.now() - queue.startTime;
 			queue.paused = true;
 		} catch (error) {
 			queue.clear(false);

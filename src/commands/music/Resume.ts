@@ -7,7 +7,6 @@ import {
 } from "discord.js";
 import { Access } from "../../enums";
 import { success, warning } from "../../components/messages";
-import { joinChannel } from "../../components/music";
 
 export default class Resume extends Command {
 	name = "resume";
@@ -41,9 +40,10 @@ export default class Resume extends Command {
 
 		try {
 			queue.voiceChannel = channel;
-			await joinChannel(queue);
+			await queue.joinChannel();
 			
 			queue.player?.unpause();
+			queue.startTime = Date.now() - queue.trackTime;
 			queue.paused = false;
 		} catch (error) {
 			queue.clear(false);

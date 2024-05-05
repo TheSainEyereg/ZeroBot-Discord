@@ -3,7 +3,7 @@ import path from "path";
 import Event from "./Event";
 import Command from "./Command";
 import type Database from "./components/Database";
-import { MusicQueue } from "./interfaces/music";
+import MusicQueue from "./components/MusicQueue";
 import { Client as OriginalClient, GatewayIntentBits, Partials, Collection } from "discord.js";
 import meta from "./commands/meta";
 import type { CategoryMeta } from "./interfaces/bot";
