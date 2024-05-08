@@ -4,6 +4,7 @@ import {
 	type ChatInputCommandInteraction,
 	SlashCommandBuilder,
 	GuildMember,
+	GuildTextBasedChannel,
 } from "discord.js";
 import { Access } from "../../enums";
 import { success, warning } from "../../components/messages";
@@ -20,14 +21,14 @@ export default class Resume extends Command {
 		.setDescription(this.description);
 
 	executeSlash = async (interaction: ChatInputCommandInteraction) => {
-		interaction.reply({ embeds: [await this.resume(interaction.member as GuildMember)] });
+		interaction.reply({ embeds: [await this.resume(interaction.member as GuildMember, interaction.channel as GuildTextBasedChannel)] });
 	};
 
 	executePrefix = async (message: Message) => {
-		message.reply({ embeds: [await this.resume(message.member as GuildMember)] });
+		message.reply({ embeds: [await this.resume(message.member as GuildMember, message.channel as GuildTextBasedChannel)] });
 	};
 
-	private async resume(member: GuildMember) {
+	private async resume(member: GuildMember, textChannel: GuildTextBasedChannel) {
 		const { client: { musicQueue }, guild, voice: { channel } } = member;
 
 		const queue = musicQueue.get(guild.id);
@@ -40,6 +41,7 @@ export default class Resume extends Command {
 
 		try {
 			queue.voiceChannel = channel;
+			queue.textChannel = textChannel;
 			await queue.joinChannel();
 			
 			queue.player?.unpause();
