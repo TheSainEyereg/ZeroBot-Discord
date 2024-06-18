@@ -246,7 +246,7 @@ export default class Play extends Command {
 
 			if (queueLength) return success(`Added \`${song.title}\` to queue`);
 	
-		} else if (query.match(/(https:\/\/)?(www.)?music\.yandex\.ru\/album\/([0-9]+)\/track\/[0-9]+/gi)) { // YM track
+		} else if (query.match(/(https:\/\/)?(www.)?music\.yandex(\.(ru|ua|by|kz|com(\.(ru|tr))?|net))?\/album\/([0-9]+)\/track\/[0-9]+/gi)) { // YM track
 			try {
 				const id = parseInt(query.match(/track\/([0-9]+)/gi)![0].replace("track/", ""));
 				const info = (await ymApi.getTrack(id))[0] as YMApiTrack;
@@ -269,7 +269,7 @@ export default class Play extends Command {
 				console.error(e);
 				return critical("Can't fetch track from Yandex", `\`\`\`\n${e}\n\`\`\``);
 			}
-		} else if (query.match(/(https:\/\/)?(www\.)?music\.yandex\.ru\/users\/([A-Za-z0-9-_]+)(\/playlists\/[0-9]+)?/gi)) { // YM playlist
+		} else if (query.match(/(https:\/\/)?(www\.)?music\.yandex((\.(ru|ua|by|kz|com(\.(ru|tr))?|net))?)?\/users\/([A-Za-z0-9-_]+)(\/playlists\/[0-9]+)?/gi)) { // YM playlist
 			try {
 				const username = query.match(/users\/([A-Za-z0-9-_]+)/gi)![0].replace("users/", "");
 				const playlist = query.match(/playlists\/([0-9]+)/gi) ? parseInt(query.match(/playlists\/([0-9]+)/gi)![0].replace("playlists/", "")) : 3;
@@ -292,7 +292,7 @@ export default class Play extends Command {
 				console.error(e);
 				return critical("Can't fetch playlist from Yandex", `\`\`\`\n${e}\n\`\`\``);
 			}
-		} else if (query.match(/(https:\/\/)?(www.)?music\.yandex\.ru\/album\/[0-9]+/gi)) { // YM album
+		} else if (query.match(/(https:\/\/)?(www.)?music\.yandex((\.(ru|ua|by|kz|com(\.(ru|tr))?|net))?)?\/album\/[0-9]+/gi)) { // YM album
 			try {
 				const album = parseInt(query.match(/album\/([0-9]+)/gi)![0].replace("album/", ""));
 	
