@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@discordjs/opus": "^0.9.0",
-    "@discordjs/voice": "^0.16.0",
+    "@discordjs/voice": "^0.17.0",
     "discord.js": "^14.11.0",
     "dotenv": "^16.3.1",
     "ffmpeg-static": "^5.2.0",
@@ -35,6 +35,7 @@
     "node-fetch": "2",
     "play-dl": "^1.9.7",
     "surrealdb.js": "^0.8.0",
-    "ym-api": "^1.2.1"
+    "ym-api": "^1.2.1",
+    "ytdl-core": "^4.11.5"
   }
 }

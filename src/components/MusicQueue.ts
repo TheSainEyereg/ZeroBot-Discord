@@ -16,8 +16,9 @@ import {
 } from "@discordjs/voice";
 import { type VoiceChannel, BaseGuildVoiceChannel, Guild, GuildTextBasedChannel, Message, escapeMarkdown } from "discord.js";
 
-import play from "play-dl";
 import fetch from "node-fetch";
+import play from "play-dl";
+import ytdl, { Filter } from "ytdl-core";
 import { YMApi } from "ym-api";
 
 import { LoopMode, MusicServices } from "../enums";
@@ -28,6 +29,17 @@ import config from "../config";
 const { music: { youtube, spotify, yandex, volumeDefault } } = config;
 const wait = promisify(setTimeout);
 const ymApi = new YMApi();
+
+const ytdlOptions = {
+	filter: "audioonly" as Filter,
+	highWaterMark: 1 << 62,
+	liveBuffer: 1 << 62,
+	dlChunkSize: 0,
+	quality: "highestaudio",
+	requestOptions: {
+		...youtube.cookie && { headers: youtube }
+	}
+};
 
 export default class MusicQueue {
 	guild: Guild;
@@ -156,7 +168,13 @@ export default class MusicQueue {
 		let streamType: StreamType | null = null;
 	
 		try {
-			if (song.service === MusicServices.YouTube || song.service === MusicServices.SoundCloud) {
+			if (song.service === MusicServices.YouTube) {
+				if (song.duration > 61 * 60)
+					throw new Error("Sorry. Due to some technical limitations, I can't play tracks longer than 60 minutes");
+
+				stream = ytdl(song.url, ytdlOptions);
+			}
+			if (song.service === MusicServices.SoundCloud) {
 				const pdl = await play.stream(song.url);
 				stream = pdl.stream;
 				streamType = pdl.type;
@@ -164,10 +182,13 @@ export default class MusicQueue {
 			if (song.service === MusicServices.Spotify) {
 				const res = (await play.search(song.title, { limit: 5 }))
 					.filter(({ durationInSec }) =>  (durationInSec - song.duration > -3) && (durationInSec - song.duration < 10));
+				
 				if (res.length === 0) throw new Error("Can't find this song");
-				const pdl = await play.stream(res[0].url);
-				stream = pdl.stream;
-				streamType = pdl.type;
+
+				if (res[0].durationInSec > 61 * 60)
+					throw new Error("Sorry. Due to some technical limitations, I can't play tracks longer than 60 minutes");
+
+				stream = ytdl(res[0].url, ytdlOptions);
 			}
 			if (song.service === MusicServices.Yandex) {
 				const downloadInfo = await ymApi.getTrackDownloadInfo(song.id!);
