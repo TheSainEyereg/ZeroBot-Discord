@@ -5,7 +5,7 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 import { Access } from "../../enums";
-import fetch from "node-fetch";
+import figlet, { Fonts } from "figlet";
 
 export default class Ascii extends Command {
 	name = "ascii";
@@ -33,10 +33,11 @@ export default class Ascii extends Command {
 		message.reply(await this.ascii(args.join(" ")));
 	};
 
-	private async ascii(text: string) {
-		const response = await fetch(`https://api.olejka.ru/v2/figlet?text=${text}`);
-		const json = await response.json();
+	private make = (text: string, font?: Fonts) => new Promise((resolve, reject) => figlet.text(text, { font }, (err, result) => err ? reject(err) : resolve(result)));
 
-		return `\`\`\`\n${json.text}\`\`\``;
+	private async ascii(text: string) {
+		const response = await this.make(text, "Big");
+
+		return `\`\`\`\n${response}\`\`\``;
 	}
 }
