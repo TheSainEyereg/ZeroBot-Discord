@@ -44,7 +44,7 @@ export default class NowPlaying extends Command {
 		});
 
 		const du = splitTime(song.duration);
-		const pr = splitTime((Date.now() - queue.startTime) / 1000);
+		const pr = splitTime((queue.paused ? queue.trackTime : Date.now() - queue.startTime) / 1000);
 
 		return new EmbedBuilder({
 			color: Colors.Regular,
