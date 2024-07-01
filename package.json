@@ -39,5 +39,6 @@
     "surrealdb.js": "^0.8.0",
     "ym-api": "^1.2.1",
     "ytdl-core": "^4.11.5"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

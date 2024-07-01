@@ -37,11 +37,14 @@ export default class NowPlaying extends Command {
 		if (!queue?.playing || queue.list.length === 0) return warning("Nothing is playing now");
 
 		const song = queue.list[0];
-		const du = {
-			hours: Math.floor(song.duration/(60*60)),
-			minutes: Math.floor((song.duration/60) % 60),
-			seconds: Math.floor(song.duration % 60)
-		};
+		const splitTime = (time: number) => ({
+			hours: Math.floor(time/(60*60)),
+			minutes: Math.floor((time/60) % 60),
+			seconds: Math.floor(time % 60)
+		});
+
+		const du = splitTime(song.duration);
+		const pr = splitTime((Date.now() - queue.startTime) / 1000);
 
 		return new EmbedBuilder({
 			color: Colors.Regular,
@@ -50,7 +53,8 @@ export default class NowPlaying extends Command {
 			},
 			title: escapeMarkdown(song.title),
 			url: song.url,
-			description: `Duration: \`${("0"+du.hours).slice(-2)}:${("0"+du.minutes).slice(-2)}:${("0"+du.seconds).slice(-2)}\`\nSource: ${song.service}`,
+			description: `Duration: \`${du.hours ? `${pr.hours.toString().padStart(2, "0")}:` : ""}${pr.minutes.toString().padStart(2, "0")}:${pr.seconds.toString().padStart(2, "0")}\`${song.duration ? `/\`${du.hours ? `${du.hours.toString().padStart(2, "0")}:` : ""}${du.minutes.toString().padStart(2, "0")}:${du.seconds.toString().padStart(2, "0")}\`` : ""}`
+				+ `\nSource: ${song.service}`,
 			footer: {
 				text: `Requested by ${song.requestedBy.displayName}`,
 				iconURL: song.requestedBy.displayAvatarURL({ size: 256 })
