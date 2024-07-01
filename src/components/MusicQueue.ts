@@ -14,7 +14,7 @@ import {
 	VoiceConnection,
 	VoiceConnectionStatus
 } from "@discordjs/voice";
-import { type VoiceChannel, BaseGuildVoiceChannel, Guild, GuildTextBasedChannel, Message, escapeMarkdown } from "discord.js";
+import { type VoiceChannel, BaseGuildTextChannel, BaseGuildVoiceChannel, Guild, Message, escapeMarkdown } from "discord.js";
 
 import fetch from "node-fetch";
 import play from "play-dl";
@@ -43,7 +43,7 @@ const ytdlOptions = {
 
 export default class MusicQueue {
 	guild: Guild;
-	textChannel: GuildTextBasedChannel;
+	textChannel: BaseGuildTextChannel;
 	voiceChannel: BaseGuildVoiceChannel;
 	volume: number = volumeDefault;
 	loopMode: LoopMode = LoopMode.Disabled;
@@ -57,13 +57,14 @@ export default class MusicQueue {
 	startTime = 0;
 	trackTime = 0;
 
+	initialized = false;
 	playing = false;
 	paused = false;
 	stopped = false;
 	left = false;
 	deleted = false;
 
-	constructor(textChannel: GuildTextBasedChannel, voiceChannel: BaseGuildVoiceChannel) {
+	constructor(textChannel: BaseGuildTextChannel, voiceChannel: BaseGuildVoiceChannel) {
 		const { guild } = textChannel;
 
 		this.guild = guild;
@@ -101,17 +102,21 @@ export default class MusicQueue {
 	}
 
 	async initMusic() {
-		const client_id = await play.getFreeClientID().catch(() => null);
+		if (!this.initialized) {
+			const client_id = await play.getFreeClientID().catch(() => null);
 	
-		play.setToken({
-			useragent: ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"],
-			... youtube.cookie && { youtube },
-			... client_id && { soundcloud: { client_id } }
-		});
-	
-		if (spotify.client_id && spotify.client_secret && spotify.refresh_token && spotify.market) await play.setToken({ spotify }).catch(() => null);
-	
-		if (yandex.uid && yandex.access_token) await ymApi.init(yandex).catch(() => null);
+			play.setToken({
+				useragent: ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"],
+				... youtube.cookie && { youtube },
+				... client_id && { soundcloud: { client_id } }
+			});
+		
+			if (spotify.client_id && spotify.client_secret && spotify.refresh_token && spotify.market) await play.setToken({ spotify }).catch(() => null);
+		
+			if (yandex.uid && yandex.access_token) await ymApi.init(yandex).catch(() => null);
+		
+			this.initialized = true;
+		}
 	
 		return { play, ymApi };
 	}
@@ -191,7 +196,7 @@ export default class MusicQueue {
 				stream = ytdl(res[0].url, ytdlOptions);
 			}
 			if (song.service === MusicServices.Yandex) {
-				const downloadInfo = await ymApi.getTrackDownloadInfo(song.id!);
+				const downloadInfo = await ymApi.getTrackDownloadInfo(song.id as number);
 				const directUrl = await ymApi.getTrackDirectLink(downloadInfo.find(i => i.bitrateInKbps === 192)!.downloadInfoUrl);
 	
 				const res = await fetch(directUrl);

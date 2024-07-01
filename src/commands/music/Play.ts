@@ -3,7 +3,7 @@ import {
 	type Message,
 	type ChatInputCommandInteraction,
 	SlashCommandBuilder,
-	type GuildTextBasedChannel,
+	type BaseGuildTextChannel,
 	type GuildMember,
 	PermissionFlagsBits,
 	Attachment,
@@ -55,7 +55,7 @@ export default class Play extends Command {
 		const file = interaction.options.getAttachment("file");
 
 		await interaction.deferReply();
-		interaction.editReply({ embeds: [await this.play(interaction.channel as GuildTextBasedChannel, interaction.member as GuildMember, { query, file })] });
+		interaction.editReply({ embeds: [await this.play(interaction.channel as BaseGuildTextChannel, interaction.member as GuildMember, { query, file })] });
 	};
 
 	executePrefix = async (message: Message, args: string[]) => {
@@ -63,11 +63,11 @@ export default class Play extends Command {
 		const file = message.attachments.first() || null;
 
 		await message.react("⏱️");
-		message.reply({ embeds: [await this.play(message.channel as GuildTextBasedChannel, message.member!, { query, file })] });
+		message.reply({ embeds: [await this.play(message.channel as BaseGuildTextChannel, message.member!, { query, file })] });
 		await message.reactions.cache.get("⏱️")?.remove();
 	};
 
-	private async play(textChannel: GuildTextBasedChannel, member: GuildMember, source: {query: string | null; file: Attachment | null}) {
+	private async play(textChannel: BaseGuildTextChannel, member: GuildMember, source: {query: string | null; file: Attachment | null}) {
 		const { client: { db }, client, guild, voice } = member;
 		const { query, file } = source;
 
@@ -258,7 +258,7 @@ export default class Play extends Command {
 					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
-					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
+					url: `https://music.yandex/album/${info.albums[0].id}/track/${info.id}`,
 					id: info.id,
 					requestedBy: member
 				};
@@ -282,7 +282,7 @@ export default class Play extends Command {
 					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
-					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
+					url: `https://music.yandex/album/${info.albums[0].id}/track/${info.id}`,
 					id: info.id,
 					requestedBy: member
 				})));
@@ -303,7 +303,7 @@ export default class Play extends Command {
 					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
-					url: `https://music.yandex.ru/album/${info.albums[0].id}/track/${info.id}`,
+					url: `https://music.yandex/album/${info.albums[0].id}/track/${info.id}`,
 					id: info.id,
 					requestedBy: member
 				})));

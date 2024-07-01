@@ -9,7 +9,7 @@ export interface Song {
 	thumbnailUrl: string;
 	duration: number;
 	url: string;
-	id?: number;
+	id?: number | string;
 	requestedBy: GuildMember;
 }
 
