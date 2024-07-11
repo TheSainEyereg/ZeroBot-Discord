@@ -18,7 +18,7 @@ import { type VoiceChannel, BaseGuildTextChannel, BaseGuildVoiceChannel, Guild, 
 
 import fetch from "node-fetch";
 import play from "play-dl";
-import ytdl, { Filter } from "ytdl-core";
+import ytdl, { Filter } from "@distube/ytdl-core";
 import { YMApi } from "ym-api";
 
 import { LoopMode, MusicServices } from "../enums";
