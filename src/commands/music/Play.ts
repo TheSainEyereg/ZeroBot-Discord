@@ -62,9 +62,9 @@ export default class Play extends Command {
 		const query = args.join(" ") || null;
 		const file = message.attachments.first() || null;
 
-		await message.react("⏱️");
+		await message.react("⏱️").catch(() => null);
 		message.reply({ embeds: [await this.play(message.channel as BaseGuildTextChannel, message.member!, { query, file })] });
-		await message.reactions.cache.get("⏱️")?.remove();
+		await message.reactions.cache.get("⏱️")?.remove().catch(() => null);
 	};
 
 	private async play(textChannel: BaseGuildTextChannel, member: GuildMember, source: {query: string | null; file: Attachment | null}) {
