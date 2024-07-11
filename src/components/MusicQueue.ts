@@ -21,10 +21,11 @@ import play from "play-dl";
 import ytdl, { Filter } from "@distube/ytdl-core";
 import { YMApi } from "ym-api";
 
+import config from "../config";
 import { LoopMode, MusicServices } from "../enums";
 import { Song } from "../interfaces/music";
 import { critical } from "./messages";
-import config from "../config";
+import { cookieHeaderParser } from "./utils";
 
 const { music: { youtube, spotify, yandex, volumeDefault } } = config;
 const wait = promisify(setTimeout);
@@ -36,9 +37,10 @@ const ytdlOptions = {
 	liveBuffer: 1 << 62,
 	dlChunkSize: 0,
 	quality: "highestaudio",
-	requestOptions: {
-		...youtube.cookie && { headers: youtube }
-	}
+	// requestOptions: {
+	// 	...youtube.cookie && { headers: youtube }
+	// }
+	agent: ytdl.createAgent(cookieHeaderParser(youtube.cookie))
 };
 
 export default class MusicQueue {
