@@ -29,7 +29,9 @@ export default {
 			client_id: process.env.SPOTIFY_CLIENT_ID!,
 			client_secret: process.env.SPOTIFY_CLIENT_SECRET!,
 			refresh_token: process.env.SPOTIFY_REFRESH_TOKEN!,
-			market: process.env.SPOTIFY_MARKET!
+			market: process.env.SPOTIFY_MARKET!,
+
+			lyricsCookie: process.env.SPOTIFY_LYRICS_COOKIE!
 		},
 		yandex: {
 			uid: parseInt(process.env.YANDEX_UID!),

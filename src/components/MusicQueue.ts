@@ -25,6 +25,7 @@ import { LoopMode, MusicServices } from "../enums";
 import { Song } from "../interfaces/music";
 import { critical } from "./messages";
 import config from "../config";
+import LyricsProvider from "../LyricsProvider";
 
 const { music: { youtube, spotify, yandex, volumeDefault } } = config;
 const wait = promisify(setTimeout);
@@ -53,6 +54,7 @@ export default class MusicQueue {
 	player?: AudioPlayer;
 	resource?: AudioResource;
 	message?: Message;
+	lyrics?: LyricsProvider;
 
 	startTime = 0;
 	trackTime = 0;
