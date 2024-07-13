@@ -118,6 +118,7 @@ export default class Play extends Command {
 					thumbnailUrl: info.video_details.thumbnails[0].url,
 					duration: info.video_details.durationInSec,
 					url: info.video_details.url,
+					id: info.video_details.id,
 					requestedBy: member
 				};
 				queue.list.push(song);
@@ -138,6 +139,7 @@ export default class Play extends Command {
 					thumbnailUrl: info.thumbnails[0].url,
 					duration: info.durationInSec,
 					url: info.url,
+					id: info.id,
 					requestedBy: member
 				})));
 
