@@ -45,16 +45,20 @@ export default class Ping extends Command {
 
 		const queue = musicQueue.get(guild.id);
 
-		if (!queue?.playing) return warning("Nothing is playing now");
-		if (queue.list.length === 0) return warning("There is nothing to skip");
-		if (!channel) return warning("You must be in a voice channel to skip");
-		if (channel != queue.voiceChannel) return warning("You must be in the same voice channel to skip");
+		if (!queue?.playing)
+			return warning("Nothing is playing now");
+		if (!channel)
+			return warning("You must be in a voice channel to change volume");
+		if (channel != queue.voiceChannel)
+			return warning("You must be in the same voice channel to change volume");
 		
-		if (!volume) return regular(`The current volume is ${queue.volume * 100}%`);
+		if (!volume)
+			return regular(`The current volume is ${queue.volume * 100}%`);
 
 		const isOverdrive = volume > 100;
 		const allowedOverdrive = await hasAccess(member, Access.Moderator);
-		if (volume < 1 || isOverdrive && (!allowedOverdrive || volume > MAX_OVERDRIVE)) return warning(`Volume must be a number between 1 and ${allowedOverdrive ? MAX_OVERDRIVE : 100}`);
+		if (volume < 1 || isOverdrive && (!allowedOverdrive || volume > MAX_OVERDRIVE))
+			return warning(`Volume must be a number between 1 and ${allowedOverdrive ? MAX_OVERDRIVE : 100}`);
 	
 		queue.volume = isOverdrive ? 1 : volume * 0.01;
 		queue.resource?.volume?.setVolumeLogarithmic(volume * 0.01 * 0.5);
