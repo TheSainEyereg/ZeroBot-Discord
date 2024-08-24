@@ -18,30 +18,16 @@ import { type VoiceChannel, BaseGuildTextChannel, BaseGuildVoiceChannel, Guild, 
 
 import fetch from "node-fetch";
 import play from "play-dl";
-import ytdl, { Filter } from "@distube/ytdl-core";
 import { YMApi } from "ym-api";
 
 import config from "../config";
 import { LoopMode, MusicServices } from "../enums";
 import { Song } from "../interfaces/music";
 import { critical } from "./messages";
-import { cookieHeaderParser } from "./utils";
 
 const { music: { youtube, spotify, yandex, volumeDefault } } = config;
 const wait = promisify(setTimeout);
 const ymApi = new YMApi();
-
-const ytdlOptions = {
-	filter: "audioonly" as Filter,
-	highWaterMark: 1 << 62,
-	liveBuffer: 1 << 62,
-	dlChunkSize: 0,
-	quality: "highestaudio",
-	// requestOptions: {
-	// 	...youtube.cookie && { headers: youtube }
-	// }
-	agent: ytdl.createAgent(cookieHeaderParser(youtube.cookie))
-};
 
 export default class MusicQueue {
 	guild: Guild;
@@ -175,27 +161,10 @@ export default class MusicQueue {
 		let streamType: StreamType | null = null;
 	
 		try {
-			if (song.service === MusicServices.YouTube) {
-				if (song.duration > 61 * 60)
-					throw new Error("Sorry. Due to some technical limitations, I can't play tracks longer than 60 minutes");
-
-				stream = ytdl(song.url, ytdlOptions);
-			}
 			if (song.service === MusicServices.SoundCloud) {
 				const pdl = await play.stream(song.url);
 				stream = pdl.stream;
 				streamType = pdl.type;
-			}
-			if (song.service === MusicServices.Spotify) {
-				const res = (await play.search(song.title, { limit: 5 }))
-					.filter(({ durationInSec }) =>  (durationInSec - song.duration > -3) && (durationInSec - song.duration < 10));
-				
-				if (res.length === 0) throw new Error("Can't find this song");
-
-				if (res[0].durationInSec > 61 * 60)
-					throw new Error("Sorry. Due to some technical limitations, I can't play tracks longer than 60 minutes");
-
-				stream = ytdl(res[0].url, ytdlOptions);
 			}
 			if (song.service === MusicServices.Yandex) {
 				const downloadInfo = await ymApi.getTrackDownloadInfo(song.id as number);

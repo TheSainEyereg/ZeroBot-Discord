@@ -17,9 +17,9 @@ export enum Colors {
 }
 
 export enum MusicServices {
-	YouTube = "YouTube",
+	// YouTube = "YouTube",
 	SoundCloud = "SoundCloud",
-	Spotify = "Spotify",
+	// Spotify = "Spotify",
 	Yandex = "Yandex",
 	Raw = "File",
 }
