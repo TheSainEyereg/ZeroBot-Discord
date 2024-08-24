@@ -18,17 +18,30 @@ import { type VoiceChannel, BaseGuildTextChannel, BaseGuildVoiceChannel, Guild, 
 
 import fetch from "node-fetch";
 import play from "play-dl";
+import ytdl, { Filter } from "@distube/ytdl-core";
 import { YMApi } from "ym-api";
 
 import config from "../config";
 import { LoopMode, MusicServices } from "../enums";
 import { Song } from "../interfaces/music";
 import { critical } from "./messages";
-import { streamYTAudio } from "./ytdl";
+import { cookieHeaderParser } from "./utils";
 
 const { music: { youtube, spotify, yandex, volumeDefault } } = config;
 const wait = promisify(setTimeout);
 const ymApi = new YMApi();
+
+const ytdlOptions = {
+	filter: "audioonly" as Filter,
+	highWaterMark: 1 << 62,
+	liveBuffer: 1 << 62,
+	dlChunkSize: 0,
+	quality: "highestaudio",
+	// requestOptions: {
+	// 	...youtube.cookie && { headers: youtube }
+	// }
+	agent: ytdl.createAgent(cookieHeaderParser(youtube.cookie))
+};
 
 export default class MusicQueue {
 	guild: Guild;
@@ -166,7 +179,7 @@ export default class MusicQueue {
 				if (song.duration > 61 * 60)
 					throw new Error("Sorry. Due to some technical limitations, I can't play tracks longer than 60 minutes");
 
-				stream = await streamYTAudio(song.id as string);
+				stream = ytdl(song.url, ytdlOptions);
 			}
 			if (song.service === MusicServices.SoundCloud) {
 				const pdl = await play.stream(song.url);
@@ -182,7 +195,7 @@ export default class MusicQueue {
 				if (res[0].durationInSec > 61 * 60)
 					throw new Error("Sorry. Due to some technical limitations, I can't play tracks longer than 60 minutes");
 
-				stream = await streamYTAudio(res[0].id as string);
+				stream = ytdl(res[0].url, ytdlOptions);
 			}
 			if (song.service === MusicServices.Yandex) {
 				const downloadInfo = await ymApi.getTrackDownloadInfo(song.id as number);
