@@ -123,6 +123,8 @@ export default class Play extends Command {
 			};
 
 			queue.list.push(song);
+
+			if (queueLength) return success(`Added \`${song.title}\` to queue`);
 		} else if (type === "so_playlist") {
 			const playlist = await play.soundcloud(query) as SoundCloudPlaylist;
 			const list = await playlist.all_tracks();
