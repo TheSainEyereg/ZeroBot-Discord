@@ -37,10 +37,10 @@ export default class Queue extends Command {
 		seconds: Math.floor(seconds % 60)
 	});
 
-	private getDurationString(seconds: number) {
+	private getDurationString = (seconds: number) => {
 		const duration = this.getDuration(seconds);
-		return `${("0" + duration.hours).slice(-2)}:${("0" + duration.minutes).slice(-2)}:${("0" + duration.seconds).slice(-2)}`;
-	}
+		return `${duration.hours ? `${duration.hours.toString().padStart(2, "0")}:` : ""}${duration.minutes.toString().padStart(2, "0")}:${duration.seconds.toString().padStart(2, "0")}`;
+	};
 
 	private queue(member: GuildMember) {
 		const { client: { musicQueue }, guild } = member;
@@ -52,7 +52,9 @@ export default class Queue extends Command {
 
 		const queueList = Array.from(queue.list);
 		
-		const list = queueList.slice(0, MAX_ITEMS).map((song, i) => `${(queue.playing || queue.paused) && i == 0 ? queue.playing ? ":arrow_forward:" : ":pause_button:" : `**${i + 1}.**`} **[${escapeMarkdown(song.title)}](${song.url})** \`${this.getDurationString(song.duration)}\` by \`${song.requestedBy.displayName}\``);
+		const list = queueList
+			.slice(0, MAX_ITEMS)
+			.map((song, i) => `${(queue.playing || queue.paused) && i == 0 ? queue.playing ? ":arrow_forward:" : ":pause_button:" : `**${i + 1}.**`} **[${escapeMarkdown(song.title)}](${song.url})** ${song.duration ? `\`${this.getDurationString(song.duration)}\` ` : ""}by \`${song.requestedBy.displayName}\``);
 		
 		const totalDuration = queueList.map(e => e.duration).reduce((a,b) => a + b);
 
