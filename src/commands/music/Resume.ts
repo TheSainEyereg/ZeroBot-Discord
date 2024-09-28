@@ -7,7 +7,7 @@ import {
 	GuildMember,
 } from "discord.js";
 import { Access } from "../../enums";
-import { success, warning } from "../../components/messages";
+import { success, warning } from "../../utils/messages";
 
 export default class Resume extends Command {
 	name = "resume";

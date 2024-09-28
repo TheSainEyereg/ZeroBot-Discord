@@ -6,8 +6,8 @@ import {
 	GuildMember,
 } from "discord.js";
 import { Access } from "../../enums";
-import { regular, success, warning } from "../../components/messages";
-import { hasAccess } from "../../components/checkManager";
+import { regular, success, warning } from "../../utils/messages";
+import { hasAccess } from "../../utils/checkManager";
 
 const MAX_OVERDRIVE = 10000;
 

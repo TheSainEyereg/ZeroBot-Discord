@@ -8,7 +8,7 @@ import {
 	escapeMarkdown,
 } from "discord.js";
 import { Access, Colors } from "../../enums";
-import { warning } from "../../components/messages";
+import { warning } from "../../utils/messages";
 
 const MAX_ITEMS = 15;
 

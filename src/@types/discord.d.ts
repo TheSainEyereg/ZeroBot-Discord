@@ -1,6 +1,6 @@
 import type Command from "../Command";
-import type Database from "../components/Database";
-import type MusicQueue from "../components/MusicQueue";
+import type Database from "../utils/Database";
+import type MusicQueue from "../utils/MusicQueue";
 import type { Collection } from "discord.js";
 
 

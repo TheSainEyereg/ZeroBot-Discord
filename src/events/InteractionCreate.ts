@@ -1,7 +1,7 @@
 import Event from "../Event";
 import { Events, GuildMember, Interaction } from "discord.js";
-import { hasAccess } from "../components/checkManager";
-import { critical, warning } from "../components/messages";
+import { hasAccess } from "../utils/checkManager";
+import { critical, warning } from "../utils/messages";
 
 export default class InteractionCreate extends Event {
 	event = Events.InteractionCreate;

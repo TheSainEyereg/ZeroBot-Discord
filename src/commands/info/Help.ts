@@ -8,9 +8,9 @@ import {
 	EmbedBuilder,
 } from "discord.js";
 import { Access, Colors } from "../../enums";
-import { regular, warning } from "../../components/messages";
+import { regular, warning } from "../../utils/messages";
 import meta from "../meta";
-import { hasAccess } from "../../components/checkManager";
+import { hasAccess } from "../../utils/checkManager";
 
 export default class Help extends Command {
 	name = "help";

@@ -10,10 +10,10 @@ import {
 	escapeMarkdown,
 } from "discord.js";
 import { Access, MusicServices } from "../../enums";
-import { critical, regular, success, warning } from "../../components/messages";
+import { critical, regular, success, warning } from "../../utils/messages";
 import { Song, YMApiTrack } from "../../interfaces/music";
 import type { SoundCloudTrack, SoundCloudPlaylist } from "play-dl";
-import MusicQueue from "../../components/MusicQueue";
+import MusicQueue from "../../utils/MusicQueue";
 
 const MAX_ITEMS = 200;
 

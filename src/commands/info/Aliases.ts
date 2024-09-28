@@ -3,8 +3,8 @@ import {
 	type Message
 } from "discord.js";
 import { Access } from "../../enums";
-import { hasAccess } from "../../components/checkManager";
-import { critical, regular, warning } from "../../components/messages";
+import { hasAccess } from "../../utils/checkManager";
+import { critical, regular, warning } from "../../utils/messages";
 
 export default class Aliases extends Command {
 	name = "aliases";

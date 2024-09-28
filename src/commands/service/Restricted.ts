@@ -5,7 +5,7 @@ import {
 	type User,
 } from "discord.js";
 import { Access } from "../../enums";
-import { critical, success, warning } from "../../components/messages";
+import { critical, success, warning } from "../../utils/messages";
 
 export default class Restricted extends Command {
 	name = "restricted";

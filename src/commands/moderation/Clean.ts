@@ -7,7 +7,7 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 import { Access } from "../../enums";
-import { success, warning } from "../../components/messages";
+import { success, warning } from "../../utils/messages";
 
 export default class Clean extends Command {
 	name = "clean";

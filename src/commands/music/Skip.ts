@@ -6,7 +6,7 @@ import {
 	GuildMember,
 } from "discord.js";
 import { Access, LoopMode } from "../../enums";
-import { success, warning } from "../../components/messages";
+import { success, warning } from "../../utils/messages";
 
 export default class Skip extends Command {
 	name = "skip";

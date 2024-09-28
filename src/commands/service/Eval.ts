@@ -3,7 +3,7 @@ import type {
 	Message
 } from "discord.js";
 import { Access } from "../../enums";
-import { critical, success } from "../../components/messages";
+import { critical, success } from "../../utils/messages";
 
 export default class Eval extends Command {
 	name = "eval";

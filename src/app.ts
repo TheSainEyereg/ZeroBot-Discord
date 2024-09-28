@@ -1,6 +1,6 @@
 import process, { env, stdin } from "node:process";
 import { Client } from "./Client";
-import Database from "./components/Database";
+import Database from "./utils/Database";
 import config from "./config";
 const { surrealDB } = config;
 

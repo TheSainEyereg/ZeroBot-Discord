@@ -6,7 +6,7 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 import { Access } from "../../enums";
-import { regular, success } from "../../components/messages";
+import { regular, success } from "../../utils/messages";
 
 export default class SwitchPrefix extends Command {
 	name = "switch-prefix";

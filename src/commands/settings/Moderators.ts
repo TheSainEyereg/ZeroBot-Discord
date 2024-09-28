@@ -7,7 +7,7 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 import { Access } from "../../enums";
-import { regular, success, warning } from "../../components/messages";
+import { regular, success, warning } from "../../utils/messages";
 
 export default class Moderators extends Command {
 	name = "moderators";

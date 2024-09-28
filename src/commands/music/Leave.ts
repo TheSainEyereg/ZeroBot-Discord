@@ -6,7 +6,7 @@ import {
 	GuildMember,
 } from "discord.js";
 import { Access } from "../../enums";
-import { critical, success, warning } from "../../components/messages";
+import { critical, success, warning } from "../../utils/messages";
 import { VoiceConnectionStatus } from "@discordjs/voice";
 
 export default class Leave extends Command {

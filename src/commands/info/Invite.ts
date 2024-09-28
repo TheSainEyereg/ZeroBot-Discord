@@ -5,7 +5,7 @@ import {
 	SlashCommandBuilder,
 } from "discord.js";
 import { Access } from "../../enums";
-import { url } from "../../components/messages";
+import { url } from "../../utils/messages";
 import config from "../../config";
 
 export default class Invite extends Command {

@@ -10,7 +10,7 @@ import {
 // Import Access enums for access property
 import { Access } from "../../enums";
 // Import messages component with prepared embeds
-import { regular } from "../../components/messages";
+import { regular } from "../../utils/messages";
 
 // Create class that extends base Command class
 export default class Template extends Command {

@@ -3,7 +3,7 @@ import {
 	type Message
 } from "discord.js";
 import { Access } from "../../enums";
-import { critical, regular, warning } from "../../components/messages";
+import { critical, regular, warning } from "../../utils/messages";
 
 export default class Aliases extends Command {
 	name = "cmeta";
