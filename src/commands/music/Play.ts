@@ -12,7 +12,7 @@ import {
 import { Access, MusicServices } from "../../enums";
 import { critical, regular, success, warning } from "../../utils/messages";
 import { Song, YMApiTrack } from "../../interfaces/music";
-import type { SoundCloudTrack, SoundCloudPlaylist } from "play-dl";
+import type { SpotifyTrack, SpotifyPlaylist, SpotifyAlbum, SoundCloudTrack, SoundCloudPlaylist } from "play-dl";
 import MusicQueue from "../../utils/MusicQueue";
 
 const MAX_ITEMS = 200;
@@ -108,8 +108,40 @@ export default class Play extends Command {
 				console.error(e);
 				return critical("Can't fetch track from URL", `\`\`\`\n${e}\n\`\`\``);
 			}
-		} else if (["yt_video", "yt_playlist", "sp_track", "sp_playlist", "sp_album"].includes(type as string)) {
-			return warning("This feature is not available", "Due to ongoing problems with streaming from YouTube, I have to give up playback from YouTube and Spotify. You can still play music from Yandex Music or SoundCloud (which is now used for search)");
+		} else if (type === "yt_video") {
+			try {
+				const info = await play.video_info(query);
+				const song: Song = {
+					service: MusicServices.YouTube,
+					title: info.video_details.title!,
+					thumbnailUrl: info.video_details.thumbnails[0].url,
+					duration: info.video_details.durationInSec,
+					url: info.video_details.url,
+					requestedBy: member
+				};
+				queue.list.push(song);
+				if (queueLength) return success(`Added \`${song.title}\` to queue`);
+			} catch (e) {
+				console.error(e);
+				return critical("Can't fetch video from YouTube", `\`\`\`\n${e}\n\`\`\``);
+			}
+		} else if (type === "yt_playlist") {
+			try {
+				const playlist = await play.playlist_info(query);
+				const list = await playlist.all_videos();
+				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
+					service: MusicServices.YouTube,
+					title: info.title!,
+					thumbnailUrl: info.thumbnails[0].url,
+					duration: info.durationInSec,
+					url: info.url,
+					requestedBy: member
+				})));
+				if (queueLength) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
+			} catch (e) {
+				console.error(e);
+				return critical("Can't fetch playlist from YouTube", `\`\`\`\n${e}\n\`\`\``);
+			}
 		} else if (type === "so_track") {
 			const info = await play.soundcloud(query) as SoundCloudTrack;
 
@@ -139,14 +171,66 @@ export default class Play extends Command {
 			})));
 
 			if (queueLength) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
+		} else if (type === "sp_track") {
+			try {
+				const info = await play.spotify(query) as SpotifyTrack;
+				const song: Song = {
+					service: MusicServices.Spotify,
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
+					thumbnailUrl: info.thumbnail?.url || "",
+					duration: info.durationInSec,
+					url: info.url,
+					requestedBy: member
+				};
+				queue.list.push(song);
+				if (queueLength) return success(`Added \`${song.title}\` to queue`);
+			} catch (e) {
+				console.error(e);
+				return critical("Can't fetch track from Spotify", `\`\`\`\n${e}\n\`\`\``);
+			}
+		} else if (type === "sp_playlist") {
+			try {
+				const playlist = await play.spotify(query) as SpotifyPlaylist;
+				const list = await playlist.all_tracks();
+				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
+					service: MusicServices.Spotify,
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
+					thumbnailUrl: info.thumbnail?.url || "",
+					duration: info.durationInSec,
+					url: info.url,
+					requestedBy: member
+				})));
+				if (queueLength) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
+			} catch (e) {
+				console.error(e);
+				return critical("Can't fetch playlist from Spotify", `\`\`\`\n${e}\n\`\`\``);
+			}
+		} else if (type === "sp_album") {
+			try {
+				const playlist = await play.spotify(query) as SpotifyAlbum;
+				const list = await playlist.all_tracks();
+				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
+					service: MusicServices.Spotify,
+					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
+					thumbnailUrl: info.thumbnail?.url || "",
+					duration: info.durationInSec,
+					url: info.url,
+					requestedBy: member
+				})));
+				
+				if (queueLength) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
+			} catch (e) {
+				console.error(e);
+				return critical("Can't fetch playlist from Spotify", `\`\`\`\n${e}\n\`\`\``);
+			}
 		} else if (type === "search") {
-			const result = await play.search(query, { limit: 1, source: { soundcloud: "tracks" } });
+			const result = await play.search(query, { limit: 1 });
 			if (result.length === 0) return warning("Can't find anything");
 
 			const song: Song = {
-				service: MusicServices.SoundCloud,
-				title: result[0].name,
-				thumbnailUrl: result[0].thumbnail,
+				service: MusicServices.YouTube,
+				title: result[0].title!,
+				thumbnailUrl: result[0].thumbnails[0].url,
 				duration: result[0].durationInSec,
 				url: result[0].url,
 				requestedBy: member
