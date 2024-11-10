@@ -32,3 +32,14 @@ process.once("exit", handleInterrupt);
 process.once("SIGINT", handleInterrupt);
 process.once("SIGUSR1", handleInterrupt);
 process.once("SIGUSR2", handleInterrupt);
+
+
+process.on("unhandledRejection", (reason) => {
+	if (reason instanceof Error) {
+		if (reason.name === "AbortError")
+			return;
+	}
+
+	console.error("unhandledRejection", reason);
+	handleInterrupt(1);
+});

@@ -38,6 +38,7 @@ export default class Loop extends Command {
 			embeds: [
 				this.loop(message.member as GuildMember, (() => {
 					switch (args[0]) {
+						case "single":
 						case "track":
 						case "t":
 							return LoopMode.Track;
@@ -59,10 +60,14 @@ export default class Loop extends Command {
 
 		const queue = musicQueue.get(guild.id);
 
-		if (!queue?.playing) return warning("Nothing is playing now");
-		if (queue.list.length === 0) return warning("There is nothing to skip");
-		if (!channel) return warning("You must be in a voice channel to skip");
-		if (channel != queue.voiceChannel) return warning("You must be in the same voice channel to skip");
+		if (!queue?.playing)
+			return warning("Nothing is playing now");
+		if (queue.list.length === 0)
+			return warning("There is nothing to skip");
+		if (!channel)
+			return warning("You must be in a voice channel to skip");
+		if (channel != queue.voiceChannel)
+			return warning("You must be in the same voice channel to skip");
 		
 		queue.loopMode = mode ?? (m => m === LoopMode.Disabled ? LoopMode.Queue : m === LoopMode.Queue ? LoopMode.Track : LoopMode.Disabled)(queue.loopMode);
 

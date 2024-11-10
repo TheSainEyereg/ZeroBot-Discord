@@ -31,6 +31,8 @@ const { music: { youtube, spotify, yandex, volumeDefault } } = config;
 const wait = promisify(setTimeout);
 const ymApi = new YMApi();
 
+const agent = ytdl.createAgent(cookieHeaderParser(youtube.cookie));
+
 const ytdlOptions = {
 	filter: "audioonly" as Filter,
 	highWaterMark: 1 << 62,
@@ -40,7 +42,7 @@ const ytdlOptions = {
 	// requestOptions: {
 	// 	...youtube.cookie && { headers: youtube }
 	// }
-	agent: ytdl.createAgent(cookieHeaderParser(youtube.cookie))
+	agent
 };
 
 export default class MusicQueue {
@@ -95,12 +97,16 @@ export default class MusicQueue {
 	}
 
 	leaveChannel(deleteQueue = true) {
-		if (this.left) return;
+		if (this.left)
+			return;
 
-		if (this.connection?.state.status === VoiceConnectionStatus.Ready) this.connection.disconnect();
+		if (this.connection?.state.status === VoiceConnectionStatus.Ready)
+			this.connection.disconnect();
+		
 		this.left = true;
 
-		if (deleteQueue) this.clear();
+		if (deleteQueue)
+			this.clear();
 	}
 
 	async initMusic() {
@@ -125,8 +131,9 @@ export default class MusicQueue {
 
 	async joinChannel() {
 		const { voiceChannel } = this;
-	
-		if (this.connection?.state.status === VoiceConnectionStatus.Ready) return this.connection;
+
+		if (this.connection?.state.status === VoiceConnectionStatus.Ready)
+			return this.connection;
 	
 		const connection = joinVoiceChannel({
 			channelId: voiceChannel.id,
@@ -135,24 +142,25 @@ export default class MusicQueue {
 		});
 	
 		try {
-			await entersState(connection, VoiceConnectionStatus.Ready, 30_000);
+			await entersState(connection, VoiceConnectionStatus.Ready, 30e3);
 			connection.on("stateChange", async (_, newState) => {
 				if (newState.status === VoiceConnectionStatus.Disconnected) {
 					if (newState.reason === VoiceConnectionDisconnectReason.WebSocketClose && newState.closeCode === 4014) {
 						try {
-							await entersState(connection, VoiceConnectionStatus.Connecting, 5_000);
+							await entersState(connection, VoiceConnectionStatus.Connecting, 5e3);
 						} catch {
 							this.leaveChannel(!this.paused);
 						}
 					} else if (connection.rejoinAttempts < 5) {
-						await wait((connection.rejoinAttempts + 1) * 5_000);
+						await wait((connection.rejoinAttempts + 1) * 5e3);
 						connection.rejoin();
 					} else {
 						this.leaveChannel(!this.paused);
 					}
 	
 					const newChannelId = newState.subscription?.connection?.joinConfig?.channelId;
-					if (newChannelId && (newChannelId !== this.voiceChannel.id)) this.voiceChannel = voiceChannel.guild.channels.cache.get(newChannelId) as VoiceChannel;
+					if (newChannelId && (newChannelId !== this.voiceChannel.id))
+						this.voiceChannel = voiceChannel.guild.channels.cache.get(newChannelId) as VoiceChannel;
 				}
 			});
 			this.left = false;
@@ -163,14 +171,16 @@ export default class MusicQueue {
 		}
 	}
 
-	async getMusicPlayer(song: Song): Promise<AudioPlayer | undefined> {
-		if (!song) return;
+	async getMusicPlayer(song: Song): Promise<AudioPlayer> {
+		if (!song)
+			throw new Error("No song to play");
 	
 		const player = createAudioPlayer({
 			behaviors: {
-				noSubscriber: NoSubscriberBehavior.Play
+				noSubscriber: NoSubscriberBehavior.Pause
 			}
 		});
+
 		let stream: Readable | null = null;
 		let streamType: StreamType | null = null;
 	
@@ -206,15 +216,11 @@ export default class MusicQueue {
 				stream = Readable.from(await res.buffer());
 			}
 	
-			if (!stream) throw new Error("Not supported service");
-	
-			stream.on("error", e => {
-				if (!this.playing) return;
-				this.textChannel.send({ embeds: [critical("Stream error", `${e}`)] }).catch(() => null);
-				console.error(e);
-				this.list.shift();
-				if (this.list.length > 0) this.getMusicPlayer(this.list[0]);
-			});
+			if (!stream)
+				throw new Error("Not supported service");
+
+			// stream.on("error", () => console.log("Stream error"));
+			// player.on("error", () => console.log("Player error"));
 			
 			this.resource = createAudioResource(stream, {
 				inputType: streamType || StreamType.Arbitrary,
@@ -227,23 +233,38 @@ export default class MusicQueue {
 			
 			player.play(this.resource);
 		} catch (e) {
-			console.error(e);
-			this.textChannel.send({ embeds: [critical(`Attempt to play \`${escapeMarkdown(song.title)}\` failed`, `${e}`)] }).catch(() => null);
-			this.list.shift();
-			return this.getMusicPlayer(this.list[0]);
+			console.error("Play attempt failed", e);
+			this.textChannel.send({ embeds: [critical(`Attempt to play \`${escapeMarkdown(song.title)}\` failed`, `\`${e}\``)] }).catch(() => null);
+
+			this.tryToPlayNext();
 		}
+
+		Promise.race([
+			new Promise(res => stream && stream.on("error", res)),
+			new Promise(res => player.on("error", res))
+		]).then((e) => {
+			console.error("Playback error", e);
+
+			this.textChannel.send({ embeds: [critical(`Error during playback of \`${escapeMarkdown(song.title)}\``, `\`${e}\``)] }).catch(() => null);
+
+			this.tryToPlayNext();
+		});
 	
 		// Messages.advanced(queue.textChannel, l.started, song.title, {custom: `${l.requested} ${song.requested.tag}`, icon: song.requested.displayAvatarURL({ format: "png", size: 256 })})
-		return entersState(player, AudioPlayerStatus.Playing, 5_000);
+		return entersState(player, AudioPlayerStatus.Playing, 5e3);
+	}
+
+	tryToPlayNext() {
+		this.list.shift();
+		this.startMusicPlayback(); // Check for emty list is placed inside startMusicPlayback
 	}
 
 	async startMusicPlayback() {
+		if (this.list.length === 0) // ^^^^
+			return;
+
 		this.connection = await this.joinChannel();
 		this.player = await this.getMusicPlayer(this.list[0]);
-		if (!this.player) return;
-	
-		this.connection.subscribe(this.player);
-		this.playing = true;
 	
 		this.player.on(AudioPlayerStatus.Idle, () => {
 			this.playing = false;
@@ -251,13 +272,17 @@ export default class MusicQueue {
 			if (this.loopMode !== LoopMode.Track) this.list.shift();
 	
 			if (!this.left && this.voiceChannel.members.filter(m => !m.user.bot).size === 0) {
-				this.textChannel.send({ embeds: [critical("All left", "All members left from voice channel, playback is stopped")] }).catch(() => null);
-				this.leaveChannel();
-				return;
+				this.textChannel.send({ embeds: [critical("All left", "All members left the voice channel, playback is stopped")] }).catch(() => null);
+				return this.leaveChannel();
 			}
-			if (this.list.length === 0) return setTimeout(() => (!this.playing && this.list.length === 0) && this.leaveChannel(), 120_000);
-	
-			this.startMusicPlayback();
+			
+			if (this.list.length > 0)
+				this.startMusicPlayback();
+			else
+				setTimeout(() => !this.playing && this.list.length === 0 && this.leaveChannel(), 120e3);
 		});
+	
+		this.connection.subscribe(this.player);
+		this.playing = true;
 	}
 }
