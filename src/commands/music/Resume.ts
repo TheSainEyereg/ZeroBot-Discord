@@ -1,3 +1,4 @@
+import assert from "node:assert";
 import Command from "../../Command";
 import {
 	type Message,
@@ -33,18 +34,28 @@ export default class Resume extends Command {
 
 		const queue = musicQueue.get(guild.id);
 
-		if (!queue) return warning("There is no queue");
-		if (!queue.playing) return warning("Nothing is playing now");
-		if (!queue.paused) return warning("Playback is not paused");
-		if (!channel) return warning("You must be in a voice channel to resume playback");
-		if (!queue.left && channel != queue.voiceChannel) return warning("You must be in the same voice channel to resume playback");
+		if (!queue)
+			return warning("There is no queue");
+		if (!queue.playing)
+			return warning("Nothing is playing now");
+		if (!queue.paused)
+			return warning("Playback is not paused");
+		if (!channel)
+			return warning("You must be in a voice channel to resume playback");
+		if (!queue.left && channel != queue.voiceChannel)
+			return warning("You must be in the same voice channel to resume playback");
 
 		try {
-			queue.voiceChannel = channel;
 			queue.textChannel = textChannel;
-			await queue.joinChannel();
+			queue.voiceChannel = channel;
+
+			queue.connection = await queue.joinChannel();
 			
-			queue.player?.unpause();
+			assert(queue.player);
+
+			queue.connection.subscribe(queue.player);
+			queue.player.unpause();
+
 			queue.startTime = Date.now() - queue.trackTime;
 			queue.paused = false;
 		} catch (error) {
