@@ -36,10 +36,12 @@ process.once("SIGUSR2", handleInterrupt);
 
 process.on("unhandledRejection", (reason) => {
 	if (reason instanceof Error) {
-		if (reason.name === "AbortError")
+		if (reason.name === "AbortError" || reason.message === "Status code: 403")
 			return;
-	}
 
-	console.error("unhandledRejection", reason);
+		console.error(`unhandledRejection N"${reason.name}" M"${reason.message}"\r\n`, reason);
+	} else
+		console.error("unhandledRejection\r\n", reason);
+
 	handleInterrupt(1);
 });
