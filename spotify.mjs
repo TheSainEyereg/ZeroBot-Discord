@@ -8,8 +8,8 @@ const openUrl = (url) => execSync(
 	platform === "win32"
 		? `start "fuck windows" "${url}"`
 		:platform === "darwin"
-			? `open ${url}`
-			: `xdg-open ${url}`
+			? `open "${url}"`
+			: `xdg-open "${url}"`
 );
 
 const port = Number(argv[2] ?? 3000);
@@ -59,4 +59,6 @@ SPOTIFY_MARKET = "US"`);
 });
 
 await new Promise(resolve => server.listen(port, "0.0.0.0", resolve));
-openUrl(`https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&redirect_uri=${encodeURIComponent(`http://localhost:${port}`)}`);
+const link = `https://accounts.spotify.com/authorize?response_type=code&client_id=${client_id}&redirect_uri=${encodeURIComponent(`http://localhost:${port}`)}`;
+console.log(`Opening ${link}`);
+openUrl(link);
