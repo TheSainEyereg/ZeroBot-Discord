@@ -21,6 +21,7 @@ export enum MusicServices {
 	SoundCloud = "SoundCloud",
 	Spotify = "Spotify",
 	Yandex = "Yandex",
+	VK = "VK",
 	Raw = "File",
 }
 

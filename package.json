@@ -8,7 +8,8 @@
     "start": "node dist/app",
     "migrate": "node migrate.mjs",
     "spotify": "node spotify.mjs",
-    "dev": "nodemon  src/app.ts",
+    "vk": "node vk.mjs",
+    "dev": "nodemon src/app.ts",
     "dev:debug": "nodemon --inspect src/app.ts",
     "lint": "eslint src/**/*.ts"
   },
@@ -37,6 +38,7 @@
     "node-fetch": "2",
     "play-dl": "^1.9.7",
     "surrealdb.js": "^0.8.0",
+    "vk-io": "^4.9.1",
     "ym-api": "^1.2.1"
   },
   "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"

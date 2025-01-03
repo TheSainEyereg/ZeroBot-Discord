@@ -17,7 +17,7 @@ export type Song = SongBase & ({
 	service: MusicServices.Yandex;
 	id: number;
 } | {
-	service: MusicServices.SoundCloud;
+	service: MusicServices.SoundCloud | MusicServices.VK;
 	url: string;
 })
 

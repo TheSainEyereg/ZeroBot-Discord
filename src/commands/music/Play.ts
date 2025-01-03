@@ -13,6 +13,7 @@ import { Access, MusicServices } from "../../enums";
 import { critical, regular, success, warning } from "../../utils/messages";
 import { Song, YMApiTrack } from "../../interfaces/music";
 import type { SpotifyTrack, SpotifyPlaylist, SpotifyAlbum, SoundCloudTrack, SoundCloudPlaylist } from "play-dl";
+import { regex as vkRegex } from "../../services/vk";
 import MusicQueue from "../../utils/MusicQueue";
 
 const MAX_ITEMS = 200;
@@ -83,7 +84,7 @@ export default class Play extends Command {
 		if (!client.musicQueue.has(guild.id)) client.musicQueue.set(guild.id, queueCounstruct);
 		const queue = client.musicQueue.get(guild.id)!;
 
-		const { play, ymApi } = await queue.initMusic();
+		const { play, ymApi, vkApi } = await queue.initMusic();
 		
 		const type = query?.length ? await play.validate(query) : null;
 
@@ -146,7 +147,7 @@ export default class Play extends Command {
 			const info = await play.soundcloud(query) as SoundCloudTrack;
 
 			const song: Song = {
-				service: MusicServices.SoundCloud,
+				service: MusicServices.SoundCloud as const,
 				title: info.name,
 				thumbnailUrl: info.thumbnail,
 				duration: info.durationInSec,
@@ -306,6 +307,46 @@ export default class Play extends Command {
 			} catch (e) {
 				console.error(e);
 				return critical("Can't fetch album from Yandex", `\`\`\`\n${e}\n\`\`\``);
+			}
+		} else if (query.match(vkRegex.track)) {
+			try {
+				const { id } = vkRegex.track.exec(query)!.groups!;
+
+				const res = await vkApi.getTrack(id);
+				const song = {
+					service: MusicServices.VK as const,
+					title: res.title,
+					thumbnailUrl: res.album.thumb.photo_270,
+					duration: res.duration,
+					url: res.url,
+					link: `https://vk.com/audio${res.owner_id}_${res.id}`,
+					requestedBy: member
+				};
+				queue.list.push(song);
+				if (queueLength) return success(`Added \`${song.title}\` to queue`);
+			} catch (e) {
+				console.error(e);
+				return critical("Can't fetch track from VK", `\`\`\`\n${e}\n\`\`\``);
+			}
+		} else if (query.match(vkRegex.playlist)) {
+			try {
+				const { id } = vkRegex.playlist.exec(query)!.groups!;
+
+				const res = await vkApi.getPlaylist(id);
+				const list = res.map(track => ({
+					service: MusicServices.VK as const,
+					title: track.title,
+					thumbnailUrl: track.album.thumb.photo_270,
+					duration: track.duration,
+					url: track.url,
+					link: track.url,
+					requestedBy: member
+				}));
+				queue.list.push(...list.slice(0, MAX_ITEMS));
+				if (queueLength) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
+			} catch (e) {
+				console.error(e);
+				return critical("Can't fetch playlist from VK", `\`\`\`\n${e}\n\`\`\``);
 			}
 		} else if (query.match(/^https?:\/\/(cdn\.discordapp\.com|media.discordapp.net)\/(ephemeral-)?attachments\/[0-9]+\/[0-9]+\/.*/gi)) { // Discord link
 			try {

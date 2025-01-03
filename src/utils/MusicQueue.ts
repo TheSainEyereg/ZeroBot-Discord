@@ -25,10 +25,12 @@ import fetch from "node-fetch";
 import play from "play-dl";
 import { YMApi } from "ym-api";
 import { stream as cobaltStream } from "../services/cobalt";
+import { VKService, stream as vkStream } from "../services/vk";
 
-const { music: { spotify, yandex, volumeDefault } } = config;
+const { music: { spotify, yandex, volumeDefault, vk } } = config;
 const wait = promisify(setTimeout);
 const ymApi = new YMApi();
+const vkApi = new VKService();
 
 export default class MusicQueue {
 	guild: Guild;
@@ -106,11 +108,13 @@ export default class MusicQueue {
 			if (spotify.client_id && spotify.client_secret && spotify.refresh_token && spotify.market) await play.setToken({ spotify }).catch(() => null);
 		
 			if (yandex.uid && yandex.access_token) await ymApi.init(yandex).catch(() => null);
+
+			if (vk.token) await vkApi.init(vk.token).catch(() => null);
 		
 			this.initialized = true;
 		}
 	
-		return { play, ymApi };
+		return { play, ymApi, vkApi };
 	}
 
 	async joinChannel() {
@@ -187,11 +191,14 @@ export default class MusicQueue {
 				stream = await cobaltStream(res[0].url);
 			}
 			if (song.service === MusicServices.Yandex) {
-				const downloadInfo = await ymApi.getTrackDownloadInfo(song.id as number);
+				const downloadInfo = await ymApi.getTrackDownloadInfo(song.id);
 				const directUrl = await ymApi.getTrackDirectLink(downloadInfo.find(i => i.bitrateInKbps === 192)!.downloadInfoUrl);
 	
 				stream = await fetch(directUrl)
 					.then(res => Readable.from(res.body));
+			}
+			if (song.service === MusicServices.VK) {
+				stream = await vkStream(song.url);
 			}
 			if (song.service === MusicServices.Raw) {
 				stream = await fetch(song.link)
@@ -222,10 +229,15 @@ export default class MusicQueue {
 			new Promise(res => stream && stream.on("error", res)),
 			new Promise(res => player.on("error", res))
 		]).then((e) => {
-			console.error("Playback error", e);
+			if (e instanceof Error) {
+				if (e.message === "Premature close")
+					return this.tryToPlayNext();
+
+				console.error(`Playback error N"${e.name}" M"${e.message}"\r\n`, e);
+			} else
+				console.error("Playback error\r\n", e);
 
 			this.textChannel.send({ embeds: [critical(`Error during playback of \`${escapeMarkdown(song.title)}\``, `\`${e}\``)] }).catch(() => null);
-
 			this.tryToPlayNext();
 		});
 	
