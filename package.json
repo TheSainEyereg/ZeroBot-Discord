@@ -18,7 +18,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/figlet": "^1.5.8",
-    "@types/node": "^18.19.67",
+    "@types/node": "18.19.67",
     "@types/node-fetch": "2.x",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",

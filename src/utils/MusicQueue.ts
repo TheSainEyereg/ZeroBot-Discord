@@ -16,17 +16,18 @@ import {
 } from "@discordjs/voice";
 import { type VoiceChannel, BaseGuildTextChannel, BaseGuildVoiceChannel, Guild, Message, escapeMarkdown } from "discord.js";
 
-import fetch from "node-fetch";
-import play from "play-dl";
-import { YMApi } from "ym-api";
-
 import config from "../config";
 import { LoopMode, MusicServices } from "../enums";
 import { Song } from "../interfaces/music";
 import { critical } from "./messages";
+
+import fetch from "node-fetch";
+import play from "play-dl";
+import { YMApi } from "ym-api";
+import { stream as cobaltStream } from "../services/cobalt";
 import { VKService, stream as vkStream } from "../services/vk";
 
-const { music: { youtube, spotify, yandex, volumeDefault, vk } } = config;
+const { music: { spotify, yandex, volumeDefault, vk } } = config;
 const wait = promisify(setTimeout);
 const ymApi = new YMApi();
 const vkApi = new VKService();
@@ -101,7 +102,6 @@ export default class MusicQueue {
 	
 			play.setToken({
 				useragent: ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36"],
-				... youtube.cookie && { youtube },
 				... client_id && { soundcloud: { client_id } }
 			});
 		
@@ -173,36 +173,36 @@ export default class MusicQueue {
 		let streamType: StreamType | null = null;
 	
 		try {
-			// if (song.service === MusicServices.YouTube) {
-			// 	// TODO
-			// }
+			if (song.service === MusicServices.YouTube) {
+				stream = await cobaltStream(song.link);
+			}
 			if (song.service === MusicServices.SoundCloud) {
 				const pdl = await play.stream(song.url);
 				stream = pdl.stream;
 				streamType = pdl.type;
 			}
 			if (song.service === MusicServices.Spotify) {
-				const res = (await vkApi.search(song.title, 5))
-					.filter(({ duration }) =>  (duration - song.duration > -3) && (duration - song.duration < 10));
-				
+				const res = (await play.search(song.title, { limit: 5 }))
+					.filter(({ durationInSec }) =>  (durationInSec - song.duration > -3) && (durationInSec - song.duration < 10));
+
 				if (res.length === 0)
 					throw new Error("Can't find this song");
 
-				stream = await vkStream(res[0].url);
+				stream = await cobaltStream(res[0].url);
 			}
 			if (song.service === MusicServices.Yandex) {
 				const downloadInfo = await ymApi.getTrackDownloadInfo(song.id);
 				const directUrl = await ymApi.getTrackDirectLink(downloadInfo.find(i => i.bitrateInKbps === 192)!.downloadInfoUrl);
 	
-				const res = await fetch(directUrl);
-				stream = Readable.from(await res.buffer());
+				stream = await fetch(directUrl)
+					.then(res => Readable.from(res.body));
 			}
 			if (song.service === MusicServices.VK) {
 				stream = await vkStream(song.url);
 			}
 			if (song.service === MusicServices.Raw) {
-				const res = await fetch(song.link);
-				stream = Readable.from(await res.buffer());
+				stream = await fetch(song.link)
+					.then(res => Readable.from(res.body));
 			}
 	
 			if (!stream)

@@ -100,7 +100,6 @@ export default class Play extends Command {
 					title: file.name,
 					thumbnailUrl: "https://olejka.ru/s/875449ff66.png",
 					duration: file.duration! * 1000,
-					url: file.url,
 					link: file.url,
 					requestedBy: member
 				};
@@ -110,8 +109,40 @@ export default class Play extends Command {
 				console.error(e);
 				return critical("Can't fetch track from URL", `\`\`\`\n${e}\n\`\`\``);
 			}
-		} else if (type === "yt_video" || type === "yt_playlist") {
-			return warning("This feature is not available", "Due to ongoing problems with streaming from YouTube, I have to give up playback from it. You can still play music from Spotify, SoundCloud, Yandex Music or VK (which is now used for search)");
+		} else if (type === "yt_video") {
+			try {
+				const info = await play.video_info(query);
+				const song: Song = {
+					service: MusicServices.YouTube as const,
+					title: info.video_details.title!,
+					thumbnailUrl: info.video_details.thumbnails[0].url,
+					duration: info.video_details.durationInSec,
+					link: info.video_details.url,
+					requestedBy: member
+				};
+				queue.list.push(song);
+				if (queueLength) return success(`Added \`${song.title}\` to queue`);
+			} catch (e) {
+				console.error(e);
+				return critical("Can't fetch video from YouTube", `\`\`\`\n${e}\n\`\`\``);
+			}
+		} else if (type === "yt_playlist") {
+			try {
+				const playlist = await play.playlist_info(query);
+				const list = await playlist.all_videos();
+				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
+					service: MusicServices.YouTube as const,
+					title: info.title!,
+					thumbnailUrl: info.thumbnails[0].url,
+					duration: info.durationInSec,
+					link: info.url,
+					requestedBy: member
+				})));
+				if (queueLength) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
+			} catch (e) {
+				console.error(e);
+				return critical("Can't fetch playlist from YouTube", `\`\`\`\n${e}\n\`\`\``);
+			}
 		} else if (type === "so_track") {
 			const info = await play.soundcloud(query) as SoundCloudTrack;
 
@@ -133,7 +164,7 @@ export default class Play extends Command {
 			const list = await playlist.all_tracks();
 
 			queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
-				service: MusicServices.SoundCloud as const,
+				service: MusicServices.SoundCloud as const,	
 				title: info.name,
 				thumbnailUrl: info.thumbnail,
 				duration: info.durationInSec,
@@ -196,16 +227,15 @@ export default class Play extends Command {
 				return critical("Can't fetch playlist from Spotify", `\`\`\`\n${e}\n\`\`\``);
 			}
 		} else if (type === "search") {
-			const result = await vkApi.search(query, 1);
+			const result = await play.search(query, { limit: 1 });
 			if (result.length === 0) return warning("Can't find anything");
 
 			const song: Song = {
-				service: MusicServices.VK as const,
+				service: MusicServices.YouTube as const,
 				title: result[0].title!,
-				thumbnailUrl: result[0].album.thumb.photo_300,
-				duration: result[0].duration,
-				link: `https://vk.com/audio${result[0].owner_id}_${result[0].id}`,
-				url: result[0].url,
+				thumbnailUrl: result[0].thumbnails[0].url,
+				duration: result[0].durationInSec,
+				link: result[0].url,
 				requestedBy: member
 			};
 			queue.list.push(song);
@@ -330,7 +360,6 @@ export default class Play extends Command {
 					title: name.length > 60 ? `${name.slice(0, 60)}...` : name,
 					thumbnailUrl: "https://olejka.ru/r/03d291545d.png",
 					duration: 0, // Idk how to calculate this
-					url: query,
 					link: query,
 					requestedBy: member
 				};
