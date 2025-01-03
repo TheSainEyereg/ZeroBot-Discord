@@ -188,7 +188,7 @@ export default class MusicQueue {
 			if (song.service === MusicServices.YouTube) {
 				if (song.duration > 61 * 60)
 					throw new Error("Sorry. Due to some technical limitations, I can't play tracks longer than 60 minutes");
-				stream = ytdl(song.url, ytdlOptions);
+				stream = ytdl(song.link, ytdlOptions);
 			}
 			if (song.service === MusicServices.SoundCloud) {
 				const pdl = await play.stream(song.url);
@@ -212,7 +212,7 @@ export default class MusicQueue {
 				stream = Readable.from(await res.buffer());
 			}
 			if (song.service === MusicServices.Raw) {
-				const res = await fetch(song.url);
+				const res = await fetch(song.link);
 				stream = Readable.from(await res.buffer());
 			}
 	

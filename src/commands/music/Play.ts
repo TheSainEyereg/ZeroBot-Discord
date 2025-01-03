@@ -95,11 +95,11 @@ export default class Play extends Command {
 			try {
 				if (!file.contentType?.startsWith("audio/")) throw new Error("Media is not an audio file");
 				const song = {
-					service: MusicServices.Raw,
+					service: MusicServices.Raw as const,
 					title: file.name,
 					thumbnailUrl: "https://olejka.ru/s/875449ff66.png",
 					duration: file.duration! * 1000,
-					url: file.url,
+					link: file.url,
 					requestedBy: member
 				};
 				queue.list.push(song);
@@ -112,11 +112,11 @@ export default class Play extends Command {
 			try {
 				const info = await play.video_info(query);
 				const song: Song = {
-					service: MusicServices.YouTube,
+					service: MusicServices.YouTube as const,
 					title: info.video_details.title!,
 					thumbnailUrl: info.video_details.thumbnails[0].url,
 					duration: info.video_details.durationInSec,
-					url: info.video_details.url,
+					link: info.video_details.url,
 					requestedBy: member
 				};
 				queue.list.push(song);
@@ -130,11 +130,11 @@ export default class Play extends Command {
 				const playlist = await play.playlist_info(query);
 				const list = await playlist.all_videos();
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
-					service: MusicServices.YouTube,
+					service: MusicServices.YouTube as const,
 					title: info.title!,
 					thumbnailUrl: info.thumbnails[0].url,
 					duration: info.durationInSec,
-					url: info.url,
+					link: info.url,
 					requestedBy: member
 				})));
 				if (queueLength) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
@@ -150,6 +150,7 @@ export default class Play extends Command {
 				title: info.name,
 				thumbnailUrl: info.thumbnail,
 				duration: info.durationInSec,
+				link: info.permalink,
 				url: info.url,
 				requestedBy: member
 			};
@@ -162,10 +163,11 @@ export default class Play extends Command {
 			const list = await playlist.all_tracks();
 
 			queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
-				service: MusicServices.SoundCloud,
+				service: MusicServices.SoundCloud as const,	
 				title: info.name,
 				thumbnailUrl: info.thumbnail,
 				duration: info.durationInSec,
+				link: info.permalink,
 				url: info.url,
 				requestedBy: member
 			})));
@@ -175,11 +177,11 @@ export default class Play extends Command {
 			try {
 				const info = await play.spotify(query) as SpotifyTrack;
 				const song: Song = {
-					service: MusicServices.Spotify,
+					service: MusicServices.Spotify as const,
 					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
 					thumbnailUrl: info.thumbnail?.url || "",
 					duration: info.durationInSec,
-					url: info.url,
+					link: info.url,
 					requestedBy: member
 				};
 				queue.list.push(song);
@@ -193,11 +195,11 @@ export default class Play extends Command {
 				const playlist = await play.spotify(query) as SpotifyPlaylist;
 				const list = await playlist.all_tracks();
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
-					service: MusicServices.Spotify,
+					service: MusicServices.Spotify as const,
 					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
 					thumbnailUrl: info.thumbnail?.url || "",
 					duration: info.durationInSec,
-					url: info.url,
+					link: info.url,
 					requestedBy: member
 				})));
 				if (queueLength) return success(`Added ${list.length > MAX_ITEMS ? MAX_ITEMS : list.length} tracks to queue`);
@@ -210,11 +212,11 @@ export default class Play extends Command {
 				const playlist = await play.spotify(query) as SpotifyAlbum;
 				const list = await playlist.all_tracks();
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
-					service: MusicServices.Spotify,
+					service: MusicServices.Spotify as const,
 					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.name}`,
 					thumbnailUrl: info.thumbnail?.url || "",
 					duration: info.durationInSec,
-					url: info.url,
+					link: info.url,
 					requestedBy: member
 				})));
 				
@@ -228,11 +230,11 @@ export default class Play extends Command {
 			if (result.length === 0) return warning("Can't find anything");
 
 			const song: Song = {
-				service: MusicServices.YouTube,
+				service: MusicServices.YouTube as const,
 				title: result[0].title!,
 				thumbnailUrl: result[0].thumbnails[0].url,
 				duration: result[0].durationInSec,
-				url: result[0].url,
+				link: result[0].url,
 				requestedBy: member
 			};
 			queue.list.push(song);
@@ -246,11 +248,11 @@ export default class Play extends Command {
 				if (!info.available) return warning("Track is not available");
 	
 				const song: Song = {
-					service: MusicServices.Yandex,
+					service: MusicServices.Yandex as const,
 					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
-					url: `https://music.yandex/album/${info.albums[0].id}/track/${info.id}`,
+					link: `https://music.yandex/album/${info.albums[0].id}/track/${info.id}`,
 					id: info.id,
 					requestedBy: member
 				};
@@ -270,11 +272,11 @@ export default class Play extends Command {
 				if (!list) throw new Error("Can't get info");
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
-					service: MusicServices.Yandex,
+					service: MusicServices.Yandex as const,
 					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
-					url: `https://music.yandex/album/${info.albums[0].id}/track/${info.id}`,
+					link: `https://music.yandex/album/${info.albums[0].id}/track/${info.id}`,
 					id: info.id,
 					requestedBy: member
 				})));
@@ -291,11 +293,11 @@ export default class Play extends Command {
 				const list = (await ymApi.getAlbumWithTracks(album))?.volumes[0]?.filter(track => track.available) as YMApiTrack[];
 
 				queue.list.push(...list.slice(0, MAX_ITEMS).map(info => ({
-					service: MusicServices.Yandex,
+					service: MusicServices.Yandex as const,
 					title: `${info.artists.map(artist => artist.name).join(", ")} - ${info.title} ${info.version ? ` (${info.version})` : ""}`,
 					thumbnailUrl: `https://${info.coverUri.replace("%%", "460x460")}`,
 					duration: Math.floor(info.durationMs / 1000),
-					url: `https://music.yandex/album/${info.albums[0].id}/track/${info.id}`,
+					link: `https://music.yandex/album/${info.albums[0].id}/track/${info.id}`,
 					id: info.id,
 					requestedBy: member
 				})));
@@ -313,11 +315,11 @@ export default class Play extends Command {
 				const name = /filename=(.*);?/gi.exec(res.headers.get("content-disposition") ?? "")?.[1] ?? `[URL] ${query}`.replace(/https?:\/\//gi, "");
 
 				const song = {
-					service: MusicServices.Raw,
+					service: MusicServices.Raw as const,
 					title: name.length > 60 ? `${name.slice(0, 60)}...` : name,
 					thumbnailUrl: "https://olejka.ru/r/03d291545d.png",
 					duration: 0, // Idk how to calculate this
-					url: query,
+					link: query,
 					requestedBy: member
 				};
 				queue.list.push(song);
