@@ -18,32 +18,18 @@ import { type VoiceChannel, BaseGuildTextChannel, BaseGuildVoiceChannel, Guild, 
 
 import fetch from "node-fetch";
 import play from "play-dl";
-import ytdl, { Filter } from "@distube/ytdl-core";
 import { YMApi } from "ym-api";
 
 import config from "../config";
 import { LoopMode, MusicServices } from "../enums";
 import { Song } from "../interfaces/music";
 import { critical } from "./messages";
-import { cookieHeaderParser } from "./cookies";
+import { VKService, stream as vkStream } from "../services/vk";
 
-const { music: { youtube, spotify, yandex, volumeDefault } } = config;
+const { music: { youtube, spotify, yandex, volumeDefault, vk } } = config;
 const wait = promisify(setTimeout);
 const ymApi = new YMApi();
-
-const agent = ytdl.createAgent(cookieHeaderParser(youtube.cookie));
-
-const ytdlOptions = {
-	filter: "audioonly" as Filter,
-	highWaterMark: 1 << 62,
-	liveBuffer: 1 << 62,
-	dlChunkSize: 0,
-	quality: "highestaudio",
-	// requestOptions: {
-	// 	...youtube.cookie && { headers: youtube }
-	// }
-	agent
-};
+const vkApi = new VKService();
 
 export default class MusicQueue {
 	guild: Guild;
@@ -122,11 +108,13 @@ export default class MusicQueue {
 			if (spotify.client_id && spotify.client_secret && spotify.refresh_token && spotify.market) await play.setToken({ spotify }).catch(() => null);
 		
 			if (yandex.uid && yandex.access_token) await ymApi.init(yandex).catch(() => null);
+
+			if (vk.token) await vkApi.init(vk.token).catch(() => null);
 		
 			this.initialized = true;
 		}
 	
-		return { play, ymApi };
+		return { play, ymApi, vkApi };
 	}
 
 	async joinChannel() {
@@ -185,42 +173,40 @@ export default class MusicQueue {
 		let streamType: StreamType | null = null;
 	
 		try {
-			if (song.service === MusicServices.YouTube) {
-				if (song.duration > 61 * 60)
-					throw new Error("Sorry. Due to some technical limitations, I can't play tracks longer than 60 minutes");
-				stream = ytdl(song.url, ytdlOptions);
-			}
+			// if (song.service === MusicServices.YouTube) {
+			// 	// TODO
+			// }
 			if (song.service === MusicServices.SoundCloud) {
 				const pdl = await play.stream(song.url);
 				stream = pdl.stream;
 				streamType = pdl.type;
 			}
 			if (song.service === MusicServices.Spotify) {
-				const res = (await play.search(song.title, { limit: 5 }))
-					.filter(({ durationInSec }) =>  (durationInSec - song.duration > -3) && (durationInSec - song.duration < 10));
+				const res = (await vkApi.search(song.title, 5))
+					.filter(({ duration }) =>  (duration - song.duration > -3) && (duration - song.duration < 10));
 				
-				if (res.length === 0) throw new Error("Can't find this song");
-				if (res[0].durationInSec > 61 * 60)
-					throw new Error("Sorry. Due to some technical limitations, I can't play tracks longer than 60 minutes");
-				stream = ytdl(res[0].url, ytdlOptions);
+				if (res.length === 0)
+					throw new Error("Can't find this song");
+
+				stream = await vkStream(res[0].url);
 			}
 			if (song.service === MusicServices.Yandex) {
-				const downloadInfo = await ymApi.getTrackDownloadInfo(song.id as number);
+				const downloadInfo = await ymApi.getTrackDownloadInfo(song.id);
 				const directUrl = await ymApi.getTrackDirectLink(downloadInfo.find(i => i.bitrateInKbps === 192)!.downloadInfoUrl);
 	
 				const res = await fetch(directUrl);
 				stream = Readable.from(await res.buffer());
 			}
+			if (song.service === MusicServices.VK) {
+				stream = await vkStream(song.url);
+			}
 			if (song.service === MusicServices.Raw) {
-				const res = await fetch(song.url);
+				const res = await fetch(song.link);
 				stream = Readable.from(await res.buffer());
 			}
 	
 			if (!stream)
 				throw new Error("Not supported service");
-
-			// stream.on("error", () => console.log("Stream error"));
-			// player.on("error", () => console.log("Player error"));
 			
 			this.resource = createAudioResource(stream, {
 				inputType: streamType || StreamType.Arbitrary,

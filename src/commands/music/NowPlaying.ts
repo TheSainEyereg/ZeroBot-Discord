@@ -58,7 +58,7 @@ export default class NowPlaying extends Command {
 				url: song.thumbnailUrl
 			},
 			title: escapeMarkdown(song.title),
-			url: song.url,
+			url: song.link,
 			description: `Duration: \`${pos}\`${song.duration ? `/\`${full}\`` : ""}`
 				+ `\nSource: ${song.service}`,
 			footer: {

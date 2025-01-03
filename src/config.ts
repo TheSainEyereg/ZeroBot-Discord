@@ -34,6 +34,9 @@ export default {
 		yandex: {
 			uid: parseInt(process.env.YANDEX_UID!),
 			access_token: process.env.YANDEX_TOKEN!
+		},
+		vk: {
+			token: process.env.VK_TOKEN!
 		}
 	}
 };
