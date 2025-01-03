@@ -229,10 +229,15 @@ export default class MusicQueue {
 			new Promise(res => stream && stream.on("error", res)),
 			new Promise(res => player.on("error", res))
 		]).then((e) => {
-			console.error("Playback error", e);
+			if (e instanceof Error) {
+				if (e.message === "Premature close")
+					return this.tryToPlayNext();
+
+				console.error(`Playback error N"${e.name}" M"${e.message}"\r\n`, e);
+			} else
+				console.error("Playback error\r\n", e);
 
 			this.textChannel.send({ embeds: [critical(`Error during playback of \`${escapeMarkdown(song.title)}\``, `\`${e}\``)] }).catch(() => null);
-
 			this.tryToPlayNext();
 		});
 	

@@ -36,7 +36,7 @@ process.once("SIGUSR2", handleInterrupt);
 process.on("uncaughtException", (error) => {
 	if (error instanceof Error) {
 		if (error.message === "write EPIPE")
-			return console.log("EPIPE was thrown");
+			return; // console.log("EPIPE was thrown");
 
 		console.error(`uncaughtException N"${error.name}" M"${error.message}"\r\n`, error);
 	} else

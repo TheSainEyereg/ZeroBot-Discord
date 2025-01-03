@@ -125,13 +125,5 @@ export const stream = async (url: string) => {
 	stdin.write(buffer);
 	stdin.end();
 
-	stream.on("close", () => console.log("Stream closed"));
-	stream.on("error", e => console.log("Stream error", e));
-	stream.on("end", () => console.log("Stream ended"));
-	process.on("close", () => console.log("Process closed"));
-	process.on("error", e => console.error("Process error", e));
-	process.on("exit", () => console.log("Process exited"));
-	process.on("disconnect", () => console.log("Process disconnected"));
-
 	return stream;
 };
