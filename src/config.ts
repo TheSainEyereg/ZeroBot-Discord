@@ -10,14 +10,7 @@ export default {
 
 	language: "en-US",
 
-	surrealDB: {
-		url: process.env.SURREAL_DB_URL!,
-		user: process.env.SURREAL_DB_USER!,
-		pass: process.env.SURREAL_DB_PASS!,
-
-		namespace: process.env.SURREAL_DB_NAMESPACE!,
-		database: process.env.SURREAL_DB_DATABASE!
-	},
+	mongoUrl: process.env.MONGODB_URL!,
 
 	music: {
 		volumeDefault: 0.8,

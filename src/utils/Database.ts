@@ -1,74 +1,30 @@
-import { Surreal } from "surrealdb.js";
+import mongoose from "mongoose";
 
-type ServerSettings = {
-	prefix: string;
-	prefixEnabled: boolean;
-	language: string;
-	musicVolume: number;
-	musicChannel?: string;
-	logChannel?: string;
-}
-
-type RestrictedUser = {
-	userId: string;
-}
-
-type AssociatedModerator = {
-	serverId: string;
-	userId: string;
-}
-
+import ServerSettings from "../models/ServerSettings.model";
+import AssociatedModerator from "../models/AssociatedModerator.model";
+import RestrictedUser from "../models/RestrictedUser.model";
 
 export default class Database {
-	private db: Surreal;
-	private configDefault: ServerSettings;
+	connect = (url: string) => mongoose.connect(url);
+	close = () => mongoose.disconnect();
 
-	constructor(configDefault: ServerSettings) {
-		this.db = new Surreal();
-		this.configDefault = configDefault;
-	}
+	getServer = (serverId: string) => ServerSettings
+		.findOne({ serverId })
+		.then(r => r || ServerSettings.create({ serverId }));
 
-	connect = (url: string, ns: string, db: string) => this.db.connect(url, { ns, db });
-	authenticate = (user: string, pass: string) => this.db.signin({ user, pass });
+	updateServer = (serverId: string, key: keyof ServerSettings, value: ServerSettings[keyof ServerSettings]) => ServerSettings.findOneAndUpdate({ serverId }, { [key]: value });
 
-	close = () => this.db.close();
+	getModerators = (serverId: string) => AssociatedModerator
+		.find({ serverId })
+		.then(r => r.map(({ userId }) => userId));
 
+	addModerator = (serverId: string, userId: string) => AssociatedModerator.create({ serverId, userId });
+	removeModerator = (serverId: string, userId: string) => AssociatedModerator.deleteOne({ serverId, userId });
 
-	private prepareGetAndReturnServer = async (serverId: string): Promise<ServerSettings> => {
-		const [response] = await this.db.select<ServerSettings>("servers:"+serverId);
+	getRestricted = () => RestrictedUser
+		.find()
+		.then(r => r.map(({ userId }) => userId));
 
-		if (!response?.prefix || !response?.language || !response?.musicVolume)
-			return (await this.db.create<ServerSettings>("servers:"+serverId, this.configDefault))[0];
-
-		return response;
-	};
-
-
-	getServer = (serverId: string) => this.prepareGetAndReturnServer(serverId);
-
-	updateServer = async (serverId: string, key: keyof ServerSettings, value: ServerSettings[keyof ServerSettings]) => {
-		const data = await this.prepareGetAndReturnServer(serverId);
-
-		this.db.update<ServerSettings>("servers:"+serverId, Object.assign(data, { [key]: value }));
-	};
-
-
-	getModerators = async (serverId: string) => {
-		const [ result ] = await this.db.query<[AssociatedModerator[]]>("SELECT * FROM moderators WHERE serverId = $serverId", { serverId });
-
-		return result.result?.map(({ userId }) => userId) || [];
-	};
-
-	addModerator = (serverId: string, userId: string) => this.db.create<AssociatedModerator>("moderators", { serverId, userId });
-	removeModerator = (serverId: string, userId: string) => this.db.query("DELETE moderators WHERE serverId = $serverId AND userId = $userId", { serverId, userId });
-
-
-	getRestricted = async () => {
-		const result = await this.db.select<RestrictedUser>("restricted");
-		
-		return result.map(({ userId }) => userId);
-	};
-
-	addRestrictedUser = (userId: string) => this.db.create<RestrictedUser>("restricted", { userId });
-	removeRestrictedUser = (userId: string) => this.db.query("DELETE restricted WHERE userId = $userId", { userId });
+	addRestrictedUser = (userId: string) => RestrictedUser.create({ userId });
+	removeRestrictedUser = (userId: string) => RestrictedUser.deleteOne({ userId });
 }

@@ -74,8 +74,8 @@ export class Client extends OriginalClient {
 		requiredCommands.forEach(command => this.commands.set(command.name !== command.data?.name ? `${command.data?.name}:${command.name}` : command.name, command));
 	}
 
-	loginWithDB = async (token: string, db_username: string, db_password: string) => {
-		if (db_username && db_password) await this.db.authenticate(db_username, db_password);
+	loginWithDB = async (token: string, mongoUrl: string) => {
+		await this.db.connect(mongoUrl);
 		await this.login(token);
 	};
 }

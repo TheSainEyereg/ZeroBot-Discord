@@ -2,20 +2,12 @@ import process, { env, stdin } from "node:process";
 import { Client } from "./Client";
 import Database from "./utils/Database";
 import config from "./config";
-const { surrealDB } = config;
 
 stdin.resume();
 
-const db = new Database({
-	prefix: config.prefix,
-	prefixEnabled: config.prefixEnabled,
-	language: config.language,
-	musicVolume: config.music.volumeDefault,
-});
-db.connect(surrealDB.url, surrealDB.namespace, surrealDB.database);
-
+const db = new Database();
 const client = new Client(db);
-client.loginWithDB(config.token, surrealDB.user, surrealDB.pass);
+client.loginWithDB(config.token, config.mongoUrl);
 
 async function handleInterrupt(code: number) {
 	process.removeAllListeners();

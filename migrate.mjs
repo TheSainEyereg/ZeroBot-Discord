@@ -1,44 +1,74 @@
 import { env } from "node:process";
-import { readdir, readFile, rm } from "node:fs/promises";
+import assert from "node:assert";
 import { config } from "dotenv";
+import mongoose from "mongoose";
 import { Surreal } from "surrealdb.js";
 
 config();
+const { MONGODB_URL, SURREAL_DB_URL, SURREAL_DB_NAMESPACE, SURREAL_DB_DATABASE, SURREAL_DB_USER, SURREAL_DB_PASS } = env;
 
-const db = new Surreal(env.SURREAL_DB_URL, {
-	ns: env.SURREAL_DB_NAMESPACE,
-	db: env.SURREAL_DB_DATABASE
+assert(MONGODB_URL, "MONGODB_URL is not defined!");
+assert(SURREAL_DB_URL && SURREAL_DB_NAMESPACE && SURREAL_DB_DATABASE && SURREAL_DB_USER && SURREAL_DB_PASS, "SURREAL_DB vars is not defined!");
+
+await mongoose.connect(MONGODB_URL);
+const mongo = mongoose.connection.db;
+
+const surreal = new Surreal(SURREAL_DB_URL, {
+	ns: SURREAL_DB_NAMESPACE,
+	db: SURREAL_DB_DATABASE
 });
 
-
-await db.signin({
-	user: env.SURREAL_DB_USER,
-	pass: env.SURREAL_DB_PASS
+await surreal.signin({
+	user: SURREAL_DB_USER,
+	pass: SURREAL_DB_PASS
 });
 
-for (const file of await readdir("./storage")) {
-	const settings = JSON.parse(await readFile(`./storage/${file}`));
-	const serverId = file.split(".")[0];
+const servers = await surreal.select("servers");
+for (const server of servers) {
+	const [, serverId ] = server.id.split(":");
+	const { prefix, prefixEnabled, language, musicVolume, musicChannel, logChannel } = server;
 
-	try {
-		await db.create(`servers:${serverId}`, {
-			prefix: settings.prefix,
-			prefixEnabled: true,
-			language: settings.language,
-			musicVolume: settings.musicVolume,
-			musicChannel: settings.musicChannel || undefined,
-			logChannel: settings.logsChannel || undefined,
-		});
-	} catch (error) {
-		console.log(`Server ${serverId} already migrated!`);
+	if (await mongo.collection("servers").findOne({ serverId }))
 		continue;
-	}
 
-	for (const userId of settings.moderators) await this.db.create("moderators", { serverId, userId }).catch(() => null);
-	
-	console.log(`Server ${serverId} migrated!`);
+	await mongo.collection("servers").insertOne({
+		serverId,
+		prefix,
+		prefixEnabled,
+		language,
+		musicVolume,
+		musicChannel,
+		logChannel
+	});
 }
+console.log(`${servers.length} servers migrated!`);
 
-await db.close();
+const moderators = await surreal.select("moderators");
+for (const moderator of moderators) {
+	const { serverId, userId } = moderator;
 
-await rm("./storage", { recursive: true, force: true });
+	if (await mongo.collection("moderators").findOne({ serverId, userId }))
+		continue;
+
+	await mongo.collection("moderators").insertOne({
+		serverId,
+		userId
+	});
+}
+console.log(`${moderators.length} moderators migrated!`);
+
+const restricted = await surreal.select("restricted");
+for (const restrictedUser of restricted) {
+	const { userId } = restrictedUser;
+
+	if (await mongo.collection("restricted").findOne({ userId }))
+		continue;
+
+	await mongo.collection("restricted").insertOne({
+		userId
+	});
+}
+console.log(`${restricted.length} restricted users migrated!`);
+
+await surreal.close();
+await mongoose.disconnect();
