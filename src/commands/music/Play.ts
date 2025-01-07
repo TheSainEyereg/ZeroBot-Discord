@@ -316,7 +316,7 @@ export default class Play extends Command {
 				const song = {
 					service: MusicServices.VK as const,
 					title: res.title,
-					thumbnailUrl: res.album.thumb.photo_270,
+					thumbnailUrl: res.thumb.photo_270,
 					duration: res.duration,
 					url: res.url,
 					link: `https://vk.com/audio${res.owner_id}_${res.id}`,
@@ -336,7 +336,7 @@ export default class Play extends Command {
 				const list = res.map(track => ({
 					service: MusicServices.VK as const,
 					title: track.title,
-					thumbnailUrl: track.album.thumb.photo_270,
+					thumbnailUrl: track.thumb.photo_270,
 					duration: track.duration,
 					url: track.url,
 					link: track.url,

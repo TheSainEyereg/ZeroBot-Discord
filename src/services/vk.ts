@@ -16,21 +16,16 @@ export interface Audio {
 	title: string;
 	duration: number;
 	url: string;
-	album: {
-		id: number;
-		title: string;
-		owner_id: number;
-		thumb: {
-			width: number;
-			height: number;
-			photo_34: string;
-			photo_68: string;
-			photo_135: string;
-			photo_270: string;
-			photo_300: string;
-			photo_600: string;
-			photo_1200: string;
-		};
+	thumb: {
+		width: number;
+		height: number;
+		photo_34: string;
+		photo_68: string;
+		photo_135: string;
+		photo_270: string;
+		photo_300: string;
+		photo_600: string;
+		photo_1200: string;
 	};
 }
 
@@ -38,7 +33,7 @@ export class VKService {
 	private api: API | null = null;
 
 	public async init(token: string) {
-		this.api = new API({ token });
+		this.api = new API({ token, apiVersion: "5.245" });
 
 		await this.api.account.getProfileInfo({});
 	}
