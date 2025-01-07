@@ -13,8 +13,8 @@ cd ZeroBot-Discord
 yarn
 yarn build
 ```
-3. Instal and run SurrealDB
-3.1 If you had previous version of ZeroBot with JSON storage then you can use `yarn migrate` to move all data to SurrealDB
+3. Instal and run MongoDB
+3.1 If you had previous version of ZeroBot with SurrealDB then you can use `yarn migrate` to move all data to MongoDB
 4. Copy `.env.example` to `.env` and fill in the required fields  
-4.1 Obtain cookies and tokens for required services (for Spotify you can launch `yarn spotify` and follow the instructions there)
+4.1 Obtain cookies and tokens for required services (for Spotify or VK you can launch `yarn spotify` or `yarn vk` and follow the instructions in the terminal)
 5. Start the bot with `yarn start`
